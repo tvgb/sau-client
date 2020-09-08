@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { MapOptions, latLng, tileLayer, Map, popup, marker, icon, LatLng, LatLngBounds, latLngBounds, Projection, Transformation } from 'leaflet';
-import { throwError } from 'rxjs';
+import { throwError, Observable } from 'rxjs';
 import { map, retry, catchError } from 'rxjs/operators';
 // import { File } from '@ionic-native/file/ngx';
-import { Plugins, FilesystemDirectory, FilesystemEncoding, Filesystem } from '@capacitor/core';
+import { Plugins, FilesystemDirectory, FilesystemEncoding, Filesystem, FileReadResult } from '@capacitor/core';
+import { cordovaInstance } from '@ionic-native/core';
 
 @Injectable({providedIn: 'root'})
 export class MapService {
@@ -32,23 +33,29 @@ export class MapService {
 		// );
 	}
 
-	private async readFile() {
-		let contents = await Filesystem.readFile({
-			path: './../../assets/maptiles/test.txt',
+	getTileTest(x: number, y: number, z: number): Promise<FileReadResult> {
+		const img = this.readFile(`/${z}/${x}/${y}/imagefile.png`);
+		return img;
+	}
+
+	private async readFile(path: string): Promise<FileReadResult> {
+		const contents = await Filesystem.readFile({
+			path: path,
 			directory: FilesystemDirectory.Documents,
 			encoding: FilesystemEncoding.UTF8
 		});
-		console.log(contents);
+		return contents;
 	}
 
-	private async fileWrite(data: any, x, y, z) {
+	private async fileWrite(data: any, x: number, y: number, z: number) {
 
 		try {
 			const result = await Filesystem.writeFile({
-			path: `/${x}/${y}/${z}/imagetile.png`,
+			path: `/${z}/${x}/${y}/imagefile.png`,
 			data: data,
 			directory: FilesystemDirectory.Documents,
-			encoding: FilesystemEncoding.UTF8
+			encoding: FilesystemEncoding.UTF8,
+			recursive: true
 		});
 			console.log('Wrote file', result);
 		} catch (e) {
@@ -97,12 +104,17 @@ export class MapService {
 		{
 			responseType: 'blob'
 		}).pipe(
-			map(result => {
+			map(blob => {
 				// let blob = new Blob([result], {type: result.type});
 				// console.log(blob.prototype.text);
-				result.text().then(blobtext => {
-					this.fileWrite(blobtext, x, y, z);
-				});
+				const reader = new FileReader();
+				reader.readAsDataURL(blob);
+				reader.onloadend = () => {
+					this.fileWrite(reader.result, x, y, z);
+				};
+				// result.text().then(blobtext => {
+				// 	this.fileWrite(blobtext, x, y, z);
+				// });
 				// this.fileWrite(res, x, y, z);
 			})
 		).subscribe();

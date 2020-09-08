@@ -1,7 +1,6 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { MapOptions, latLng, tileLayer, Map, popup, marker, icon, Path } from 'leaflet';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { MapService } from './map.servive';
+import { MapService } from '../map/map.service';
 import { FilesystemDirectory } from '@capacitor/core';
 
 
@@ -11,9 +10,6 @@ import { FilesystemDirectory } from '@capacitor/core';
 	styleUrls: ['home.page.scss'],
 })
 export class HomePage implements OnInit, AfterViewInit{
-
-	options: MapOptions;
-	map: Map;
 
 	constructor(private geolocation: Geolocation, private mapService: MapService) {
 
@@ -28,48 +24,46 @@ export class HomePage implements OnInit, AfterViewInit{
 	}
 
 	ngOnInit(): void {
-		this.initializeMapOptions();
+		// this.initializeMapOptions();
 	}
 
 	ngAfterViewInit(): void {
 	}
 
-	onMapReady(map: Map): void {
-		setTimeout(() => {
-			map.invalidateSize();
-			this.map = map;
+	// onMapReady(map: Map): void {
+	// 	setTimeout(() => {
+	// 		map.invalidateSize();
+	// 		this.map = map;
 
-		}, 100);
-	}
+	// 	}, 100);
+	// }
 
-	private initializeMapOptions() {
+	// private initializeMapOptions() {
 
-		.tileLayer.
-
-		this.geolocation.getCurrentPosition().then((resp) => {
-			this.options = {
-				center: latLng(resp.coords.latitude, resp.coords.longitude),
-				zoom: 13,
-				layers: [
-					tileLayer(
-						`${FilesystemDirectory.Documents}/{x}/{y}/{z}/imagetile.png`, // 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
-						{
-							maxZoom: 18,
-							attribution: 'Map data © OpenStreetMap contributors'
-					}),
-					marker(latLng(resp.coords.latitude, resp.coords.longitude), {
-						icon: icon({
-							iconSize: [ 25, 41 ],
-							iconAnchor: [ 13, 41 ],
-							iconUrl: 'assets/marker-icon.png',
-							shadowUrl: 'assets/marker-shadow.png'
-						})
-					})
-				]
-			};
-		}).catch((error) => {
-			console.log('Error getting location', error);
-		});
-	}
+	// 	this.geolocation.getCurrentPosition().then((resp) => {
+	// 		this.options = {
+	// 			center: latLng(resp.coords.latitude, resp.coords.longitude),
+	// 			zoom: 13,
+	// 			layers: [
+	// 				tileLayer(
+	// 					`${FilesystemDirectory.Documents}/{x}/{y}/{z}/imagetile.png`, // 'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
+	// 					{
+	// 						maxZoom: 18,
+	// 						attribution: 'Map data © OpenStreetMap contributors'
+	// 				}),
+	// 				marker(latLng(resp.coords.latitude, resp.coords.longitude), {
+	// 					icon: icon({
+	// 						iconSize: [ 25, 41 ],
+	// 						iconAnchor: [ 13, 41 ],
+	// 						iconUrl: 'assets/marker-icon.png',
+	// 						shadowUrl: 'assets/marker-shadow.png'
+	// 					})
+	// 				})
+	// 			]
+	// 		};
+	// 	}).catch((error) => {
+	// 		console.log('Error getting location', error);
+	// 	});
+	// }
 
 }
