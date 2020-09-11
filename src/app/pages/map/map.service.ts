@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { throwError } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { EMPTY, Observable, of, throwError } from 'rxjs';
+import { catchError, delay, map, mergeMap, retryWhen } from 'rxjs/operators';
 import { FilesystemDirectory, FilesystemEncoding, Filesystem, FileReadResult, StatResult } from '@capacitor/core';
 
 @Injectable({providedIn: 'root'})
@@ -9,6 +9,7 @@ export class MapService {
 	private readonly ZOOM_LEVELS = [10, 11, 12, 13, 14, 15, 16, 17, 18];
 	private readonly DOWNLOAD_DELAY = 200;
 	private readonly FILESYSTEM_DIRECTORY = FilesystemDirectory.External;
+	private readonly MAX_HTTP_RETRIES = 5;
 
 	private readonly BASE_URLS = [
 		'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps',
@@ -89,19 +90,27 @@ export class MapService {
 		{
 			responseType: 'blob'
 		}).pipe(
-			map(blob => {
+			this.delayedRetry(1000, 3),
+			catchError(err => {
+				console.log(err);
+				return EMPTY;
+			}),
+			map((blob) => {
 
 				const reader = new FileReader();
 				reader.readAsDataURL(blob);
 
 				// Convert tile to base64 image
 				reader.onloadend = () => {
-					this.fileWrite(reader.result, x, y, z);
+					return reader.result;
 				};
 
 			})
-		).subscribe();
+		).subscribe((base64String) => {
+			console.log('base64string:', base64String);
+		});
 	}
+
 
 	private getTileCoordinates(lat: number, lng: number, zoom: number): [number, number] {
 		const latRad = lat * ( Math.PI / 180 );
@@ -109,6 +118,22 @@ export class MapService {
 		const xTile = Math.round((lng + 180.0) / 360.0 * n);
 		const yTile = Math.round((1.0 - Math.asinh(Math.tan(latRad)) / Math.PI) / 2.0 * n);
 		return [xTile, yTile];
+	}
+
+	private delayedRetry(delayMs: number, maxRetry = this.MAX_HTTP_RETRIES) {
+		let retries = maxRetry;
+
+		return (src: Observable<any>) =>
+			src.pipe(
+				retryWhen((errors: Observable<any>) => errors.pipe(
+					delay(delayMs),
+					mergeMap(error => retries-- > 0 ? of(error) : throwError(this.getErrorMessage(maxRetry)))
+				))
+			);
+	}
+
+	private getErrorMessage(maxRetry: number): string {
+		return`Tried to download map tile for ${maxRetry} times without success. Givning up.`;
 	}
 
 	private handleError(error: HttpErrorResponse) {
