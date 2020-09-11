@@ -1,39 +1,26 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { MapOptions, latLng, tileLayer, Map, popup, marker, icon, LatLng, LatLngBounds, latLngBounds, Projection, Transformation } from 'leaflet';
-import { throwError, Observable } from 'rxjs';
-import { map, retry, catchError } from 'rxjs/operators';
-// import { File } from '@ionic-native/file/ngx';
-import { Plugins, FilesystemDirectory, FilesystemEncoding, Filesystem, FileReadResult } from '@capacitor/core';
-import { cordovaInstance } from '@ionic-native/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { FilesystemDirectory, FilesystemEncoding, Filesystem, FileReadResult, StatResult } from '@capacitor/core';
 
 @Injectable({providedIn: 'root'})
 export class MapService {
-	private http: HttpClient;
-	private zoomLevels = [14, 15, 16];
+	private readonly ZOOM_LEVELS = [10, 11, 12, 13, 14, 15, 16, 17, 18];
+	private readonly DOWNLOAD_DELAY = 200;
+	private readonly FILESYSTEM_DIRECTORY = FilesystemDirectory.External;
 
-	private baseUrls = [
+	private readonly BASE_URLS = [
 		'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps',
 		'https://opencache2.statkart.no/gatekeeper/gk/gk.open_gmaps',
 		'https://opencache3.statkart.no/gatekeeper/gk/gk.open_gmaps',
 	];
 
-	private mapLayer = 'norges_grunnkart';
+	private readonly MAP_LAYER = 'norges_grunnkart';
 
-	constructor(http: HttpClient) {
-		this.http = http;
+	constructor(private http: HttpClient) {}
 
-		// this.readFile();
-		// this.fileWrite();
-
-		// console.log(this.file.writeFile('./', 'test.file', 'hello this is a test');
-
-		// this.file.checkDir(this.file.dataDirectory, 'mydir').then(_ => console.log('Directory exists')).catch(err =>
-		// 	console.log('Directory doesn\'t exist')
-		// );
-	}
-
-	getTileTest(x: number, y: number, z: number): Promise<FileReadResult> {
+	getTile(x: number, y: number, z: number): Promise<FileReadResult> {
 		const img = this.readFile(`/${z}/${x}/${y}/imagefile.png`);
 		return img;
 	}
@@ -41,7 +28,7 @@ export class MapService {
 	private async readFile(path: string): Promise<FileReadResult> {
 		const contents = await Filesystem.readFile({
 			path: path,
-			directory: FilesystemDirectory.Documents,
+			directory: FilesystemDirectory.External,
 			encoding: FilesystemEncoding.UTF8
 		});
 		return contents;
@@ -49,18 +36,22 @@ export class MapService {
 
 	private async fileWrite(data: any, x: number, y: number, z: number) {
 
-		try {
-			const result = await Filesystem.writeFile({
-			path: `/${z}/${x}/${y}/imagefile.png`,
-			data: data,
-			directory: FilesystemDirectory.Documents,
-			encoding: FilesystemEncoding.UTF8,
-			recursive: true
+		await Filesystem.stat({
+			directory: this.FILESYSTEM_DIRECTORY,
+			path: `/${z}/${x}/${y}/imagefile.png`
+		}).catch((e) => {
+			console.log('downloading file:', 'z:', z, 'x:', x, 'y:', y);
+
+			Filesystem.writeFile({
+				path: `/${z}/${x}/${y}/imagefile.png`,
+				data: data,
+				directory: FilesystemDirectory.External,
+				encoding: FilesystemEncoding.UTF8,
+				recursive: true
+			}).catch((e) => {
+				console.log('Could not write to file:', e);
+			});
 		});
-			console.log('Wrote file', result);
-		} catch (e) {
-			console.error('Unable to write file', e);
-		}
 	}
 
 	/**
@@ -69,9 +60,7 @@ export class MapService {
 	async downloadMapTileArea(startLat: number, startLng: number, endLat: number, endLng: number) {
 		let currentUrl = 0;
 
-		// let counter = 0;
-
-		for (const z of this.zoomLevels) {
+		for (const z of this.ZOOM_LEVELS) {
 			const startXY = this.getTileCoordinates(startLat, startLng, z);
 			const endXY = this.getTileCoordinates(endLat, endLng, z);
 			const startX = startXY[0];
@@ -81,41 +70,35 @@ export class MapService {
 
 			for (let x = startX; x <= endX; x++) {
 				for (let y = startY; y <= endY; y++) {
-					this.getTile(x, y, z, this.baseUrls[currentUrl]);
-					// console.log(x, y, z);
-					// counter++;
+					this.downloadTile(x, y, z, this.BASE_URLS[currentUrl]);
+
 					if (currentUrl < 2) {
 						currentUrl++;
 					} else {
 						currentUrl = 0;
-						await new Promise(r => setTimeout(r, 200));
+						await new Promise(r => setTimeout(r, this.DOWNLOAD_DELAY));
 					}
 				}
 			}
 		}
-
-		// console.log(counter);
-
 	}
 
-	private getTile(x: number, y: number, z: number, baseUrl: string): void {
+	private downloadTile(x: number, y: number, z: number, baseUrl: string): void {
 
-		this.http.get(`${baseUrl}?layers=${this.mapLayer}&zoom=${z}&x=${x}&y=${y}`,
+		this.http.get(`${baseUrl}?layers=${this.MAP_LAYER}&zoom=${z}&x=${x}&y=${y}`,
 		{
 			responseType: 'blob'
 		}).pipe(
 			map(blob => {
-				// let blob = new Blob([result], {type: result.type});
-				// console.log(blob.prototype.text);
+
 				const reader = new FileReader();
 				reader.readAsDataURL(blob);
+
+				// Convert tile to base64 image
 				reader.onloadend = () => {
 					this.fileWrite(reader.result, x, y, z);
 				};
-				// result.text().then(blobtext => {
-				// 	this.fileWrite(blobtext, x, y, z);
-				// });
-				// this.fileWrite(res, x, y, z);
+
 			})
 		).subscribe();
 	}
