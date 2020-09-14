@@ -14,7 +14,7 @@ import { MapPage } from './map.page';
 		FormsModule,
 		IonicModule,
 		MapPageRoutingModule
-	],
-	declarations: [MapPage]
+  	],
+  	declarations: [MapPage]
 })
 export class MapPageModule {}

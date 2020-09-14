@@ -10,9 +10,27 @@
       "projectType": "application",
       "prefix": "app",
       "schematics": {
-		"@schematics/angular:service": {
-			"lintFix": true
-		}
+		"@schematics/angular:component": {
+			"style": "scss",
+			"skipTests": true,
+			"lintfix": true
+		  },
+		  "@schematics/angular:class": {
+			"skipTests": true,
+			"lintfix": true
+		  },
+		  "@schematics/angular:directive": {
+			"skipTests": true,
+			"lintfix": true
+		  },
+		  "@schematics/angular:pipe": {
+			"skipTests": true,
+			"lintfix": true
+		  },
+		  "@schematics/angular:service": {
+			"skipTests": true,
+			"lintfix": true
+		  }
 	  },
       "architect": {
         "build": {
