@@ -6,7 +6,7 @@ import { FilesystemDirectory, FilesystemEncoding, Filesystem, FileReadResult, St
 
 @Injectable({providedIn: 'root'})
 export class MapService {
-	private readonly ZOOM_LEVELS = [10, 11, 12, 13, 14, 15, 16, 17, 18];
+	private readonly ZOOM_LEVELS = [13, 14, 15, 16, 17, 18];
 	private readonly DOWNLOAD_DELAY = 200;
 	private readonly FILESYSTEM_DIRECTORY = FilesystemDirectory.External;
 	private readonly MAX_HTTP_RETRIES = 5;
@@ -21,7 +21,7 @@ export class MapService {
 
 	constructor(private http: HttpClient) {}
 
-	getTile(x: number, y: number, z: number): Promise<FileReadResult> {
+	getTile(z: number, x: number, y: number): Promise<FileReadResult> {
 		const img = this.readFile(`/${z}/${x}/${y}/imagefile.png`);
 		return img;
 	}
@@ -35,22 +35,18 @@ export class MapService {
 		return contents;
 	}
 
-	private async fileWrite(data: any, x: number, y: number, z: number) {
+	private async writeFile(data: any, z: number, x: number, y: number): Promise<void> {
 
 		await Filesystem.stat({
 			directory: this.FILESYSTEM_DIRECTORY,
 			path: `/${z}/${x}/${y}/imagefile.png`
-		}).catch((e) => {
-			console.log('downloading file:', 'z:', z, 'x:', x, 'y:', y);
-
-			Filesystem.writeFile({
+		}).catch(() => {
+			return Filesystem.writeFile({
 				path: `/${z}/${x}/${y}/imagefile.png`,
 				data: data,
 				directory: FilesystemDirectory.External,
 				encoding: FilesystemEncoding.UTF8,
 				recursive: true
-			}).catch((e) => {
-				console.log('Could not write to file:', e);
 			});
 		});
 	}
@@ -71,7 +67,11 @@ export class MapService {
 
 			for (let x = startX; x <= endX; x++) {
 				for (let y = startY; y <= endY; y++) {
-					this.downloadTile(x, y, z, this.BASE_URLS[currentUrl]);
+					if (!(await this.TileExists(z, x, y))) {
+						this.downloadTile(z, x, y, this.BASE_URLS[currentUrl]);
+					} else {
+						continue;
+					}
 
 					if (currentUrl < 2) {
 						currentUrl++;
@@ -82,35 +82,70 @@ export class MapService {
 				}
 			}
 		}
+
+		console.log('Map successfully downloaded!');
 	}
 
-	private downloadTile(x: number, y: number, z: number, baseUrl: string): void {
+	private downloadTile(z: number, x: number, y: number, baseUrl: string): void {
 
 		this.http.get(`${baseUrl}?layers=${this.MAP_LAYER}&zoom=${z}&x=${x}&y=${y}`,
 		{
 			responseType: 'blob'
 		}).pipe(
-			this.delayedRetry(1000, 3),
+			this.delayedRetry(5000, 5),
 			catchError(err => {
 				console.log(err);
 				return EMPTY;
-			}),
-			map((blob) => {
-
+			})
+		).subscribe(
+			(res) => {
 				const reader = new FileReader();
-				reader.readAsDataURL(blob);
+				reader.readAsDataURL(res);
 
 				// Convert tile to base64 image
-				reader.onloadend = () => {
-					return reader.result;
-				};
+				reader.onloadend = async () => {
 
-			})
-		).subscribe((base64String) => {
-			console.log('base64string:', base64String);
-		});
+					// Number of retries
+					let retries = 5;
+
+					// Retry incase of error
+					while (retries > 0) {
+						await this.writeFile(reader.result, z, x, y).then(() => {
+							console.log('File written successfully:', retries, z, x, y);
+							retries = 0;
+						}).catch((e) => {
+							console.log('Failed while writing to file:', retries, z, x, y, e);
+						});
+
+						retries--;
+					}
+				};
+			}
+		);
 	}
 
+	/**
+	 * Returns true if file exists and false if not.
+	 *
+	 * @param z zoom of tile
+	 * @param x x pos of tile
+	 * @param y y pos of tile
+	 */
+	private async TileExists(z: number, x: number, y: number): Promise<boolean> {
+
+		let stat: StatResult;
+
+		try {
+			stat = await Filesystem.stat({
+				directory: this.FILESYSTEM_DIRECTORY,
+				path: `/${z}/${x}/${y}/imagefile.png`
+			});
+		} catch (e) {
+			stat = null;
+		}
+
+		return stat === null ? false : true;
+	}
 
 	private getTileCoordinates(lat: number, lng: number, zoom: number): [number, number] {
 		const latRad = lat * ( Math.PI / 180 );
