@@ -43,18 +43,18 @@ export class MapPage implements OnInit, AfterViewInit {
 
 	updateTrack() {
 		const subscription = this.geolocation.watchPosition({enableHighAccuracy: true}).subscribe(data => {
-		  if ("coords" in data) {
-			this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude})
-			console.log("Tracked route: " + JSON.stringify(this.trackedRoute))
-			if(this.trackedRoute.length > 1) {
-				L.polyline(this.trackedRoute).addTo(this.map)
+			if ('coords' in data) {
+				this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
+				console.log('Tracked route: ' + JSON.stringify(this.trackedRoute));
+				if (this.trackedRoute.length > 1) {
+					L.polyline(this.trackedRoute).addTo(this.map);
+				}
+			} else {
+				console.error('There is a Posisiton Error, no coords in data');
 			}
-		  } else {
-			console.error("There is a Posisiton Error, no coords in data");
-		  }
-		})
-	  }
-	
+		});
+	}
+
 	ngAfterViewInit(): void {
 		setTimeout(_ => {
 			this.initMap();
@@ -71,8 +71,8 @@ export class MapPage implements OnInit, AfterViewInit {
 			center: [ lat, lng ],
 			zoom: 16
 		});
-		
-		console.log("Inside method, check time")
+
+		console.log('Inside method, check time');
 		this.updateTrack();
 
 		if (this.OFFLINE_MAP) {

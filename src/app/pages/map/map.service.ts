@@ -28,7 +28,7 @@ export class MapService {
 
 	private async readFile(path: string): Promise<FileReadResult> {
 		const contents = await Filesystem.readFile({
-			path: path,
+			path,
 			directory: FilesystemDirectory.External,
 			encoding: FilesystemEncoding.UTF8
 		});
@@ -43,7 +43,7 @@ export class MapService {
 		}).catch(() => {
 			return Filesystem.writeFile({
 				path: `/${z}/${x}/${y}/imagefile.png`,
-				data: data,
+				data,
 				directory: FilesystemDirectory.External,
 				encoding: FilesystemEncoding.UTF8,
 				recursive: true

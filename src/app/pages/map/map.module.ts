@@ -9,12 +9,12 @@ import { MapPageRoutingModule } from './map-routing.module';
 import { MapPage } from './map.page';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    FormsModule,
-    IonicModule,
-    MapPageRoutingModule
-  ],
-  declarations: [MapPage]
+	imports: [
+		CommonModule,
+		FormsModule,
+		IonicModule,
+		MapPageRoutingModule
+	],
+	declarations: [MapPage]
 })
 export class MapPageModule {}
