@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { throwError } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { EMPTY, Observable, of, throwError } from 'rxjs';
+import { catchError, delay, map, mergeMap, retryWhen } from 'rxjs/operators';
 import { FilesystemDirectory, FilesystemEncoding, Filesystem, FileReadResult, StatResult } from '@capacitor/core';
 
 @Injectable({providedIn: 'root'})
@@ -9,6 +9,7 @@ export class MapService {
 	private readonly ZOOM_LEVELS = [13, 14, 15, 16, 17, 18];
 	private readonly DOWNLOAD_DELAY = 200;
 	private readonly FILESYSTEM_DIRECTORY = FilesystemDirectory.External;
+	private readonly MAX_HTTP_RETRIES = 5;
 
 	private readonly BASE_URLS = [
 		'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps',
@@ -34,20 +35,18 @@ export class MapService {
 		return contents;
 	}
 
-	private async fileWrite(data: any, z: number, x: number, y: number) {
+	private async writeFile(data: any, z: number, x: number, y: number): Promise<void> {
 
 		await Filesystem.stat({
 			directory: this.FILESYSTEM_DIRECTORY,
 			path: `/${z}/${x}/${y}/imagefile.png`
-		}).catch((e) => {
-			Filesystem.writeFile({
+		}).catch(() => {
+			return Filesystem.writeFile({
 				path: `/${z}/${x}/${y}/imagefile.png`,
 				data: data,
 				directory: FilesystemDirectory.External,
 				encoding: FilesystemEncoding.UTF8,
 				recursive: true
-			}).catch((e) => {
-				console.log('Could not write to file:', e);
 			});
 		});
 	}
@@ -70,7 +69,6 @@ export class MapService {
 				for (let y = startY; y <= endY; y++) {
 					if (!(await this.TileExists(z, x, y))) {
 						this.downloadTile(z, x, y, this.BASE_URLS[currentUrl]);
-						console.log('Downloaded tile:', z, x, y);
 					} else {
 						continue;
 					}
@@ -84,6 +82,8 @@ export class MapService {
 				}
 			}
 		}
+
+		console.log('Map successfully downloaded!');
 	}
 
 	private downloadTile(z: number, x: number, y: number, baseUrl: string): void {
@@ -92,18 +92,36 @@ export class MapService {
 		{
 			responseType: 'blob'
 		}).pipe(
-			map(blob => {
-
+			this.delayedRetry(5000, 5),
+			catchError(err => {
+				console.log(err);
+				return EMPTY;
+			})
+		).subscribe(
+			(res) => {
 				const reader = new FileReader();
-				reader.readAsDataURL(blob);
+				reader.readAsDataURL(res);
 
 				// Convert tile to base64 image
-				reader.onloadend = () => {
-					this.fileWrite(reader.result, z, x, y);
-				};
+				reader.onloadend = async () => {
 
-			})
-		).subscribe();
+					// Number of retries
+					let retries = 5;
+
+					// Retry incase of error
+					while (retries > 0) {
+						await this.writeFile(reader.result, z, x, y).then(() => {
+							console.log('File written successfully:', retries, z, x, y);
+							retries = 0;
+						}).catch((e) => {
+							console.log('Failed while writing to file:', retries, z, x, y, e);
+						});
+
+						retries--;
+					}
+				};
+			}
+		);
 	}
 
 	/**
@@ -135,6 +153,22 @@ export class MapService {
 		const xTile = Math.round((lng + 180.0) / 360.0 * n);
 		const yTile = Math.round((1.0 - Math.asinh(Math.tan(latRad)) / Math.PI) / 2.0 * n);
 		return [xTile, yTile];
+	}
+
+	private delayedRetry(delayMs: number, maxRetry = this.MAX_HTTP_RETRIES) {
+		let retries = maxRetry;
+
+		return (src: Observable<any>) =>
+			src.pipe(
+				retryWhen((errors: Observable<any>) => errors.pipe(
+					delay(delayMs),
+					mergeMap(error => retries-- > 0 ? of(error) : throwError(this.getErrorMessage(maxRetry)))
+				))
+			);
+	}
+
+	private getErrorMessage(maxRetry: number): string {
+		return`Tried to download map tile for ${maxRetry} times without success. Givning up.`;
 	}
 
 	private handleError(error: HttpErrorResponse) {

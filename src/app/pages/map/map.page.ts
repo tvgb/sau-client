@@ -19,10 +19,22 @@ export class MapPage implements OnInit, AfterViewInit {
 	ngOnInit(): void {
 
 		// This covers Gløshaugen ++++
-		const startLat = 63.441702;
-		const startLong = 10.343219;
-		const endLat = 63.385869;
-		const endLong = 10.473667;
+		// const startLat = 63.433167;
+		// const startLong =  10.358562;
+		// const endLat = 63.400195;
+		// const endLong = 10.445320;
+
+		// This covers Gløshaugen +
+		const startLat = 63.423846;
+		const startLong =  10.387870;
+		const endLat = 6363.412948;
+		const endLong = 10.417666;
+
+		// This covers Gløshaugen
+		// const startLat = 63.422297;
+		// const startLong =  10.394725;
+		// const endLat = 63.413847;
+		// const endLong = 10.415751;
 
 		if (this.OFFLINE_MAP) {
 			//this.mapService.downloadMapTileArea(startLat, startLong, endLat, endLong);
@@ -57,7 +69,7 @@ export class MapPage implements OnInit, AfterViewInit {
 
 		this.map = L.map('map', {
 			center: [ lat, lng ],
-			zoom: 13
+			zoom: 16
 		});
 		
 		console.log("Inside method, check time")
