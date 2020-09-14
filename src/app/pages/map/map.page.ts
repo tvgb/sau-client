@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from './map.service';
-
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 @Component({
 	selector: 'app-map',
@@ -11,10 +11,10 @@ import { MapService } from './map.service';
 export class MapPage implements OnInit, AfterViewInit {
 
 	private map;
+	private trackedRoute = []; 
+	private readonly OFFLINE_MAP = false;
 
-	private readonly OFFLINE_MAP = true;
-
-	constructor(private mapService: MapService) { }
+	constructor(private mapService: MapService, private geolocation: Geolocation) { }
 
 	ngOnInit(): void {
 
@@ -37,10 +37,24 @@ export class MapPage implements OnInit, AfterViewInit {
 		// const endLong = 10.415751;
 
 		if (this.OFFLINE_MAP) {
-			this.mapService.downloadMapTileArea(startLat, startLong, endLat, endLong);
+			//this.mapService.downloadMapTileArea(startLat, startLong, endLat, endLong);
 		}
 	}
 
+	updateTrack() {
+		const subscription = this.geolocation.watchPosition({enableHighAccuracy: true}).subscribe(data => {
+		  if ("coords" in data) {
+			this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude})
+			console.log("Tracked route: " + JSON.stringify(this.trackedRoute))
+			if(this.trackedRoute.length > 1) {
+				L.polyline(this.trackedRoute).addTo(this.map)
+			}
+		  } else {
+			console.error("There is a Posisiton Error, no coords in data");
+		  }
+		})
+	  }
+	
 	ngAfterViewInit(): void {
 		setTimeout(_ => {
 			this.initMap();
@@ -57,6 +71,9 @@ export class MapPage implements OnInit, AfterViewInit {
 			center: [ lat, lng ],
 			zoom: 16
 		});
+		
+		console.log("Inside method, check time")
+		this.updateTrack();
 
 		if (this.OFFLINE_MAP) {
 			L.GridLayer.OfflineMap = L.GridLayer.extend({
