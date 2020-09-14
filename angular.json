@@ -9,7 +9,11 @@
       "sourceRoot": "src",
       "projectType": "application",
       "prefix": "app",
-      "schematics": {},
+      "schematics": {
+		"@schematics/angular:service": {
+			"lintFix": true
+		}
+	  },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -187,10 +191,12 @@
   },
   "schematics": {
     "@ionic/angular-toolkit:component": {
-      "styleext": "scss"
+	  "styleext": "scss",
+	  "lintFix": true
     },
     "@ionic/angular-toolkit:page": {
-      "styleext": "scss"
+	  "styleext": "scss",
+	  "lintFix": true
     }
   }
 }
