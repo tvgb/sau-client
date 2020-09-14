@@ -1,6 +1,6 @@
 {
   "appId": "io.ionic.starter",
-  "appName": "sau-client-angular",
+  "appName": "sau-client",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",

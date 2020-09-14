@@ -1,5 +1,5 @@
 {
-  "name": "sau-client-angular",
+  "name": "sau-client",
   "integrations": {
     "capacitor": {}
   },
