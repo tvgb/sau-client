@@ -11,8 +11,8 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 export class MapPage implements OnInit, AfterViewInit {
 
 	private map;
-	private trackedRoute = []; 
-	private readonly OFFLINE_MAP = false;
+	private trackedRoute = [];
+	private readonly OFFLINE_MAP = true;
 
 	constructor(private mapService: MapService, private geolocation: Geolocation) { }
 
@@ -37,7 +37,7 @@ export class MapPage implements OnInit, AfterViewInit {
 		// const endLong = 10.415751;
 
 		if (this.OFFLINE_MAP) {
-			//this.mapService.downloadMapTileArea(startLat, startLong, endLat, endLong);
+			this.mapService.downloadMapTileArea(startLat, startLong, endLat, endLong);
 		}
 	}
 
