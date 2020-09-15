@@ -12,7 +12,6 @@ export class MapPage implements OnInit, AfterViewInit {
 
 	private map;
 	private readonly OFFLINE_MAP = true;
-
 	constructor(private mapService: MapService, private gpsService: GpsService) { }
 
 	ngOnInit(): void {
@@ -40,12 +39,6 @@ export class MapPage implements OnInit, AfterViewInit {
 		}
 	}
 
-	updateGpsTrackToMap() {
-		const trackRouteArray = this.gpsService.updateTrack();
-		console.log('Expected polyline form updatetrack:', trackRouteArray);
-		L.polyline(trackRouteArray).addTo(this.map);
-	}
-
 	ngAfterViewInit(): void {
 		setTimeout(_ => {
 			this.initMap();
@@ -53,7 +46,6 @@ export class MapPage implements OnInit, AfterViewInit {
 	}
 
 	initMap(): void {
-		console.log('HELLO??');
 		// Coordinates for the middle of Gløshaugen
 		const lat = 63.418604;
 		const lng = 10.402832;
@@ -63,8 +55,7 @@ export class MapPage implements OnInit, AfterViewInit {
 			zoom: 16
 		});
 
-
-		this.updateGpsTrackToMap();
+		this.gpsService.updateTrack(this.map);
 
 		if (this.OFFLINE_MAP) {
 			L.GridLayer.OfflineMap = L.GridLayer.extend({
