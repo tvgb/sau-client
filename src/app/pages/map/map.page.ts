@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
 import * as L from 'leaflet';
-import { MapService } from './map.service';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { MapService } from './services/map.service';
+import { GpsService } from './services/gps.service';
 
 @Component({
 	selector: 'app-map',
@@ -11,10 +11,8 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 export class MapPage implements OnInit, AfterViewInit {
 
 	private map;
-	private trackedRoute = [];
 	private readonly OFFLINE_MAP = true;
-
-	constructor(private mapService: MapService, private geolocation: Geolocation) { }
+	constructor(private mapService: MapService, private gpsService: GpsService) { }
 
 	ngOnInit(): void {
 
@@ -41,20 +39,6 @@ export class MapPage implements OnInit, AfterViewInit {
 		}
 	}
 
-	updateTrack() {
-		const subscription = this.geolocation.watchPosition({enableHighAccuracy: true}).subscribe(data => {
-			if ('coords' in data) {
-				this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
-				console.log('Tracked route: ' + JSON.stringify(this.trackedRoute));
-				if (this.trackedRoute.length > 1) {
-					L.polyline(this.trackedRoute).addTo(this.map);
-				}
-			} else {
-				console.error('There is a Posisiton Error, no coords in data');
-			}
-		});
-	}
-
 	ngAfterViewInit(): void {
 		setTimeout(_ => {
 			this.initMap();
@@ -62,7 +46,6 @@ export class MapPage implements OnInit, AfterViewInit {
 	}
 
 	initMap(): void {
-
 		// Coordinates for the middle of Gløshaugen
 		const lat = 63.418604;
 		const lng = 10.402832;
@@ -72,8 +55,7 @@ export class MapPage implements OnInit, AfterViewInit {
 			zoom: 16
 		});
 
-		console.log('Inside method, check time');
-		this.updateTrack();
+		this.gpsService.updateTrack(this.map);
 
 		if (this.OFFLINE_MAP) {
 			L.GridLayer.OfflineMap = L.GridLayer.extend({
