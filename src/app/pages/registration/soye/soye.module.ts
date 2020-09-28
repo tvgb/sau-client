@@ -8,15 +8,16 @@ import { SoyePageRoutingModule } from './soye-routing.module';
 
 import { SoyePage } from './soye.page';
 import { CounterComponent } from '../components/counter/counter.component';
+import { NavigationComponent } from '../components/navigation/navigation.component';
 
 @NgModule({
-	entryComponents: [CounterComponent],
+	entryComponents: [CounterComponent, NavigationComponent],
 	imports: [
 		CommonModule,
 		FormsModule,
 		IonicModule,
 		SoyePageRoutingModule
 	],
-	declarations: [SoyePage, CounterComponent]
+	declarations: [SoyePage, CounterComponent, NavigationComponent]
 })
 export class SoyePageModule {}
