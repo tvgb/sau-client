@@ -12,7 +12,7 @@ export class MapPage implements OnInit, AfterViewInit {
 
 	private map;
 	private trackedRoute = [];
-	private readonly OFFLINE_MAP = true;
+	private readonly OFFLINE_MAP = false;
 
 	constructor(private mapService: MapService, private geolocation: Geolocation) { }
 
@@ -35,6 +35,8 @@ export class MapPage implements OnInit, AfterViewInit {
 		// const startLong =  10.394725;
 		// const endLat = 63.413847;
 		// const endLong = 10.415751;
+
+
 
 		if (this.OFFLINE_MAP) {
 			this.mapService.downloadMapTileArea(startLat, startLong, endLat, endLong);
