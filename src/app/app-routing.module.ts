@@ -22,7 +22,12 @@ const routes: Routes = [
 	{
 		path: 'register/lam',
 		loadChildren: () => import('./pages/registration/lam/lam.module').then( m => m.LamPageModule)
-	}
+	},
+  	{
+		path: 'register/oppsummering',
+		loadChildren: () => import('./pages/registration/oppsummering/oppsummering.module').then( m => m.OppsummeringPageModule)
+  }
+
 ];
 
 @NgModule({
