@@ -11,15 +11,8 @@ import { GpsService } from './services/gps.service';
 export class MapPage implements OnInit, AfterViewInit {
 
 	private map;
-<<<<<<< HEAD
 	private readonly OFFLINE_MAP = true;
 	constructor(private mapService: MapService, private gpsService: GpsService) { }
-=======
-	private trackedRoute = [];
-	private readonly OFFLINE_MAP = false;
-
-	constructor(private mapService: MapService, private geolocation: Geolocation) { }
->>>>>>> trym-dev
 
 	ngOnInit(): void {
 
