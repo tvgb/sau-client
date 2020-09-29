@@ -24,8 +24,8 @@ const routes: Routes = [
 		loadChildren: () => import('./pages/registration/lam/lam.module').then( m => m.LamPageModule)
 	},
   	{
-		path: 'register/oppsummering',
-		loadChildren: () => import('./pages/registration/oppsummering/oppsummering.module').then( m => m.OppsummeringPageModule)
+		path: 'register/summary',
+		loadChildren: () => import('./pages/registration/summary/summary.module').then( m => m.SummaryPageModule)
   }
 
 ];
