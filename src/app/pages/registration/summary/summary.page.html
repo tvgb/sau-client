@@ -22,19 +22,34 @@
         <h2 class="summary-column-heading">FARGE</h2>
         <div class="summary-element">
             <div class="summary-element-detail">
-                <ion-text>Grå/hvit</ion-text>
+                <div>
+                    <ion-text>Grå/hvit</ion-text>
+                    <div style="background-color: white; width: 100%;" class="color-tag">
+                        <div style="background-color: gray; width: 50%;" class="color-tag"></div>
+                    </div>
+                    
+                </div>
                 <ion-text>5</ion-text>
             </div>
             <div class="summary-element-detail" >
-                <ion-text>Svart</ion-text>
+                <div>
+                    <ion-text>Svart</ion-text>
+                    <div style="background-color: black;" class="color-tag"></div>
+                </div>
                 <ion-text>3</ion-text>
             </div>
             <div class="summary-element-detail">
-                <ion-text>Brun</ion-text>
+                <div>
+                    <ion-text>Brun</ion-text>
+                    <div style="background-color: #4D2D08" class="color-tag"></div>
+                </div>
                 <ion-text>1</ion-text>
             </div>
             <div class="summary-element-detail">
                 <ion-text>Hvit, svart hode</ion-text>
+                <div style="background-color: white; width: 100%;" class="color-tag">
+                    <div style="background-color: black; width: 50%;" class="color-tag"></div>
+                </div>
                 <ion-text>6</ion-text>
             </div>
         </div>
@@ -43,19 +58,31 @@
         <h2 class="summary-column-heading">SLIPS</h2>
         <div class="summary-element">
         <div class="summary-element-detail">
-            <ion-text>Blå</ion-text>
+            <div>
+                <ion-text>Blå</ion-text>
+                <div style="background-color: #3076FF" class="color-tag"></div>
+            </div>
             <ion-text>1</ion-text>
         </div>
         <div class="summary-element-detail" >
-            <ion-text>Grønn</ion-text>
+            <div>
+                <ion-text>Grønn</ion-text>
+                <div style="background-color: #289933" class="color-tag"></div>
+            </div>
             <ion-text>5</ion-text>
         </div>
         <div class="summary-element-detail">
-            <ion-text>Gul</ion-text>
+            <div>
+                <ion-text>Gul</ion-text>
+                <div style="background-color: #D1D423" class="color-tag"></div>
+            </div>
             <ion-text>2</ion-text>
         </div>
         <div class="summary-element-detail">
-            <ion-text>Rød</ion-text>
+            <div>
+                <ion-text>Rød</ion-text>
+                <div style="background-color: #B92525" class="color-tag"></div>
+            </div>
             <ion-text>0</ion-text>
         </div>
         <div class="summary-element-detail">
@@ -71,11 +98,11 @@
 </ion-content>
 <ion-footer>
     <ion-row>
-        <ion-col class="ion-no-padding">
-            <ion-button class="ion-no-margin" expand="full" size="large">TILBAKE</ion-button>
+        <ion-col  class="ion-no-padding">
+            <ion-button id="back-button" color="secondary" class="ion-no-margin" expand="full" size="large">TILBAKE</ion-button>
         </ion-col>
         <ion-col class="ion-no-padding">
-            <ion-button class="ion-no-margin" expand="full" size="large">FULLFØR</ion-button>
+            <ion-button color="primary" id="confirm-button" class="ion-no-margin" expand="full" size="large">FULLFØR</ion-button>
         </ion-col>
     </ion-row>
 
