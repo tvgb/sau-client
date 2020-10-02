@@ -13,7 +13,7 @@ import { DecrementCollarColourCount,
 		IncrementSheepTypeCount,
 		IncrementTotalSheepCount } from './sheepInfo.actions';
 import { SheepType } from '../enums/SheepType';
-import { stat } from 'fs';
+
 
 @State<SheepInfoModel>({
 	name: 'sheepInfo',
