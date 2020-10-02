@@ -12,22 +12,17 @@ const routes: Routes = [
 		loadChildren: () => import('./pages/map/map.module').then( m => m.MapPageModule)
 	},
 	{
-		path: 'register/soye',
-		loadChildren: () => import('./pages/registration/soye/soye.module').then( m => m.SoyePageModule)
+		path: 'register/total-sheep-count',
+		loadChildren: () => import('./pages/registration/total-sheep-count/total-sheep-count.module').then( m => m.TotalSheepCountPageModule)
 	},
 	{
-		path: 'register/slips',
-		loadChildren: () => import('./pages/registration/slips/slips.module').then( m => m.SlipsPageModule)
-	},
-	{
-		path: 'register/lam',
-		loadChildren: () => import('./pages/registration/lam/lam.module').then( m => m.LamPageModule)
+		path: 'register/sheep-colour-count',
+		loadChildren: () => import('./pages/registration/sheep-colour-count/sheep-colour-count.module').then( m => m.SheepColourCountPageModule)
 	},
   	{
 		path: 'register/summary',
 		loadChildren: () => import('./pages/registration/summary/summary.module').then( m => m.SummaryPageModule)
-  }
-
+  	}
 ];
 
 @NgModule({
