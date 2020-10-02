@@ -34,6 +34,8 @@ export class MapPage implements OnInit, AfterViewInit {
 		// const endLat = 63.413847;
 		// const endLong = 10.415751;
 
+
+
 		if (this.OFFLINE_MAP) {
 			this.mapService.downloadMapTileArea(startLat, startLong, endLat, endLong);
 		}
