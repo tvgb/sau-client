@@ -12,17 +12,27 @@ const routes: Routes = [
 		loadChildren: () => import('./pages/map/map.module').then( m => m.MapPageModule)
 	},
 	{
-		path: 'register/soye',
-		loadChildren: () => import('./pages/registration/soye/soye.module').then( m => m.SoyePageModule)
+		path: 'register/ewe',
+		loadChildren: () => import('./pages/registration/ewe/ewe.module').then( m => m.EwePageModule)
 	},
 	{
-		path: 'register/slips',
-		loadChildren: () => import('./pages/registration/slips/slips.module').then( m => m.SlipsPageModule)
+		path: 'register/collar',
+		loadChildren: () => import('./pages/registration/collar/collar.module').then( m => m.CollarPageModule)
 	},
 	{
-		path: 'register/lam',
-		loadChildren: () => import('./pages/registration/lam/lam.module').then( m => m.LamPageModule)
+		path: 'register/lamb',
+		loadChildren: () => import('./pages/registration/lamb/lamb.module').then( m => m.LambPageModule)
+	},
+	{
+		path: 'register/total-sheep-count',
+		loadChildren: () => import('./pages/registration/total-sheep-count/total-sheep-count.module').then( m => m.TotalSheepCountPageModule)
+	},
+	{
+		path: 'register/sheep-colour-count',
+		loadChildren: () => import('./pages/registration/sheep-colour-count/sheep-colour-count.module').then( m => m.SheepColourCountPageModule)
 	}
+
+
 ];
 
 @NgModule({

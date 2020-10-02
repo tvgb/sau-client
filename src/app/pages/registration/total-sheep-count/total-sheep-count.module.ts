@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { SlipsPageRoutingModule } from './slips-routing.module';
+import { TotalSheepCountPageRoutingModule } from './total-sheep-count-routing.module';
 
-import { SlipsPage } from './slips.page';
+import { TotalSheepCountPage } from './total-sheep-count.page';
 import { CounterComponent } from '../components/counter/counter.component';
 import { NavigationComponent } from '../components/navigation/navigation.component';
 
@@ -16,8 +16,8 @@ import { NavigationComponent } from '../components/navigation/navigation.compone
 		CommonModule,
 		FormsModule,
 		IonicModule,
-		SlipsPageRoutingModule
+		TotalSheepCountPageRoutingModule
 	],
-	declarations: [SlipsPage, CounterComponent, NavigationComponent]
+	declarations: [TotalSheepCountPage, CounterComponent, NavigationComponent]
 })
-export class SlipsPageModule {}
+export class TotalSheepCountPageModule {}

@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { LamPageRoutingModule } from './lam-routing.module';
+import { LambPageRoutingModule } from './lamb-routing.module';
 
-import { LamPage } from './lam.page';
+import { LambPage } from './lamb.page';
 import { NavigationComponent } from '../components/navigation/navigation.component';
 import { CounterComponent } from '../components/counter/counter.component';
 
@@ -16,8 +16,8 @@ import { CounterComponent } from '../components/counter/counter.component';
 		CommonModule,
 		FormsModule,
 		IonicModule,
-		LamPageRoutingModule
+		LambPageRoutingModule
 	],
-	declarations: [LamPage, CounterComponent, NavigationComponent]
+	declarations: [LambPage, CounterComponent, NavigationComponent]
 })
-export class LamPageModule {}
+export class LambPageModule {}

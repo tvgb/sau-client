@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { SoyePageRoutingModule } from './soye-routing.module';
+import { CollarPageRoutingModule } from './collar-routing.module';
 
-import { SoyePage } from './soye.page';
+import { CollarPage } from './collar.page';
 import { CounterComponent } from '../components/counter/counter.component';
 import { NavigationComponent } from '../components/navigation/navigation.component';
 
@@ -16,8 +16,8 @@ import { NavigationComponent } from '../components/navigation/navigation.compone
 		CommonModule,
 		FormsModule,
 		IonicModule,
-		SoyePageRoutingModule
+		CollarPageRoutingModule
 	],
-	declarations: [SoyePage, CounterComponent, NavigationComponent]
+	declarations: [CollarPage, CounterComponent, NavigationComponent]
 })
-export class SoyePageModule {}
+export class CollarPageModule {}
