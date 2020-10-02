@@ -1,5 +1,6 @@
 import { CollarColour } from '../enums/CollarColour';
 import { SheepColour } from '../enums/SheepColour';
+import { SheepType } from '../enums/SheepType';
 
 export class IncrementTotalSheepCount {
 	static readonly type = '[TotalSheepCount Page] IncrementTotalSheepCount';
@@ -19,20 +20,14 @@ export class DecrementSheepColourCount {
 	constructor(public sheepColour: SheepColour) {}
 }
 
-export class IncrementEweCount {
-	static readonly type = '[SheepTypeCount Page] IncrementEweCount';
+export class IncrementSheepTypeCount {
+	static readonly type = '[SheepTypeCount Page] IncrementSheepTypeCount';
+	constructor(public sheepType: SheepType) {}
 }
 
-export class DecrementEweCount {
-	static readonly type = '[SheepTypeCount Page] DecrementEweCount';
-}
-
-export class IncrementLambCount {
-	static readonly type = '[SheepTypeCount Page] IncrementLambCount';
-}
-
-export class DecrementLambCount {
-	static readonly type = '[SheepTypeCount Page] DecrementLambCount';
+export class DecrementSheepTypeCount {
+	static readonly type = '[SheepTypeCount Page] DecrementSheepTypeCount';
+	constructor(public sheepType: SheepType) {}
 }
 
 export class IncrementCollarColourCount {

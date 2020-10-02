@@ -1,6 +1,7 @@
 {
 	"editor.codeActionsOnSave": {
-		"source.fixAll.tslint": true
+		"source.fixAll.tslint": true,
+		"source.fixAll": true
 	},
 	"javascript.preferences.quoteStyle": "single",
 	"typescript.preferences.quoteStyle": "single",
