@@ -12,18 +12,6 @@ const routes: Routes = [
 		loadChildren: () => import('./pages/map/map.module').then( m => m.MapPageModule)
 	},
 	{
-		path: 'register/ewe',
-		loadChildren: () => import('./pages/registration/ewe/ewe.module').then( m => m.EwePageModule)
-	},
-	{
-		path: 'register/collar',
-		loadChildren: () => import('./pages/registration/collar/collar.module').then( m => m.CollarPageModule)
-	},
-	{
-		path: 'register/lamb',
-		loadChildren: () => import('./pages/registration/lamb/lamb.module').then( m => m.LambPageModule)
-	},
-	{
 		path: 'register/total-sheep-count',
 		loadChildren: () => import('./pages/registration/total-sheep-count/total-sheep-count.module').then( m => m.TotalSheepCountPageModule)
 	},
