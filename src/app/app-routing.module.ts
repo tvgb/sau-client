@@ -18,9 +18,11 @@ const routes: Routes = [
 	{
 		path: 'register/sheep-colour-count',
 		loadChildren: () => import('./pages/registration/sheep-colour-count/sheep-colour-count.module').then( m => m.SheepColourCountPageModule)
-	}
-
-
+	},
+  	{
+		path: 'register/summary',
+		loadChildren: () => import('./pages/registration/summary/summary.module').then( m => m.SummaryPageModule)
+  	}
 ];
 
 @NgModule({
