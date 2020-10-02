@@ -22,7 +22,15 @@ const routes: Routes = [
   	{
 		path: 'register/summary',
 		loadChildren: () => import('./pages/registration/summary/summary.module').then( m => m.SummaryPageModule)
-  	}
+  	},  {
+    path: 'sheep-type-count',
+    loadChildren: () => import('./pages/registration/sheep-type-count/sheep-type-count.module').then( m => m.SheepTypeCountPageModule)
+  },
+  {
+    path: 'collar-colour-count',
+    loadChildren: () => import('./pages/registration/collar-colour-count/collar-colour-count.module').then( m => m.CollarColourCountPageModule)
+  }
+
 ];
 
 @NgModule({
