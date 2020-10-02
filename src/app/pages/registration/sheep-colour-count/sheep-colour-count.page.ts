@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { SheepInfoState } from '../../../shared/store/sheepInfo.state';
-import { DecrementSheepColourCount, DecrementTotalSheepCount, IncrementCollarColourCount, IncrementSheepColourCount, IncrementTotalSheepCount } from '../../../shared/store/sheepInfo.actions';
+import { DecrementSheepColourCount, IncrementSheepColourCount } from '../../../shared/store/sheepInfo.actions';
 import { SheepColour } from 'src/app/shared/enums/SheepColour';
 import { SheepColourCount } from 'src/app/shared/classes/SheepColourCount';
 
@@ -51,7 +51,7 @@ export class SheepColourCountPage implements OnInit {
 	}
 
 	selectedCategoryText(): string {
-		switch(this.categories[this.selectedCategoryIndex]) {
+		switch (this.categories[this.selectedCategoryIndex]) {
 			case(SheepColour.Black):
 				return 'SVART';
 
@@ -62,7 +62,7 @@ export class SheepColourCountPage implements OnInit {
 				return 'BRUN';
 
 			case(SheepColour.WhiteBlackHead):
-				return 'HVIT, SVART HODE'
+				return 'HVIT, SVART HODE';
 		}
 	}
 
