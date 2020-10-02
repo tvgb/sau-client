@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
+import { TotalSheepCount } from 'src/app/shared/classes/TotalSheepCount';
 import { DecrementTotalSheepCount, IncrementTotalSheepCount } from '../../../shared/store/sheepInfo.actions';
 import { SheepInfoState } from '../../../shared/store/sheepInfo.state';
 
@@ -11,7 +12,7 @@ import { SheepInfoState } from '../../../shared/store/sheepInfo.state';
 })
 export class TotalSheepCountPage implements OnInit {
 
-
+	totalSheepCount = 0;
 	nextRoute = '/registration/sheep-colour-count';
 	categories: any[] = [];
 	selectedCategory = 'ANTALL SAU';
@@ -23,14 +24,15 @@ export class TotalSheepCountPage implements OnInit {
 	ngOnInit(): void {
 		this.totalSheepCount$.subscribe(res => {
 			console.log('totalSheepCount:', res);
+			this.totalSheepCount = res;
 		});
 	}
 
 	onIncrement(): void {
-		this.store.dispatch(new IncrementTotalSheepCount());
+		this.store.dispatch(new IncrementTotalSheepCount(this.totalSheepCount));
 	}
 
 	onDecrement(): void {
-		this.store.dispatch(new DecrementTotalSheepCount());
+		this.store.dispatch(new DecrementTotalSheepCount(this.totalSheepCount));
 	}
 }
