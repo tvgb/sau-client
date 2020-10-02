@@ -1,4 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { NavController } from '@ionic/angular';
+import { Select } from '@ngxs/store';
+import { Observable } from 'rxjs';
+import { CollarColourCount } from 'src/app/shared/classes/CollarColourCount';
+import { SheepColourCount } from 'src/app/shared/classes/SheepColourCount';
+import { SheepTypeCount } from 'src/app/shared/classes/SheepTypeCount';
+import { TotalSheepCount } from 'src/app/shared/classes/TotalSheepCount';
+import { CollarColour } from 'src/app/shared/enums/CollarColour';
+import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 
 @Component({
   selector: 'app-summary',
@@ -7,8 +16,34 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SummaryPage implements OnInit {
 
-  constructor() { }
+	sheepColourCount: SheepColourCount;
+	totalSheepCount: TotalSheepCount;
+	collarColour: CollarColourCount;
+	sheepType: SheepTypeCount;
 
-  ngOnInit() {
-  }
+	@Select(SheepInfoState.getSheepColourCount) sheepColourCount$: Observable<SheepColourCount>;
+	@Select(SheepInfoState.getTotalSheepCount) totalSheepCount$: Observable<TotalSheepCount>;
+	@Select(SheepInfoState.getCollarColour) collarColour$: Observable<CollarColourCount>;
+	@Select(SheepInfoState.getSheepTypeCount) sheepTypeCount$: Observable<SheepTypeCount>;
+
+  	constructor(private navController: NavController) { }
+
+	ngOnInit() {
+		this.sheepColourCount$.subscribe(res => {
+			this.sheepColourCount = res;
+		});
+		this.totalSheepCount$.subscribe(res => {
+			this.totalSheepCount = res;
+		});
+		this.collarColour$.subscribe(res => {
+			this.collarColour = res;
+		});
+		this.sheepTypeCount$.subscribe(res => {
+			this.sheepType = res;
+		});
+	}
+
+	navigateBack() {
+		this.navController.back();
+	}
 }

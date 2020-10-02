@@ -13,6 +13,7 @@ import { DecrementCollarColourCount,
 		IncrementSheepTypeCount,
 		IncrementTotalSheepCount } from './sheepInfo.actions';
 import { SheepType } from '../enums/SheepType';
+import { stat } from 'fs';
 
 @State<SheepInfoModel>({
 	name: 'sheepInfo',
@@ -58,6 +59,17 @@ export class SheepInfoState {
 		return {
 			eweCount: state.eweCount,
 			lambCount: state.lambCount
+		};
+	}
+
+	@Selector()
+	static getCollarColour(state: SheepInfoModel) {
+		return {
+			blueCollarCount: state.blueCollarCount,
+			greenCollarCount: state.greenCollarCount,
+			yellowCollarCount: state.yellowCollarCount,
+			redCollarCount: state.redCollarCount,
+			missingCollarCount: state.missingCollarCount
 		};
 	}
 
