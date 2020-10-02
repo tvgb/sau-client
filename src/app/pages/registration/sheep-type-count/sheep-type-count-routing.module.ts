@@ -4,10 +4,10 @@ import { Routes, RouterModule } from '@angular/router';
 import { SheepTypeCountPage } from './sheep-type-count.page';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: SheepTypeCountPage
-  }
+	{
+		path: '',
+		component: SheepTypeCountPage
+	}
 ];
 
 @NgModule({

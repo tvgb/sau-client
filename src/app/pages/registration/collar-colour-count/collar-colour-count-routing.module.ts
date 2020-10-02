@@ -4,10 +4,10 @@ import { Routes, RouterModule } from '@angular/router';
 import { CollarColourCountPage } from './collar-colour-count.page';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: CollarColourCountPage
-  }
+	{
+		path: '',
+		component: CollarColourCountPage
+	}
 ];
 
 @NgModule({
