@@ -12,7 +12,7 @@ import { SheepInfoState } from '../../../shared/store/sheepInfo.state';
 export class TotalSheepCountPage implements OnInit {
 
 
-	nextRoute = '/register/sheep-colour-count'
+	nextRoute = '/registration/sheep-colour-count';
 	categories: any[] = [];
 	selectedCategory = 'ANTALL SAU';
 

@@ -13,7 +13,7 @@ import { SheepColourCount } from 'src/app/shared/classes/SheepColourCount';
 })
 export class SheepColourCountPage implements OnInit {
 
-	nextRoute = '/register/sheep-type-ount';
+	nextRoute = '/registration/sheep-type-count';
 
 	categories: SheepColour[] = [
 		SheepColour.Black,
