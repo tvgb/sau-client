@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngxs/store';
-import { CollarColour } from 'src/app/shared/enums/CollarColour';
-import { DecrementCollarColourCount, IncrementCollarColourCount } from 'src/app/shared/store/sheepInfo.actions';
+import { CollarColour } from '../../../shared/enums/CollarColour';
+import { DecrementCollarColourCount, IncrementCollarColourCount } from '../../../shared/store/sheepInfo.actions';
 
 @Component({
   selector: 'app-collar-colour-count',

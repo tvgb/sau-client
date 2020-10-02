@@ -3,8 +3,8 @@ import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { SheepInfoState } from '../../../shared/store/sheepInfo.state';
 import { DecrementSheepColourCount, IncrementSheepColourCount } from '../../../shared/store/sheepInfo.actions';
-import { SheepColour } from 'src/app/shared/enums/SheepColour';
-import { SheepColourCount } from 'src/app/shared/classes/SheepColourCount';
+import { SheepColour } from '../../../shared/enums/SheepColour';
+import { SheepColourCount } from '../../../shared/classes/SheepColourCount';
 
 @Component({
   selector: 'app-sheep-colour-count',
