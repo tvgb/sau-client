@@ -53,6 +53,14 @@ export class SheepInfoState {
 		};
 	}
 
+	@Selector()
+	static getSheepTypeCount(state: SheepInfoModel) {
+		return {
+			eweCount: state.eweCount,
+			lambCount: state.lambCount
+		};
+	}
+
 	@Action(IncrementTotalSheepCount)
 	incrementTotalSheepCount(ctx: StateContext<SheepInfoModel>) {
 		const state = ctx.getState();

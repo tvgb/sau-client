@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Store } from '@ngxs/store';
-import { SheepType } from 'src/app/shared/enums/SheepType';
-import { DecrementSheepTypeCount, IncrementSheepTypeCount } from 'src/app/shared/store/sheepInfo.actions';
+import { Select, Store } from '@ngxs/store';
+import { SheepType } from '../../../../app/shared/enums/SheepType';
+import { DecrementSheepTypeCount, IncrementSheepTypeCount } from '../../../shared/store/sheepInfo.actions';
+import { SheepInfoState } from '../../../../app/shared/store/sheepInfo.state';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-sheep-type-count',
@@ -17,9 +19,14 @@ export class SheepTypeCountPage implements OnInit {
 	selectedCategoryIndex = 0;
 	nextRoute = '/registration/collar-colour-count';
 
+	@Select(SheepInfoState.getSheepTypeCount) sheepTypeCount$: Observable<object>;
+
 	constructor(private store: Store) { }
 
 	ngOnInit() {
+		this.sheepTypeCount$.subscribe(res => {
+			console.log('sheepTypeCount:', res);
+		});
 	}
 
 	onIncrement(): void {

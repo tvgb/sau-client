@@ -13,16 +13,14 @@ import { SheepColourCount } from 'src/app/shared/classes/SheepColourCount';
 })
 export class SheepColourCountPage implements OnInit {
 
-	nextRoute = '/registration/sheep-type-count';
-
 	categories: SheepColour[] = [
 		SheepColour.Black,
 		SheepColour.GreyWhite,
 		SheepColour.Brown,
 		SheepColour.WhiteBlackHead
 	];
-
 	selectedCategoryIndex = 0;
+	nextRoute = '/registration/sheep-type-count';
 
 	@Select(SheepInfoState.getSheepColourCount) sheepColourCount$: Observable<SheepColourCount>;
 
