@@ -12,21 +12,25 @@ const routes: Routes = [
 		loadChildren: () => import('./pages/map/map.module').then( m => m.MapPageModule)
 	},
 	{
-		path: 'register/soye',
-		loadChildren: () => import('./pages/registration/soye/soye.module').then( m => m.SoyePageModule)
+		path: 'registration/total-sheep-count',
+		loadChildren: () => import('./pages/registration/total-sheep-count/total-sheep-count.module').then( m => m.TotalSheepCountPageModule)
 	},
 	{
-		path: 'register/slips',
-		loadChildren: () => import('./pages/registration/slips/slips.module').then( m => m.SlipsPageModule)
-	},
-	{
-		path: 'register/lam',
-		loadChildren: () => import('./pages/registration/lam/lam.module').then( m => m.LamPageModule)
+		path: 'registration/sheep-colour-count',
+		loadChildren: () => import('./pages/registration/sheep-colour-count/sheep-colour-count.module').then( m => m.SheepColourCountPageModule)
 	},
   	{
-		path: 'register/summary',
+		path: 'registration/summary',
 		loadChildren: () => import('./pages/registration/summary/summary.module').then( m => m.SummaryPageModule)
-  }
+  	},
+	{
+		path: 'registration/sheep-type-count',
+		loadChildren: () => import('./pages/registration/sheep-type-count/sheep-type-count.module').then( m => m.SheepTypeCountPageModule)
+	},
+	{
+		path: 'registration/collar-colour-count',
+		loadChildren: () => import('./pages/registration/collar-colour-count/collar-colour-count.module').then( m => m.CollarColourCountPageModule)
+	}
 
 ];
 

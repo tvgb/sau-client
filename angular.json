@@ -19,6 +19,10 @@
 			"skipTests": true,
 			"lintfix": true
 		  },
+		  "@schematics/angular:page": {
+			"skipTests": true,
+			"lintfix": true
+		  },
 		  "@schematics/angular:directive": {
 			"skipTests": true,
 			"lintfix": true
@@ -205,7 +209,7 @@
   },
   "cli": {
     "defaultCollection": "@ionic/angular-toolkit",
-    "analytics": false
+	"analytics": false
   },
   "schematics": {
     "@ionic/angular-toolkit:component": {

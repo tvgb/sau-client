@@ -25,7 +25,7 @@ export class MapPage implements OnInit, AfterViewInit {
 		// This covers Gløshaugen +
 		const startLat = 63.423846;
 		const startLong =  10.387870;
-		const endLat = 6363.412948;
+		const endLat = 63.412948;
 		const endLong = 10.417666;
 
 		// This covers Gløshaugen

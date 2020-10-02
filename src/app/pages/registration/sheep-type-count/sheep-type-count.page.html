@@ -1,0 +1,16 @@
+<ion-content class="sheep-type-count-content">
+	<div class="sheep-type-count-container">
+		<h1 class="sheep-type-count-heading"> TYPE </h1>
+		<app-counter
+			(increment)="onIncrement()"
+			(decrement)="onDecrement()"
+			(categoryRight)="onCategoryRight()"
+			(categoryLeft)="onCategoryLeft()"
+			[categories]="categories"
+			[selectedCategory]="selectedCategoryText()"
+			class="counter"></app-counter>
+		<app-navigation
+			[nextRoute]="nextRoute"
+			class="navigation"></app-navigation>
+	</div>
+</ion-content>

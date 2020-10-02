@@ -9,8 +9,10 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
+import { NgxsModule } from '@ngxs/store';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { SheepInfoState } from './shared/store/sheepInfo.state';
 
 @NgModule({
 	declarations: [AppComponent],
@@ -19,7 +21,10 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 		BrowserModule,
 		IonicModule.forRoot(),
 		AppRoutingModule,
-		HttpClientModule
+		HttpClientModule,
+		NgxsModule.forRoot([
+			SheepInfoState
+		], { developmentMode: true })
 	],
 	providers: [
 		StatusBar,
