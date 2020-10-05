@@ -4,10 +4,9 @@ import { NavigationComponent } from './components/navigation/navigation.componen
 import { CounterComponent } from './components/counter/counter.component';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { SwipeGesturesDirective } from './directives/swipe-gestures.directive';
 
 @NgModule({
-	declarations: [NavigationComponent, CounterComponent, SwipeGesturesDirective],
+	declarations: [NavigationComponent, CounterComponent],
 	imports: [
 		CommonModule,
 		RouterModule,
@@ -15,8 +14,7 @@ import { SwipeGesturesDirective } from './directives/swipe-gestures.directive';
 	],
 	exports: [
 		NavigationComponent,
-		CounterComponent,
-		SwipeGesturesDirective
+		CounterComponent
 	]
 })
 export class RegistrationModule { }
