@@ -1,4 +1,4 @@
-export class SheepColourCount {
+export class SheepColourCounts {
 
 	blackSheepCount: number;
 	greyWhiteSheepCount: number;

@@ -1,4 +1,4 @@
-import { Action, Select, Selector, State, StateContext } from '@ngxs/store';
+import { Action, createSelector, Select, Selector, State, StateContext } from '@ngxs/store';
 import { Injectable } from '@angular/core';
 import { SheepInfoModel } from '../interfaces/SheepInfoModel';
 import { throwError } from 'rxjs';
@@ -13,6 +13,7 @@ import { DecrementCollarColourCount,
 		IncrementSheepTypeCount,
 		IncrementTotalSheepCount } from './sheepInfo.actions';
 import { SheepType } from '../enums/SheepType';
+import { sample } from 'rxjs/operators';
 
 @State<SheepInfoModel>({
 	name: 'sheepInfo',
@@ -44,7 +45,7 @@ export class SheepInfoState {
 	}
 
 	@Selector()
-	static getSheepColourCount(state: SheepInfoModel) {
+	static getSheepColourCounts(state: SheepInfoModel) {
 		return {
 			blackSheepCount: state.blackSheepCount,
 			greyWhiteSheepCount: state.greyWhiteSheepCount,
@@ -59,6 +60,26 @@ export class SheepInfoState {
 			eweCount: state.eweCount,
 			lambCount: state.lambCount
 		};
+	}
+
+	@Selector()
+	static getBlackSheepColourCount(state: SheepInfoModel) {
+		return state.blackSheepCount;
+	}
+
+	@Selector()
+	static getGreyWhiteSheepColourCount(state: SheepInfoModel) {
+		return state.greyWhiteSheepCount;
+	}
+
+	@Selector()
+	static getBrownSheepColourCount(state: SheepInfoModel) {
+		return state.brownSheepCount;
+	}
+
+	@Selector()
+	static getWhiteBlackHeadSheepColourCount(state: SheepInfoModel) {
+		return state.whiteBlackHeadSheepCount;
 	}
 
 	@Action(IncrementTotalSheepCount)
