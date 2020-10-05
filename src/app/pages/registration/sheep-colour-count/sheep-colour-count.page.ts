@@ -5,6 +5,7 @@ import { SheepInfoState } from '../../../shared/store/sheepInfo.state';
 import { DecrementSheepColourCount, IncrementSheepColourCount } from '../../../shared/store/sheepInfo.actions';
 import { SheepColour } from '../../../shared/enums/SheepColour';
 import { SheepColourCount } from '../../../shared/classes/SheepColourCount';
+import { TextToSpeechService } from '../services/text-to-speech.service';
 
 @Component({
   selector: 'app-sheep-colour-count',
@@ -21,19 +22,22 @@ export class SheepColourCountPage implements OnInit {
 	];
 	selectedCategoryIndex = 0;
 	nextRoute = '/registration/sheep-type-count';
+	sheepColourCount;
 
 	@Select(SheepInfoState.getSheepColourCount) sheepColourCount$: Observable<SheepColourCount>;
 
-	constructor(private store: Store) { }
+	constructor(private store: Store, private tts: TextToSpeechService) { }
 
 	ngOnInit() {
 		this.sheepColourCount$.subscribe(res => {
-			console.log('sheepColourCount:', res);
+			console.log('sheepColourCount:', JSON.stringify(res));
+			this.sheepColourCount = res;
 		});
 	}
 
   	onIncrement(): void {
 		this.store.dispatch(new IncrementSheepColourCount(this.categories[this.selectedCategoryIndex]));
+		this.tts.speakColor(this.categories[this.selectedCategoryIndex], this.selectedCategoryText());
 	}
 
 	onDecrement(): void {

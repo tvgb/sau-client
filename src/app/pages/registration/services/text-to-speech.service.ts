@@ -11,10 +11,17 @@ export class TextToSpeechService {
 
   	constructor(private tts: TextToSpeech) { }
 
-  	speak(speakText) {
-	this.tts.speak({
-		text: speakText,
-		locale: this.LANGUAGE,
-	});
-  }
+  	speakTotalCount(totalCount) {
+		this.tts.speak({
+			text: totalCount + 'sau',
+			locale: this.LANGUAGE,
+		});
+	  }
+
+  	speakColor(colorCount, type) {
+		  this.tts.speak({
+			  text: colorCount + type + 'sau',
+			  locale: this.LANGUAGE,
+		  });
+	  }
 }

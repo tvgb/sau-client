@@ -29,11 +29,12 @@ export class TotalSheepCountPage implements OnInit {
 	}
 
 	onIncrement(): void {
-		this.ttsService.speak('Kimia er kjempekul');
 		this.store.dispatch(new IncrementTotalSheepCount());
+		this.ttsService.speakTotalCount(this.totalSheepCount);
 	}
 
 	onDecrement(): void {
 		this.store.dispatch(new DecrementTotalSheepCount());
+		this.ttsService.speakTotalCount(this.totalSheepCount);
 	}
 }
