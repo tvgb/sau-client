@@ -30,14 +30,18 @@ export class SheepColourCountPage implements OnInit {
 
 	ngOnInit() {
 		this.sheepColourCount$.subscribe(res => {
-			console.log('sheepColourCount:', JSON.stringify(res));
-			this.sheepColourCount = res;
+			console.log('sheepColourCount:', res);
+
 		});
 	}
 
   	onIncrement(): void {
-		this.store.dispatch(new IncrementSheepColourCount(this.categories[this.selectedCategoryIndex]));
-		this.tts.speakColor(this.categories[this.selectedCategoryIndex], this.selectedCategoryText());
+		const num = this.store.dispatch(new IncrementSheepColourCount(this.categories[this.selectedCategoryIndex]));
+		num.subscribe(res => {
+			console.log(res);
+		});
+
+		this.tts.speakColor(num, this.selectedCategoryText());
 	}
 
 	onDecrement(): void {

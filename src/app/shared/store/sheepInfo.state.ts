@@ -15,6 +15,7 @@ import { DecrementCollarColourCount,
 import { SheepType } from '../enums/SheepType';
 
 
+
 @State<SheepInfoModel>({
 	name: 'sheepInfo',
 	defaults: {
