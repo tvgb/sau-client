@@ -7,17 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { CollarColourCountPageRoutingModule } from './collar-colour-count-routing.module';
 
 import { CollarColourCountPage } from './collar-colour-count.page';
-import { NavigationComponent } from '../components/navigation/navigation.component';
-import { CounterComponent } from '../components/counter/counter.component';
+import { RegistrationModule } from '../registration.module';
 
 @NgModule({
-	entryComponents: [NavigationComponent, CounterComponent],
 	imports: [
+		RegistrationModule,
 		CommonModule,
 		FormsModule,
 		IonicModule,
 		CollarColourCountPageRoutingModule
 	],
-	declarations: [CollarColourCountPage, NavigationComponent, CounterComponent]
+	declarations: [CollarColourCountPage]
 })
 export class CollarColourCountPageModule {}

@@ -11,7 +11,7 @@ import { GpsService } from './services/gps.service';
 export class MapPage implements OnInit, AfterViewInit {
 
 	private map;
-	private readonly OFFLINE_MAP = true;
+	private readonly OFFLINE_MAP = false;
 	constructor(private mapService: MapService, private gpsService: GpsService) { }
 
 	ngOnInit(): void {

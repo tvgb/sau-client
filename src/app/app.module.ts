@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -14,10 +14,10 @@ import { NgxsModule } from '@ngxs/store';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { SheepInfoState } from './shared/store/sheepInfo.state';
 import {  TextToSpeech } from '@ionic-native/text-to-speech/ngx';
+import { IonicGestureConfig } from './shared/classes/hammer-config';
 
 @NgModule({
 	declarations: [AppComponent],
-	entryComponents: [],
 	imports: [
 		BrowserModule,
 		IonicModule.forRoot(),
@@ -25,7 +25,8 @@ import {  TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 		HttpClientModule,
 		NgxsModule.forRoot([
 			SheepInfoState
-		], { developmentMode: true })
+		], { developmentMode: true }),
+		HammerModule
 	],
 	providers: [
 		StatusBar,
@@ -33,6 +34,8 @@ import {  TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 		Geolocation,
 		TextToSpeech,
 		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+		{ provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig }
 	],
 	bootstrap: [AppComponent]
 })
