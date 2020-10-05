@@ -5,7 +5,7 @@
 :root {
 	// Font familiy for the entire project
   	--ion-font-family: 'Montserrat';	
-
+    --ion-text-color: #ffffff;
     --ion-color-primary: #7BB662;
     --ion-color-primary-rgb: 123,182,98;
     --ion-color-primary-contrast: #ffffff;
@@ -77,7 +77,7 @@
    */
 
   body {
-    --ion-text-color: #ffffff; 
+    --ion-text-color: #ffffff;
     --ion-color-primary: #7BB662;
     --ion-color-primary-rgb: 123,182,98;
     --ion-color-primary-contrast: #ffffff;
@@ -191,7 +191,6 @@
     --ion-background-color: #1C262F;
     --ion-background-color-rgb: 18,18,18;
 
-    --ion-text-color: #ffffff;
     --ion-text-color-rgb: 255,255,255;
 
     --ion-color-step-50: #1e1e1e;
@@ -222,4 +221,5 @@
 
     --ion-card-background: #1e1e1e;
   }
+
 }
