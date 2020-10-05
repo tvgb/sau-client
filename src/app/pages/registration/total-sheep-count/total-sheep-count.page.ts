@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { DecrementTotalSheepCount, IncrementTotalSheepCount } from '../../../shared/store/sheepInfo.actions';
 import { SheepInfoState } from '../../../shared/store/sheepInfo.state';
+import { TextToSpeechService } from '../services/text-to-speech.service';
 
 @Component({
 	selector: 'app-total-sheep-count',
@@ -19,7 +19,7 @@ export class TotalSheepCountPage implements OnInit {
 
 	@Select(SheepInfoState.getTotalSheepCount) totalSheepCount$: Observable<number>;
 
-	constructor(private store: Store, private tts: TextToSpeech) { }
+	constructor(private store: Store, private ttsService: TextToSpeechService) { }
 
 	ngOnInit(): void {
 		this.totalSheepCount$.subscribe(res => {
@@ -29,10 +29,7 @@ export class TotalSheepCountPage implements OnInit {
 	}
 
 	onIncrement(): void {
-		this.tts.speak({
-			text: 'Hei jeg tester tale på mobil',
-			locale: 'nb-NO',
-		});
+		this.ttsService.speak('Kimia er kjempekul');
 		this.store.dispatch(new IncrementTotalSheepCount());
 	}
 
