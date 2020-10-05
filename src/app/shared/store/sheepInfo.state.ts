@@ -15,6 +15,8 @@ import { DecrementCollarColourCount,
 import { SheepType } from '../enums/SheepType';
 import { sample } from 'rxjs/operators';
 
+
+
 @State<SheepInfoModel>({
 	name: 'sheepInfo',
 	defaults: {
@@ -63,23 +65,14 @@ export class SheepInfoState {
 	}
 
 	@Selector()
-	static getBlackSheepColourCount(state: SheepInfoModel) {
-		return state.blackSheepCount;
-	}
-
-	@Selector()
-	static getGreyWhiteSheepColourCount(state: SheepInfoModel) {
-		return state.greyWhiteSheepCount;
-	}
-
-	@Selector()
-	static getBrownSheepColourCount(state: SheepInfoModel) {
-		return state.brownSheepCount;
-	}
-
-	@Selector()
-	static getWhiteBlackHeadSheepColourCount(state: SheepInfoModel) {
-		return state.whiteBlackHeadSheepCount;
+	static getCollarColour(state: SheepInfoModel) {
+		return {
+			blueCollarCount: state.blueCollarCount,
+			greenCollarCount: state.greenCollarCount,
+			yellowCollarCount: state.yellowCollarCount,
+			redCollarCount: state.redCollarCount,
+			missingCollarCount: state.missingCollarCount
+		};
 	}
 
 	@Action(IncrementTotalSheepCount)
