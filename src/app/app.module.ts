@@ -13,6 +13,7 @@ import { NgxsModule } from '@ngxs/store';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { SheepInfoState } from './shared/store/sheepInfo.state';
+import {  TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 
 @NgModule({
 	declarations: [AppComponent],
@@ -30,6 +31,7 @@ import { SheepInfoState } from './shared/store/sheepInfo.state';
 		StatusBar,
 		SplashScreen,
 		Geolocation,
+		TextToSpeech,
 		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
 	],
 	bootstrap: [AppComponent]
