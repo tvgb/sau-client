@@ -1,28 +1,28 @@
 <div class="counter-container"> 
-	<div class="plus" (click)="increment.next()">
+	<div class="plus" (click)="onSwipeUp($event)">
 		<ion-icon size="large" name="add-outline"></ion-icon>
 	</div>
 	<div
 		*ngIf="categories.length > 0"
-		(click)="categoryLeft.next()"
+		(click)="onSwipeLeft($event)"
 		class="left">
 		<ion-icon size="large" name="chevron-back-circle-outline"></ion-icon>
 	</div>
 	<div
-		(swipeleft)="categoryLeft.emit($event)"
-		(swiperight)="categoryRight.emit($event)"
-		(swipeup)="increment.emit($event)"
-		(swipedown)="decrement.emit($event)" 
+		(swipeleft)="onSwipeLeft($event)"
+		(swiperight)="onSwipeRight($event)"
+		(swipeup)="onSwipeUp($event)"
+		(swipedown)="onSwipeDown($event)" 
 		class="middle">
 		{{ selectedCategory }}
 	</div>
 	<div
 		*ngIf="categories.length > 0"
-		(click)="categoryRight.next()"
+		(click)="onSwipeRight($event)"
 		class="right">
 		<ion-icon size="large" name="chevron-forward-circle-outline"></ion-icon>	
 	</div>
-	<div class="minus" (click)="decrement.next()">
+	<div class="minus" (click)="onSwipeDown($event)">
 		<ion-icon size="large" name="remove-outline"></ion-icon>
 	</div>
 </div>
