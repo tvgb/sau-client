@@ -7,17 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { SheepColourCountPageRoutingModule } from './sheep-colour-count-routing.module';
 
 import { SheepColourCountPage } from './sheep-colour-count.page';
-import { CounterComponent } from '../components/counter/counter.component';
-import { NavigationComponent } from '../components/navigation/navigation.component';
+import { RegistrationModule } from '../registration.module';
 
 @NgModule({
-	entryComponents: [CounterComponent, NavigationComponent],
 	imports: [
+		RegistrationModule,
 		CommonModule,
 		FormsModule,
 		IonicModule,
 		SheepColourCountPageRoutingModule
 	],
-	declarations: [SheepColourCountPage, CounterComponent, NavigationComponent]
+	declarations: [SheepColourCountPage]
 })
 export class SheepColourCountPageModule {}

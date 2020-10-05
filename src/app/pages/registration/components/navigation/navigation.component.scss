@@ -5,7 +5,7 @@
 	grid-template-rows: 65px 65px;
 }
 
-.mode {
+.complete {
 	grid-column: 1 / 2;
 	grid-row: 1 / 2;
 
@@ -14,6 +14,13 @@
 	align-items: center;
 
 	border-top: 1px solid #4F4F4F;
+}
+
+.button {
+	height: 100%;
+	width: 100%;
+	--box-shadow: 0;
+	--color: white;
 }
 
 .cancel {
@@ -26,6 +33,10 @@
 
 	color: #A7A7A7;
 	border-top: 1px solid #4F4F4F;
+}
+
+.next-button {
+	font-size: x-large;
 }
 
 .next {
