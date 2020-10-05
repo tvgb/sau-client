@@ -2,16 +2,21 @@
 	<div class="plus" (click)="increment.next()">
 		<ion-icon size="large" name="add-outline"></ion-icon>
 	</div>
-	<div 
+	<div
 		*ngIf="categories.length > 0"
 		(click)="categoryLeft.next()"
 		class="left">
 		<ion-icon size="large" name="chevron-back-circle-outline"></ion-icon>
 	</div>
-	<div class="middle">
+	<div
+		(swipeleft)="categoryLeft.emit($event)"
+		(swiperight)="categoryRight.emit($event)"
+		(swipeup)="increment.emit($event)"
+		(swipedown)="decrement.emit($event)" 
+		class="middle">
 		{{ selectedCategory }}
 	</div>
-	<div 
+	<div
 		*ngIf="categories.length > 0"
 		(click)="categoryRight.next()"
 		class="right">

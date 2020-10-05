@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -13,10 +13,10 @@ import { NgxsModule } from '@ngxs/store';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { SheepInfoState } from './shared/store/sheepInfo.state';
+import { IonicGestureConfig } from './shared/classes/hammer-config';
 
 @NgModule({
 	declarations: [AppComponent],
-	entryComponents: [],
 	imports: [
 		BrowserModule,
 		IonicModule.forRoot(),
@@ -24,13 +24,15 @@ import { SheepInfoState } from './shared/store/sheepInfo.state';
 		HttpClientModule,
 		NgxsModule.forRoot([
 			SheepInfoState
-		], { developmentMode: true })
+		], { developmentMode: true }),
+		HammerModule
 	],
 	providers: [
 		StatusBar,
 		SplashScreen,
 		Geolocation,
-		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+		{ provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig }
 	],
 	bootstrap: [AppComponent]
 })

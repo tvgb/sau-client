@@ -8,6 +8,7 @@ import { Component, Input, OnInit } from '@angular/core';
 export class NavigationComponent implements OnInit {
 
 	@Input() nextRoute: string;
+	completeRoute = '/registration/summary';
 
 	constructor() { }
 
