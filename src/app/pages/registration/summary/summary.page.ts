@@ -5,7 +5,6 @@ import { Observable } from 'rxjs';
 import { CollarColourCount } from 'src/app/shared/classes/CollarColourCount';
 import { SheepColourCount } from 'src/app/shared/classes/SheepColourCount';
 import { SheepTypeCount } from 'src/app/shared/classes/SheepTypeCount';
-import { TotalSheepCount } from 'src/app/shared/classes/TotalSheepCount';
 import { CollarColour } from 'src/app/shared/enums/CollarColour';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 
@@ -17,12 +16,12 @@ import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 export class SummaryPage implements OnInit {
 
 	sheepColourCount: SheepColourCount;
-	totalSheepCount: TotalSheepCount;
+	totalSheepCount: number;
 	collarColour: CollarColourCount;
 	sheepType: SheepTypeCount;
 
 	@Select(SheepInfoState.getSheepColourCount) sheepColourCount$: Observable<SheepColourCount>;
-	@Select(SheepInfoState.getTotalSheepCount) totalSheepCount$: Observable<TotalSheepCount>;
+	@Select(SheepInfoState.getTotalSheepCount) totalSheepCount$: Observable<number>;
 	@Select(SheepInfoState.getCollarColour) collarColour$: Observable<CollarColourCount>;
 	@Select(SheepInfoState.getSheepTypeCount) sheepTypeCount$: Observable<SheepTypeCount>;
 

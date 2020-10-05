@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
-import { TotalSheepCount } from 'src/app/shared/classes/TotalSheepCount';
 import { DecrementTotalSheepCount, IncrementTotalSheepCount } from '../../../shared/store/sheepInfo.actions';
 import { SheepInfoState } from '../../../shared/store/sheepInfo.state';
 
@@ -29,10 +28,10 @@ export class TotalSheepCountPage implements OnInit {
 	}
 
 	onIncrement(): void {
-		this.store.dispatch(new IncrementTotalSheepCount(this.totalSheepCount));
+		this.store.dispatch(new IncrementTotalSheepCount());
 	}
 
 	onDecrement(): void {
-		this.store.dispatch(new DecrementTotalSheepCount(this.totalSheepCount));
+		this.store.dispatch(new DecrementTotalSheepCount());
 	}
 }

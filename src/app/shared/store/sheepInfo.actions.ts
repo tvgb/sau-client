@@ -1,16 +1,13 @@
-import { TotalSheepCount } from '../classes/TotalSheepCount';
 import { CollarColour } from '../enums/CollarColour';
 import { SheepColour } from '../enums/SheepColour';
 import { SheepType } from '../enums/SheepType';
 
 export class IncrementTotalSheepCount {
 	static readonly type = '[TotalSheepCount Page] IncrementTotalSheepCount';
-	constructor(public totalSheepCount: number) {}
 }
 
 export class DecrementTotalSheepCount {
 	static readonly type = '[TotalSheepCount Page] DecrementTotalSheepCount';
-	constructor(public totalSheepCount: number) {}
 }
 
 export class IncrementSheepColourCount {
