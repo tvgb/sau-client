@@ -15,6 +15,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { SheepInfoState } from './shared/store/sheepInfo.state';
 import {  TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 import { IonicGestureConfig } from './shared/classes/hammer-config';
+import { Vibration } from '@ionic-native/vibration/ngx';
 
 @NgModule({
 	declarations: [AppComponent],
@@ -33,9 +34,9 @@ import { IonicGestureConfig } from './shared/classes/hammer-config';
 		SplashScreen,
 		Geolocation,
 		TextToSpeech,
-		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
 		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-		{ provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig }
+		{ provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig },
+		Vibration
 	],
 	bootstrap: [AppComponent]
 })

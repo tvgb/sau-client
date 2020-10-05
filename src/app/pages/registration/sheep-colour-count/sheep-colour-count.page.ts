@@ -36,12 +36,8 @@ export class SheepColourCountPage implements OnInit {
 	}
 
   	onIncrement(): void {
-		const num = this.store.dispatch(new IncrementSheepColourCount(this.categories[this.selectedCategoryIndex]));
-		num.subscribe(res => {
-			console.log(res);
-		});
-
-		this.tts.speakColor(num, this.selectedCategoryText());
+		this.store.dispatch(new IncrementSheepColourCount(this.categories[this.selectedCategoryIndex]));
+		// this.tts.speakColor(, this.selectedCategoryText());
 	}
 
 	onDecrement(): void {
