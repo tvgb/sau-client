@@ -1,18 +1,26 @@
+import { CollarColourCountPageRoutingModule } from 'src/app/pages/registration/collar-colour-count/collar-colour-count-routing.module';
+import { CollarColourInfo } from '../classes/CollarColourInfo';
+import { SheepColourInfo } from '../classes/SheepColourInfo';
+import { SheepInfo } from '../classes/SheepInfo';
+import { SheepTypeInfo } from '../classes/SheepTypeInfo';
+import { SheepColour } from '../enums/SheepColour';
+import { SheepType } from '../enums/SheepType';
+
 export interface SheepInfoModel {
 
-	totalSheepCount: number,
+	totalSheep: SheepInfo;
 
-	blackSheepCount: number,
-	greyWhiteSheepCount: number,
-	brownSheepCount: number,
-	whiteBlackHeadSheepCount: number,
+	blackSheep: SheepColourInfo;
+	greyWhiteSheep: SheepColourInfo;
+	brownSheep: SheepColourInfo;
+	whiteBlackHeadSheep: SheepColourInfo;
 
-	lambCount: number,
-	eweCount: number,
+	lamb: SheepTypeInfo;
+	ewe: SheepTypeInfo;
 
-	blueCollarCount: number,
-	greenCollarCount: number,
-	yellowCollarCount: number,
-	redCollarCount: number,
-	missingCollarCount: number
+	blueCollar: CollarColourInfo;
+	greenCollar: CollarColourInfo;
+	yellowCollar: CollarColourInfo;
+	redCollar: CollarColourInfo;
+	missingCollar: CollarColourInfo;
 }
