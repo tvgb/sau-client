@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { DecrementTotalSheepCount, IncrementTotalSheepCount } from '../../../shared/store/sheepInfo.actions';
 import { SheepInfoState } from '../../../shared/store/sheepInfo.state';
 import { TextToSpeechService } from '../services/text-to-speech.service';
@@ -23,7 +24,7 @@ export class TotalSheepCountPage implements OnInit {
 
 	ngOnInit(): void {
 		this.totalSheepCount$.subscribe(res => {
-			console.log('totalSheepCount:', res);
+			// console.log('totalSheepCount:', res);
 			this.totalSheepCount = res;
 		});
 	}

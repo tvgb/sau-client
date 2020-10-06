@@ -6,6 +6,7 @@ import { DecrementSheepColourCount, IncrementSheepColourCount } from '../../../s
 import { SheepColour } from '../../../shared/enums/SheepColour';
 import { SheepColourCounts } from '../../../shared/classes/SheepColourCounts';
 import { TextToSpeechService } from '../services/text-to-speech.service';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sheep-colour-count',
@@ -36,8 +37,11 @@ export class SheepColourCountPage implements OnInit {
 	}
 
   	onIncrement(): void {
-		this.store.dispatch(new IncrementSheepColourCount(this.categories[this.selectedCategoryIndex]));
-		console.log(this.yo());
+
+		this.store.dispatch(new IncrementSheepColourCount(this.categories[this.selectedCategoryIndex])).subscribe(res => {
+			console.log(res);
+		});
+		// console.log(this.yo());
 	}
 
 	onDecrement(): void {
