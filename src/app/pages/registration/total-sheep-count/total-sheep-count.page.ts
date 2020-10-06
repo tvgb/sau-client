@@ -19,9 +19,10 @@ export class TotalSheepCountPage implements OnInit {
 
 	@Select(SheepInfoState.getTotalSheepCount) totalSheepCount$: Observable<number>;
 
-	constructor(private store: Store, private ttsService: TextToSpeechService) { }
+	constructor(private store: Store, private tts: TextToSpeechService) { }
 
 	ngOnInit(): void {
+		this.tts.speakRegistration(' antall sau');
 		this.totalSheepCount$.subscribe(res => {
 			console.log('totalSheepCount:', res);
 			this.totalSheepCount = res;
@@ -30,11 +31,12 @@ export class TotalSheepCountPage implements OnInit {
 
 	onIncrement(): void {
 		this.store.dispatch(new IncrementTotalSheepCount());
-		this.ttsService.speakTotalCount(this.totalSheepCount);
+		this.tts.speakTotalCount(this.totalSheepCount);
 	}
 
 	onDecrement(): void {
 		this.store.dispatch(new DecrementTotalSheepCount());
-		this.ttsService.speakTotalCount(this.totalSheepCount);
+		this.tts.speakTotalCount(this.totalSheepCount);
 	}
+
 }
