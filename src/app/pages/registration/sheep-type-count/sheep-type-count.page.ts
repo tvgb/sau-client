@@ -17,7 +17,7 @@ export class SheepTypeCountPage implements OnInit {
 		SheepType.Lamb
 	];
 	selectedCategoryIndex = 0;
-	nextRoute = '/registration/collar-colour-count';
+	nextRouteUri = '/registration/collar-colour-count';
 
 	@Select(SheepInfoState.getSheepTypeCount) sheepTypeCount$: Observable<object>;
 

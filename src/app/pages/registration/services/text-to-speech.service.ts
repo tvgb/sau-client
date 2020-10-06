@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 
 @Injectable({
-  providedIn: 'root'
+  	providedIn: 'root'
 })
 
 export class TextToSpeechService {
@@ -10,6 +10,13 @@ export class TextToSpeechService {
 	private readonly LANGUAGE = 'nb-NO';
 
   	constructor(private tts: TextToSpeech) { }
+
+	speakNextRoute(route: string): void {
+		this.tts.speak({
+			text: route,
+			locale: this.LANGUAGE
+		});
+	}
 
   	speakTotalCount(totalCount) {
 		this.tts.speak({
