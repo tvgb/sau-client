@@ -32,7 +32,6 @@ export class SheepColourCountPage implements OnInit {
 	constructor(private store: Store, private tts: TextToSpeechService) { }
 
 	ngOnInit() {
-		this.tts.speakRegistration(' farge');
 		this.sheepColourCounts$.subscribe(res => {
 			this.sheepColourCounts = res;
 		});

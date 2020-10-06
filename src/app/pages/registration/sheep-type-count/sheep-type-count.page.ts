@@ -27,7 +27,6 @@ export class SheepTypeCountPage implements OnInit {
 	constructor(private store: Store, private tts: TextToSpeechService) { }
 
 	ngOnInit() {
-		this.tts.speakRegistration(' type');
 		this.sheepTypeCount$.subscribe(res => {
 			console.log('sheepTypeCount:', res);
 			this.sheepTypeCount = res;

@@ -9,8 +9,8 @@ import { UpdateCurrentPage, UpdatePrevPage } from './appInfo.actions';
 @State<AppInfoModel>({
 	name: 'appInfo',
 	defaults: {
-		currentPage: 0,
-		prevPage: 0,
+		currentPage: Page.MapPage,
+		prevPage: Page.MapPage,
 	}
 })
 

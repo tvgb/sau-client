@@ -29,7 +29,6 @@ export class CollarColourCountPage implements OnInit {
 	constructor(private store: Store, private tts: TextToSpeechService) { }
 
 	ngOnInit() {
-		this.tts.speakRegistration(' slips');
 		this.collarColourCount$.subscribe(res => {
 			this.collarColourCount = res;
 		});
