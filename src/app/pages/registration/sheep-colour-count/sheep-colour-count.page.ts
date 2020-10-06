@@ -22,7 +22,7 @@ export class SheepColourCountPage implements OnInit {
 	];
 
 	selectedCategoryIndex = 0;
-	nextRoute = '/registration/sheep-type-count';
+	nextRouteUri = '/registration/sheep-type-count';
 	sheepColourCount;
 
 	sheepColourCounts: SheepColourCounts;

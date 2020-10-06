@@ -21,8 +21,8 @@ export class CollarColourCountPage implements OnInit {
 		CollarColour.Missing
 	];
 	selectedCategoryIndex = 0;
-	nextRoute = '/registration/summary';
 	collarColourCount;
+	nextRouteUri = '/registration/summary';
 
 	@Select(SheepInfoState.getCollarColour) collarColourCount$: Observable<CollarColour>;
 

@@ -13,7 +13,7 @@ import { TextToSpeechService } from '../services/text-to-speech.service';
 export class TotalSheepCountPage implements OnInit {
 
 	totalSheepCount = 0;
-	nextRoute = '/registration/sheep-colour-count';
+	nextRouteUri = '/registration/sheep-colour-count';
 	categories: any[] = [];
 	selectedCategory = 'ANTALL SAU';
 
