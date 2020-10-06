@@ -1,11 +1,11 @@
-<ion-content class="total-sheep-count-content">
-	<div class="total-sheep-count-container">
-		<h1 class="total-sheep-count-heading"> SAU </h1>
+<ion-content class="register-content">
+	<div class="register-container">
+		<h1 class="register-heading"> SAU </h1>
 		<app-counter 
 			(increment)="onIncrement()"
 			(decrement)="onDecrement()"
-			[categories]="categories" 
-			[selectedCategory]="selectedCategory"
+			[categories]="currentGrouping" 
+			[selectedCategory]="currentGrouping[currentCategoryIndex].name"
 			class="counter"></app-counter>
 		<app-navigation
 			[nextRouteUri]="nextRouteUri"

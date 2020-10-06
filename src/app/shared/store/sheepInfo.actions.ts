@@ -1,6 +1,17 @@
 import { CollarColour } from '../enums/CollarColour';
 import { SheepColour } from '../enums/SheepColour';
+import { SheepInfoCategory } from '../enums/SheepInfoCategory';
 import { SheepType } from '../enums/SheepType';
+
+export class IncrementSheepInfoCategoryCount {
+	static readonly type = '[Register Page] IncrementSheepInfoCategoryCount';
+	constructor(public sheepInfoCategory: SheepInfoCategory) {}
+}
+
+export class DecrementSheepInfoCategoryCount {
+	static readonly type = '[Register Page] DecrementSheepInfoCategoryCount';
+	constructor(public sheepInfoCategory: SheepInfoCategory) {}
+}
 
 export class IncrementTotalSheepCount {
 	static readonly type = '[TotalSheepCount Page] IncrementTotalSheepCount';
