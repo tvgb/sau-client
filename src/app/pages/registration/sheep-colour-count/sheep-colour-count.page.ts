@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { SheepInfoState } from '../../../shared/store/sheepInfo.state';
 import { DecrementSheepColourCount, IncrementSheepColourCount } from '../../../shared/store/sheepInfo.actions';
 import { SheepColour } from '../../../shared/enums/SheepColour';
-import { SheepColourCount } from '../../../shared/classes/SheepColourCount';
+import { SheepColourCounts } from '../../../shared/classes/SheepColourCounts';
 import { TextToSpeechService } from '../services/text-to-speech.service';
 
 @Component({
@@ -24,24 +24,20 @@ export class SheepColourCountPage implements OnInit {
 	nextRoute = '/registration/sheep-type-count';
 	sheepColourCount;
 
-	@Select(SheepInfoState.getSheepColourCount) sheepColourCount$: Observable<SheepColourCount>;
+	sheepColourCounts: SheepColourCounts;
+	@Select(SheepInfoState.getSheepColourCounts) sheepColourCounts$: Observable<SheepColourCounts>;
 
 	constructor(private store: Store, private tts: TextToSpeechService) { }
 
 	ngOnInit() {
-		this.sheepColourCount$.subscribe(res => {
-			console.log('sheepColourCount:', res);
-
+		this.sheepColourCounts$.subscribe(res => {
+			this.sheepColourCounts = res;
 		});
 	}
 
   	onIncrement(): void {
-		const num = this.store.dispatch(new IncrementSheepColourCount(this.categories[this.selectedCategoryIndex]));
-		num.subscribe(res => {
-			console.log(res);
-		});
-
-		this.tts.speakColor(num, this.selectedCategoryText());
+		this.store.dispatch(new IncrementSheepColourCount(this.categories[this.selectedCategoryIndex]));
+		console.log(this.yo());
 	}
 
 	onDecrement(): void {
@@ -72,4 +68,19 @@ export class SheepColourCountPage implements OnInit {
 		}
 	}
 
+	yo(): number {
+		switch (this.categories[this.selectedCategoryIndex]) {
+			case(SheepColour.Black):
+				return this.sheepColourCounts.blackSheepCount;
+
+			case(SheepColour.GreyWhite):
+				return this.sheepColourCounts.greyWhiteSheepCount;
+
+			case(SheepColour.Brown):
+				return this.sheepColourCounts.brownSheepCount;
+
+			case(SheepColour.WhiteBlackHead):
+				return this.sheepColourCounts.whiteBlackHeadSheepCount;
+		}
+	}
 }
