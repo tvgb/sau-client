@@ -1,4 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { Vibration } from '@ionic-native/vibration/ngx';
+import { TextToSpeechService } from '../../services/text-to-speech.service';
+import { Location } from '@angular/common';
 
 @Component({
 	selector: 'app-navigation',
@@ -7,11 +11,24 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class NavigationComponent implements OnInit {
 
-	@Input() nextRoute: string;
+	@Input() nextRouteUri: string;
+
 	completeRoute = '/registration/summary';
+	cancelRoute = '/map';
 
-	constructor() { }
+	constructor(private vibration: Vibration, private ttsService: TextToSpeechService, private router: Router, private location: Location) { }
 
-	ngOnInit() {}
+	ngOnInit(): void {
+		console.log('init nav');
+	}
 
+	prevRoute(): void {
+		this.vibration.vibrate(200);
+		this.location.back();
+	}
+
+	nextRoute(): void {
+		this.vibration.vibrate(200);
+		this.router.navigate([this.nextRouteUri]);
+	}
 }

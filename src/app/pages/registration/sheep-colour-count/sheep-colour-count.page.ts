@@ -6,7 +6,6 @@ import { DecrementSheepColourCount, IncrementSheepColourCount } from '../../../s
 import { SheepColour } from '../../../shared/enums/SheepColour';
 import { SheepColourCounts } from '../../../shared/classes/SheepColourCounts';
 import { TextToSpeechService } from '../services/text-to-speech.service';
-import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-sheep-colour-count',
@@ -21,39 +20,43 @@ export class SheepColourCountPage implements OnInit {
 		SheepColour.Brown,
 		SheepColour.WhiteBlackHead
 	];
+
 	selectedCategoryIndex = 0;
-	nextRoute = '/registration/sheep-type-count';
+	nextRouteUri = '/registration/sheep-type-count';
 	sheepColourCount;
 
 	sheepColourCounts: SheepColourCounts;
+
 	@Select(SheepInfoState.getSheepColourCounts) sheepColourCounts$: Observable<SheepColourCounts>;
 
 	constructor(private store: Store, private tts: TextToSpeechService) { }
 
 	ngOnInit() {
+		this.tts.speakRegistration(' farge');
 		this.sheepColourCounts$.subscribe(res => {
 			this.sheepColourCounts = res;
 		});
 	}
 
   	onIncrement(): void {
-
-		this.store.dispatch(new IncrementSheepColourCount(this.categories[this.selectedCategoryIndex])).subscribe(res => {
-			console.log(res);
-		});
-		// console.log(this.yo());
+		this.store.dispatch(new IncrementSheepColourCount(this.categories[this.selectedCategoryIndex]));
+		this.tts.speakColor(this.selectCategoryCount(), this.selectedCategoryText());
 	}
 
 	onDecrement(): void {
 		this.store.dispatch(new DecrementSheepColourCount(this.categories[this.selectedCategoryIndex]));
+		this.tts.speakColor(this.selectCategoryCount(), this.selectedCategoryText());
 	}
 
 	onCategoryRight(): void {
 		this.selectedCategoryIndex >= this.categories.length - 1 ? this.selectedCategoryIndex = 0 : this.selectedCategoryIndex++;
+		this.tts.speakColor(this.selectCategoryCount(), this.selectedCategoryText());
 	}
 
 	onCategoryLeft(): void {
 		this.selectedCategoryIndex <= 0 ? this.selectedCategoryIndex = this.categories.length - 1 : this.selectedCategoryIndex--;
+		this.tts.speakColor(this.selectCategoryCount(), this.selectedCategoryText());
+
 	}
 
 	selectedCategoryText(): string {
@@ -62,17 +65,17 @@ export class SheepColourCountPage implements OnInit {
 				return 'SVART';
 
 			case(SheepColour.GreyWhite):
-				return 'GRÅ/HVIT';
+				return 'GRÅ / HVIT';
 
 			case(SheepColour.Brown):
 				return 'BRUN';
 
 			case(SheepColour.WhiteBlackHead):
-				return 'HVIT, SVART HODE';
+				return 'HVIT MED SVART HODE';
 		}
 	}
 
-	yo(): number {
+	selectCategoryCount(): number {
 		switch (this.categories[this.selectedCategoryIndex]) {
 			case(SheepColour.Black):
 				return this.sheepColourCounts.blackSheepCount;

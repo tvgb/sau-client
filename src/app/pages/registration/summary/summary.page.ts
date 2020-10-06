@@ -7,6 +7,7 @@ import { SheepColourCounts } from 'src/app/shared/classes/SheepColourCounts';
 import { SheepTypeCount } from 'src/app/shared/classes/SheepTypeCount';
 import { CollarColour } from 'src/app/shared/enums/CollarColour';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
+import { TextToSpeechService } from '../services/text-to-speech.service';
 
 @Component({
   selector: 'app-summary',
@@ -25,9 +26,10 @@ export class SummaryPage implements OnInit {
 	@Select(SheepInfoState.getCollarColour) collarColour$: Observable<CollarColourCount>;
 	@Select(SheepInfoState.getSheepTypeCount) sheepTypeCount$: Observable<SheepTypeCount>;
 
-  	constructor(private navController: NavController) { }
+  	constructor(private navController: NavController, private tts: TextToSpeechService) { }
 
 	ngOnInit() {
+		this.tts.speak('Oppsummering');
 		this.sheepColourCounts$.subscribe(res => {
 			this.sheepColourCounts = res;
 		});
