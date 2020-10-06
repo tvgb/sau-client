@@ -30,7 +30,11 @@ const routes: Routes = [
 	{
 		path: 'registration/collar-colour-count',
 		loadChildren: () => import('./pages/registration/collar-colour-count/collar-colour-count.module').then( m => m.CollarColourCountPageModule)
-	}
+	},  {
+    path: 'register',
+    loadChildren: () => import('./pages/registration/register/register.module').then( m => m.RegisterPageModule)
+  }
+
 
 ];
 

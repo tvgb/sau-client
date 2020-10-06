@@ -18,9 +18,7 @@ export class NavigationComponent implements OnInit {
 
 	constructor(private vibration: Vibration, private ttsService: TextToSpeechService, private router: Router, private location: Location) { }
 
-	ngOnInit(): void {
-		console.log('init nav');
-	}
+	ngOnInit(): void { }
 
 	prevRoute(): void {
 		this.vibration.vibrate(200);
