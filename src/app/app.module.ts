@@ -16,6 +16,7 @@ import { SheepInfoState } from './shared/store/sheepInfo.state';
 import {  TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 import { IonicGestureConfig } from './shared/classes/hammer-config';
 import { Vibration } from '@ionic-native/vibration/ngx';
+import { AppInfoState } from './shared/store/appInfo.state';
 
 @NgModule({
 	declarations: [AppComponent],
@@ -25,7 +26,8 @@ import { Vibration } from '@ionic-native/vibration/ngx';
 		AppRoutingModule,
 		HttpClientModule,
 		NgxsModule.forRoot([
-			SheepInfoState
+			SheepInfoState,
+			AppInfoState
 		], { developmentMode: true }),
 		HammerModule
 	],

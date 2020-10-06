@@ -1,8 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Vibration } from '@ionic-native/vibration/ngx';
 import { TextToSpeechService } from '../../services/text-to-speech.service';
-import { Location } from '@angular/common';
+import { Select } from '@ngxs/store';
+import { AppInfoState } from 'src/app/shared/store/appInfo.state';
+import { Observable } from 'rxjs';
+import { Pages } from 'src/app/shared/classes/Pages';
 
 @Component({
 	selector: 'app-navigation',
@@ -11,22 +14,38 @@ import { Location } from '@angular/common';
 })
 export class NavigationComponent implements OnInit {
 
-	@Input() nextRouteUri: string;
+	@Output() nextGrouping = new EventEmitter();
+	@Output() prevGrouping = new EventEmitter();
+	@Output() cancelRegistration = new EventEmitter();
+	@Output() completeRegistration = new EventEmitter();
 
 	completeRoute = '/registration/summary';
 	cancelRoute = '/map';
 
-	constructor(private vibration: Vibration, private ttsService: TextToSpeechService, private router: Router, private location: Location) { }
+	@Select(AppInfoState.getCurrentPage) currentPage$: Observable<Pages>;
+	@Select(AppInfoState.getPrevPage) prevPage$: Observable<Pages>;
 
-	ngOnInit(): void { }
+	constructor(private vibration: Vibration, private ttsService: TextToSpeechService, private router: Router) { }
 
-	prevRoute(): void {
+	ngOnInit(): void {}
+
+	nextGroupingClick() {
 		this.vibration.vibrate(200);
-		this.location.back();
+		this.nextGrouping.emit();
 	}
 
-	nextRoute(): void {
+	prevGroupingClick() {
 		this.vibration.vibrate(200);
-		this.router.navigate([this.nextRouteUri]);
+		this.prevGrouping.emit();
+	}
+
+	cancel(): void {
+		this.router.navigate([this.cancelRoute]);
+		this.cancelRegistration.emit();
+	}
+
+	complete(): void {
+		this.router.navigate([this.completeRoute]);
+		this.completeRegistration.emit();
 	}
 }

@@ -1,15 +1,15 @@
 <div class="navigation-container">
-	<div class="complete" [routerLink]="completeRoute">
+	<div (click)="complete()" class="complete">
 		<ion-button fill="solid" expand="full" color="secondary" class="button ion-no-margin">
 			FULLFØR
 		</ion-button>
 	</div>
-	<div [routerLink]="[cancelRoute]" class="cancel">
+	<div (click)="cancel()" class="cancel">
 		<ion-button fill="solid" expand="full" color="tertiary" class="button ion-no-margin">
 			AVBRYT
 		</ion-button>
 	</div>
-	<div (tap)="nextRoute()" (press)="prevRoute()" class="next">
+	<div (tap)="nextGroupingClick()" (press)="prevGroupingClick()" class="next">
 		<ion-button fill="solid" expand="full" color="primary" class="next-button button ion-no-margin">
 			<div  class="next-button-text-wrapper">
 				<ion-text>NESTE</ion-text>

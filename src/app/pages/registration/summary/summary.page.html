@@ -6,15 +6,15 @@
        <div class="summary-element">
            <div class="summary-element-detail">
                 <ion-text>Totalt</ion-text>
-                <ion-text>{{totalSheepCount}}</ion-text>
+                <ion-text>{{sheepInfo.totalSheep.count}}</ion-text>
             </div>
             <div class="summary-element-detail">
                 <ion-text>Søyer</ion-text>
-                <ion-text>{{sheepType.eweCount}}</ion-text>
+                <ion-text>{{sheepInfo.ewe.count}}</ion-text>
             </div>
             <div class="summary-element-detail">
                 <ion-text>Lam</ion-text>
-                <ion-text>{{sheepType.lambCount}}</ion-text>
+                <ion-text>{{sheepInfo.lamb.count}}</ion-text>
             </div>
        </div>
     </div>
@@ -29,28 +29,28 @@
                     </div>
                     
                 </div>
-                <ion-text>{{sheepColourCounts.greyWhiteSheepCount}}</ion-text>
+                <ion-text>{{sheepInfo.greyWhiteSheep.count}}</ion-text>
             </div>
             <div class="summary-element-detail" >
                 <div>
                     <ion-text>Svart</ion-text>
                     <div style="background-color: black;" class="color-tag"></div>
                 </div>
-                <ion-text>{{sheepColourCounts.blackSheepCount}}</ion-text>
+                <ion-text>{{sheepInfo.blackSheep.count}}</ion-text>
             </div>
             <div class="summary-element-detail">
                 <div>
                     <ion-text>Brun</ion-text>
                     <div style="background-color: #4D2D08" class="color-tag"></div>
                 </div>
-                <ion-text>{{sheepColourCounts.brownSheepCount}}</ion-text>
+                <ion-text>{{sheepInfo.brownSheep.count}}</ion-text>
             </div>
             <div class="summary-element-detail">
                 <ion-text>Hvit, svart hode</ion-text>
                 <div style="background-color: white; width: 100%;" class="color-tag">
                     <div style="background-color: black; width: 50%;" class="color-tag"></div>
                 </div>
-                <ion-text>{{sheepColourCounts.whiteBlackHeadSheepCount   }}</ion-text>
+                <ion-text>{{sheepInfo.whiteBlackHeadSheep.count}}</ion-text>
             </div>
         </div>
     </div>
@@ -62,40 +62,40 @@
                 <ion-text>Blå</ion-text>
                 <div style="background-color: #3076FF" class="color-tag"></div>
             </div>
-            <ion-text>{{collarColour.blueCollarCount}}</ion-text>
+            <ion-text>{{sheepInfo.blueCollar.count}}</ion-text>
         </div>
         <div class="summary-element-detail" >
             <div>
                 <ion-text>Grønn</ion-text>
                 <div style="background-color: #289933" class="color-tag"></div>
             </div>
-            <ion-text>{{collarColour.greenCollarCount}}</ion-text>
+            <ion-text>{{sheepInfo.greenCollar.count}}</ion-text>
         </div>
         <div class="summary-element-detail">
             <div>
                 <ion-text>Gul</ion-text>
                 <div style="background-color: #D1D423" class="color-tag"></div>
             </div>
-            <ion-text>{{collarColour.yellowCollarCount}}</ion-text>
+            <ion-text>{{sheepInfo.yellowCollar.count}}</ion-text>
         </div>
         <div class="summary-element-detail">
             <div>
                 <ion-text>Rød</ion-text>
                 <div style="background-color: #B92525" class="color-tag"></div>
             </div>
-            <ion-text>{{collarColour.redCollarCount}}</ion-text>
+            <ion-text>{{sheepInfo.redCollar.count}}</ion-text>
         </div>
         <div class="summary-element-detail">
             <div>
                 <ion-text>Mangler</ion-text>
                 <div style="background-color: #1C262F" class="color-tag"></div>
             </div>
-            <ion-text>{{collarColour.missingCollarCount}}</ion-text>
+            <ion-text>{{sheepInfo.missingCollar.count}}</ion-text>
         </div>
     </div>
-    <div *ngIf="collarColour.missingCollarCount > 0" id="warning-container">
+    <div *ngIf="sheepInfo.missingCollar.count > 0" id="warning-container">
         <ion-icon id="warning-icon" src="/assets/warning.svg"></ion-icon>
-        <h4>Registrerte slips tilsier at det mangler {{collarColour.missingCollarCount}} lam</h4>
+        <h4>Registrerte slips tilsier at det mangler {{sheepInfo.missingCollar.count}} lam</h4>
     </div>
 </div>
 </ion-content>
