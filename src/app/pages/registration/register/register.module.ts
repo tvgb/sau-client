@@ -4,9 +4,9 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { TotalSheepCountPageRoutingModule } from './total-sheep-count-routing.module';
+import { RegisterPageRoutingModule } from './register-routing.module';
 
-import { TotalSheepCountPage } from './total-sheep-count.page';
+import { RegisterPage } from './register.page';
 import { RegistrationModule } from '../registration.module';
 
 @NgModule({
@@ -15,8 +15,8 @@ import { RegistrationModule } from '../registration.module';
 		CommonModule,
 		FormsModule,
 		IonicModule,
-		TotalSheepCountPageRoutingModule
+		RegisterPageRoutingModule
 	],
-	declarations: [TotalSheepCountPage]
+	declarations: [RegisterPage]
 })
-export class TotalSheepCountPageModule {}
+export class RegisterPageModule {}

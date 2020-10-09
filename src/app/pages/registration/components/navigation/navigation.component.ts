@@ -1,9 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Vibration } from '@ionic-native/vibration/ngx';
 import { TextToSpeechService } from '../../services/text-to-speech.service';
-import { Location } from '@angular/common';
-import { Select, Store } from '@ngxs/store';
+import { Select } from '@ngxs/store';
 import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 import { Observable } from 'rxjs';
 import { Pages } from 'src/app/shared/classes/Pages';
@@ -17,7 +16,10 @@ import { UpdateCurrentPage, UpdatePrevPage } from 'src/app/shared/store/appInfo.
 })
 export class NavigationComponent implements OnInit {
 
-	@Input() nextRouteUri: string;
+	@Output() nextGrouping = new EventEmitter();
+	@Output() prevGrouping = new EventEmitter();
+	@Output() cancelRegistration = new EventEmitter();
+	@Output() completeRegistration = new EventEmitter();
 
 	pages: Page[] = [
 		Page.MapPage,
@@ -30,57 +32,31 @@ export class NavigationComponent implements OnInit {
 	selectedPageIndex = 0;
 	completeRoute = '/registration/summary';
 	cancelRoute = '/map';
-	currentPage;
-	prevPage;
 
 	@Select(AppInfoState.getCurrentPage) currentPage$: Observable<Page>;
 	@Select(AppInfoState.getPrevPage) prevPage$: Observable<Page>;
 
-	constructor(private vibration: Vibration, private ttsService: TextToSpeechService, private router: Router, private location: Location,
-		           private store: Store) { }
+	constructor(private vibration: Vibration, private ttsService: TextToSpeechService, private router: Router) { }
 
-	ngOnInit(): void {
-		console.log('init nav');
-		this.currentPage$.subscribe(res => {
-			this.currentPage = res;
-			console.log('currentPage: ' + this.currentPage);
-		});
-		this.prevPage$.subscribe(res => {
-			this.prevPage = res;
-			console.log('prevPage: ' + this.prevPage);
-		});
-	}
+	ngOnInit(): void {}
 
-	prevRoute(): void {
+	nextGroupingClick() {
 		this.vibration.vibrate(200);
-		this.location.back();
-		console.log(this.location.back());
+		this.nextGrouping.emit();
 	}
 
-	nextRoute(): void {
-		this.store.dispatch(new UpdatePrevPage(this.pages[this.selectedPageIndex]));
-		this.selectedPageIndex++;
-		this.store.dispatch(new UpdateCurrentPage(this.pages[this.selectedPageIndex]));
+	prevGroupingClick() {
 		this.vibration.vibrate(200);
-		this.ttsService.speakRegistration(this.selectedPageText());
-		this.router.navigate([this.nextRouteUri]);
+		this.prevGrouping.emit();
 	}
 
-	selectedPageText(): string {
-		switch (this.pages[this.selectedPageIndex]) {
-			case(Page.MapPage):
-				return 'kart';
-			case(Page.TotalSheepPage):
-				return 'antall sau';
+	cancel(): void {
+		this.router.navigate([this.cancelRoute]);
+		this.cancelRegistration.emit();
+	}
 
-			case(Page.SheepColourPage):
-				return 'farge';
-
-			case(Page.SheepTypePage):
-				return 'type';
-
-			case(Page.CollarColourPage):
-				return 'slips';
-		}
+	complete(): void {
+		this.router.navigate([this.completeRoute]);
+		this.completeRegistration.emit();
 	}
 }

@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { Page } from '../enums/Page';
+import { SheepInfoCategory } from '../enums/SheepInfoCategory';
 import { AppInfoModel } from '../interfaces/AppInfoModel';
-import { UpdateCurrentPage, UpdatePrevPage } from './appInfo.actions';
+import { SetCurrentSheepInfoCategory, UpdateCurrentPage, UpdatePrevPage } from './appInfo.actions';
 
 
 
 @State<AppInfoModel>({
 	name: 'appInfo',
 	defaults: {
-		currentPage: Page.MapPage,
-		prevPage: Page.MapPage,
+		currentPage: 0,
+		prevPage: 0,
+		currentCategory: SheepInfoCategory.totalSheepInfo
 	}
 })
 
@@ -25,6 +26,11 @@ export class AppInfoState {
 	@Selector()
 	static getPrevPage(state: AppInfoModel) {
 		return state.prevPage;
+	}
+
+	@Selector()
+	static getCurrentSheepInfoCategory(state: AppInfoModel) {
+		return state.currentCategory;
 	}
 
 	@Action(UpdateCurrentPage)
@@ -42,6 +48,15 @@ export class AppInfoState {
 		ctx.setState({
 			...state,
 			prevPage: action.prevPage,
+		});
+	}
+
+	@Action(SetCurrentSheepInfoCategory)
+	setCurrentSheepInfo(ctx: StateContext<AppInfoModel>, action: SetCurrentSheepInfoCategory) {
+		const state = ctx.getState();
+		ctx.setState({
+			...state,
+			currentCategory: action.sheepInfoCategory,
 		});
 	}
 }

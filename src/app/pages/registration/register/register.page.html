@@ -1,0 +1,19 @@
+<ion-content class="register-content">
+	<div class="register-container">
+		<h1 class="register-heading"> {{ currentGrouping.name }} </h1>
+		<app-counter 
+			(increment)="onIncrement()"
+			(decrement)="onDecrement()"
+			(categoryLeft)="onCategoryLeft()"
+			(categoryRight)="onCategoryRight()"
+			[categories]="currentGrouping.sheepInfoCategories" 
+			[selectedCategory]="sheepInfo.name"
+			class="counter"></app-counter>
+		<app-navigation
+			(nextGrouping)="onNextGrouping()"
+			(prevGrouping)="onPrevGrouping()"
+			(cancelRegistration)="onCancel()"
+			(completeRegistration)="onComplete()"
+			class="navigation"></app-navigation>
+	</div>
+</ion-content>
