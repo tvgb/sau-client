@@ -17,6 +17,7 @@ import {  TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 import { IonicGestureConfig } from './shared/classes/hammer-config';
 import { Vibration } from '@ionic-native/vibration/ngx';
 import { AppInfoState } from './shared/store/appInfo.state';
+import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
 
 @NgModule({
 	declarations: [AppComponent],
@@ -29,7 +30,8 @@ import { AppInfoState } from './shared/store/appInfo.state';
 			SheepInfoState,
 			AppInfoState
 		], { developmentMode: true }),
-		HammerModule
+		HammerModule,
+		NgxsResetPluginModule.forRoot()
 	],
 	providers: [
 		StatusBar,

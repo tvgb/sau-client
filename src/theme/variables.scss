@@ -3,6 +3,13 @@
 
 /** Ionic CSS Variables **/
 :root {
+    .alertConfirm {
+        --background: #1C262F;
+
+    }
+    .alertConfirm .alert-message {
+            --color: #ffffff;
+    }
 	// Font familiy for the entire project
   	--ion-font-family: 'Montserrat';	
     --ion-text-color: #ffffff;
@@ -77,7 +84,7 @@
    */
 
   body {
-    --ion-text-color: #ffffff;
+    // --ion-text-color: #ffffff;
     --ion-color-primary: #7BB662;
     --ion-color-primary-rgb: 123,182,98;
     --ion-color-primary-contrast: #ffffff;
