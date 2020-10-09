@@ -13,6 +13,7 @@ import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { TextToSpeechService } from '../services/text-to-speech.service';
 import { Platform } from '@ionic/angular';
 
+
 @Component({
 	selector: 'app-register',
 	templateUrl: './register.page.html',

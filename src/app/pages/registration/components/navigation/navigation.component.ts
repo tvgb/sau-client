@@ -7,6 +7,7 @@ import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 import { Observable } from 'rxjs';
 import { Page } from 'src/app/shared/enums/Page';
 import { StateResetAll } from 'ngxs-reset-plugin';
+import {AlertController} from '@ionic/angular';
 
 @Component({
 	selector: 'app-navigation',
@@ -35,7 +36,7 @@ export class NavigationComponent implements OnInit {
 	@Select(AppInfoState.getCurrentPage) currentPage$: Observable<Page>;
 	@Select(AppInfoState.getPrevPage) prevPage$: Observable<Page>;
 
-	constructor(private vibration: Vibration, private ttsService: TextToSpeechService, private router: Router, private store: Store) { }
+	constructor(private vibration: Vibration, private router: Router, private store: Store, private alertController: AlertController) { }
 
 	ngOnInit(): void {}
 
@@ -50,14 +51,39 @@ export class NavigationComponent implements OnInit {
 	}
 
 	cancel(): void {
-		this.router.navigate([this.cancelRoute]);
-		console.log('Returning to map page, clearing state');
-		this.store.dispatch(new StateResetAll());
-		this.cancelRegistration.emit();
+		this.presentConfirmAlert();
 	}
 
 	complete(): void {
 		this.router.navigate([this.completeRoute]);
 		this.completeRegistration.emit();
+	}
+
+	async presentConfirmAlert() {
+		const alert = await this.alertController.create({
+			cssClass: 'alertConfirm',
+			header: 'Avbryt',
+			backdropDismiss: true,
+			message: 'Ønsker du å avbryte registrering av sau?',
+			buttons: [
+				{
+					text: 'Nei',
+					role: 'cancel',
+					handler: () => {
+						console.log('alert confirm:  nei');
+					}
+				}, {
+					text: 'Ja',
+					handler: () => {
+						console.log('Bekreft ja!');
+						this.router.navigate([this.cancelRoute]);
+						console.log('Returning to map page, clearing state');
+						this.store.dispatch(new StateResetAll());
+						this.cancelRegistration.emit();
+					}
+				}
+			]
+		});
+		await alert.present();
 	}
 }

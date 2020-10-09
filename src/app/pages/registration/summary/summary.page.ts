@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { AlertController, NavController } from '@ionic/angular';
 import { Select, Store } from '@ngxs/store';
 import { StateResetAll } from 'ngxs-reset-plugin';
 import { Observable } from 'rxjs';
@@ -22,7 +23,7 @@ export class SummaryPage implements OnInit {
 	@Select(SheepInfoState.getSheepInfo) sheepInfo$: Observable<SheepInfoModel>;
 	@Select(AppInfoState.getCurrentSheepInfoCategoryGrouping) currentCategoryGrouping$: Observable<SheepInfoCategoryGrouping>;
 
-  	constructor(private navController: NavController, private tts: TextToSpeechService, private store: Store) { }
+  	constructor(private navController: NavController, private tts: TextToSpeechService, private store: Store, private alertController: AlertController, private router: Router) { }
 
 	ngOnInit() {
 		this.tts.speak('Oppsummering');
@@ -42,6 +43,30 @@ export class SummaryPage implements OnInit {
 	}
 
 	completeRegistration() {
-		this.store.dispatch(new StateResetAll());
+		this.presentConfirmAlert();
+	}
+
+	async presentConfirmAlert() {
+		const alert = await this.alertController.create({
+			cssClass: 'alertConfirm',
+			header: 'Fullfør registrering',
+			backdropDismiss: true,
+			message: 'Ønsker du å fullføre registrering av sau?',
+			buttons: [
+				{
+					text: 'Nei',
+					role: 'cancel',
+					handler: () => {}
+				}, {
+					text: 'Ja',
+					handler: () => {
+						this.store.dispatch(new StateResetAll());
+						this.router.navigate(['/map']);
+						console.log('Returning to map page, clearing state');
+					}
+				}
+			]
+		});
+		await alert.present();
 	}
 }
