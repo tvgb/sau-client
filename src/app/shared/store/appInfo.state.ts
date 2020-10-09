@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { SheepInfoCategory } from '../enums/SheepInfoCategory';
 import { AppInfoModel } from '../interfaces/AppInfoModel';
-import { SetCurrentSheepInfoCategory, UpdateCurrentPage, UpdatePrevPage } from './appInfo.actions';
+import { SetCurrentSheepInfoCategory, SetCurrentSheepInfoCategoryGrouping, UpdateCurrentPage, UpdatePrevPage } from './appInfo.actions';
 
 
 
@@ -11,7 +11,14 @@ import { SetCurrentSheepInfoCategory, UpdateCurrentPage, UpdatePrevPage } from '
 	defaults: {
 		currentPage: 0,
 		prevPage: 0,
-		currentCategory: SheepInfoCategory.totalSheepInfo
+		currentCategory: SheepInfoCategory.totalSheepInfo,
+		currentCategoryGrouping: {
+			name: 'Sau Totalt',
+			speakText: 'Registrer sau totalt',
+			sheepInfoCategories: [
+				SheepInfoCategory.totalSheepInfo,
+			],
+		}
 	}
 })
 
@@ -31,6 +38,11 @@ export class AppInfoState {
 	@Selector()
 	static getCurrentSheepInfoCategory(state: AppInfoModel) {
 		return state.currentCategory;
+	}
+
+	@Selector()
+	static getCurrentSheepInfoCategoryGrouping(state: AppInfoModel) {
+		return state.currentCategoryGrouping;
 	}
 
 	@Action(UpdateCurrentPage)
@@ -57,6 +69,15 @@ export class AppInfoState {
 		ctx.setState({
 			...state,
 			currentCategory: action.sheepInfoCategory,
+		});
+	}
+
+	@Action(SetCurrentSheepInfoCategoryGrouping)
+	setCurrentSheepInfoCategoryGrouping(ctx: StateContext<AppInfoModel>, action: SetCurrentSheepInfoCategoryGrouping) {
+		const state = ctx.getState();
+		ctx.setState({
+			...state,
+			currentCategoryGrouping: action.sheepInfoCategoryGrouping,
 		});
 	}
 }

@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { SelectControlValueAccessor } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { SheepInfo } from 'src/app/shared/classes/SheepInfo';
 import { SheepInfoCategoryGrouping } from 'src/app/shared/classes/SheepInfoCategoryGrouping';
 import { SheepInfoCategory } from 'src/app/shared/enums/SheepInfoCategory';
-import { SetCurrentSheepInfoCategory } from 'src/app/shared/store/appInfo.actions';
+import { SetCurrentSheepInfoCategory, SetCurrentSheepInfoCategoryGrouping } from 'src/app/shared/store/appInfo.actions';
+import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 import { DecrementSheepInfoCategoryCount, IncrementSheepInfoCategoryCount } from 'src/app/shared/store/sheepInfo.actions';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { TextToSpeechService } from '../services/text-to-speech.service';
@@ -20,14 +22,14 @@ export class RegisterPage implements OnInit {
 	categoryGroupings: SheepInfoCategoryGrouping[] = [
 		{
 			name: 'Sau totalt',
-			speakText: '',
+			speakText: 'sau totalt',
 			sheepInfoCategories: [
 				SheepInfoCategory.totalSheepInfo
 			]
 		},
 		{
 			name: 'Farge',
-			speakText: 'sau',
+			speakText: 'farge',
 			sheepInfoCategories: [
 				SheepInfoCategory.greyWhiteSheepInfo,
 				SheepInfoCategory.whiteBlackHeadSheepInfo,
@@ -37,7 +39,7 @@ export class RegisterPage implements OnInit {
 		},
 		{
 			name: 'Type',
-			speakText: '',
+			speakText: 'type',
 			sheepInfoCategories: [
 				SheepInfoCategory.eweInfo,
 				SheepInfoCategory.lambInfo
@@ -63,6 +65,7 @@ export class RegisterPage implements OnInit {
 	sheepInfo: SheepInfo;
 
 	@Select(SheepInfoState.getCurrentSheepInfo) currentSheepInfo$: Observable<SheepInfo>;
+	@Select(AppInfoState.getCurrentSheepInfoCategoryGrouping) currentCategoryGrouping$: Observable<SheepInfoCategoryGrouping>;
 
 	constructor(private store: Store, private tts: TextToSpeechService, private router: Router) { }
 
@@ -75,6 +78,9 @@ export class RegisterPage implements OnInit {
 
 		this.currentSheepInfo$.subscribe(res => {
 			this.sheepInfo = res;
+		});
+		this.currentCategoryGrouping$.subscribe(res => {
+			this.currentGrouping = res;
 		});
 	}
 
@@ -123,7 +129,8 @@ export class RegisterPage implements OnInit {
 		this.currentCategoryIndex = 0;
 		this.categoryCount = this.currentGrouping.sheepInfoCategories.length;
 		this.store.dispatch(new SetCurrentSheepInfoCategory(this.currentGrouping.sheepInfoCategories[this.currentCategoryIndex]));
-		this.tts.speak(`Registrer ${this.categoryGroupings[this.currentGroupingIndex].name}`);
+		this.store.dispatch(new SetCurrentSheepInfoCategoryGrouping(this.currentGrouping));
+		this.tts.speak(`Registrer ${this.currentGrouping.speakText}`);
 	}
 
 	onComplete(): void {

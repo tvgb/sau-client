@@ -1,3 +1,4 @@
+import { SheepInfoCategoryGrouping } from '../classes/SheepInfoCategoryGrouping';
 import { Page } from '../enums/Page';
 import { SheepInfoCategory } from '../enums/SheepInfoCategory';
 
@@ -14,4 +15,9 @@ export class UpdatePrevPage {
 export class SetCurrentSheepInfoCategory {
 	static readonly type = '[Registration Page] SetCurrentSheepInfoCategory';
 	constructor(public sheepInfoCategory: SheepInfoCategory) {}
+}
+
+export class SetCurrentSheepInfoCategoryGrouping {
+	static readonly type = '[Registration Page] SetCurrentSheepInfoCategoryGrouping';
+	constructor(public sheepInfoCategoryGrouping: SheepInfoCategoryGrouping) {}
 }
