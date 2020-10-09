@@ -11,6 +11,7 @@ import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 import { DecrementSheepInfoCategoryCount, IncrementSheepInfoCategoryCount } from 'src/app/shared/store/sheepInfo.actions';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { TextToSpeechService } from '../services/text-to-speech.service';
+import { Platform } from '@ionic/angular';
 
 @Component({
 	selector: 'app-register',
@@ -67,7 +68,11 @@ export class RegisterPage implements OnInit {
 	@Select(SheepInfoState.getCurrentSheepInfo) currentSheepInfo$: Observable<SheepInfo>;
 	@Select(AppInfoState.getCurrentSheepInfoCategoryGrouping) currentCategoryGrouping$: Observable<SheepInfoCategoryGrouping>;
 
-	constructor(private store: Store, private tts: TextToSpeechService, private router: Router) { }
+	constructor(private store: Store, private tts: TextToSpeechService, private router: Router, private platform: Platform) {
+		this.platform.backButton.subscribeWithPriority(10, () => {
+			this.onPrevGrouping();
+		  });
+	 }
 
 	ngOnInit() {
 		this.currentGroupingIndex = 0;

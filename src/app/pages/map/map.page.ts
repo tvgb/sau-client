@@ -2,6 +2,7 @@ import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angula
 import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { GpsService } from './services/gps.service';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-map',
@@ -10,9 +11,10 @@ import { GpsService } from './services/gps.service';
 })
 export class MapPage implements OnInit, AfterViewInit {
 
+	private routeLink = ['/registration/register'];
 	private map;
 	private readonly OFFLINE_MAP = false;
-	constructor(private mapService: MapService, private gpsService: GpsService) { }
+	constructor(private mapService: MapService, private gpsService: GpsService, private router: Router) { }
 
 	ngOnInit(): void {
 
@@ -47,6 +49,10 @@ export class MapPage implements OnInit, AfterViewInit {
 		});
 	}
 
+	navigateToRegistration() {
+		console.log('navigate method');
+		this.router.navigate(this.routeLink);
+	}
 	initMap(): void {
 		// Coordinates for the middle of Gløshaugen
 		const lat = 63.418604;
