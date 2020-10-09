@@ -1,18 +1,23 @@
+import { CollarColourInfo } from '../classes/CollarColourInfo';
+import { SheepColourInfo } from '../classes/SheepColourInfo';
+import { SheepInfo } from '../classes/SheepInfo';
+import { SheepTypeInfo } from '../classes/SheepTypeInfo';
+
+
 export interface SheepInfoModel {
+	totalSheep: SheepInfo;
 
-	totalSheepCount: number;
+	blackSheep: SheepColourInfo;
+	greyWhiteSheep: SheepColourInfo;
+	brownSheep: SheepColourInfo;
+	whiteBlackHeadSheep: SheepColourInfo;
 
-	blackSheepCount: number;
-	greyWhiteSheepCount: number;
-	brownSheepCount: number;
-	whiteBlackHeadSheepCount: number;
+	lamb: SheepTypeInfo;
+	ewe: SheepTypeInfo;
 
-	lambCount: number;
-	eweCount: number;
-
-	blueCollarCount: number;
-	greenCollarCount: number;
-	yellowCollarCount: number;
-	redCollarCount: number;
-	missingCollarCount: number;
+	blueCollar: CollarColourInfo;
+	greenCollar: CollarColourInfo;
+	yellowCollar: CollarColourInfo;
+	redCollar: CollarColourInfo;
+	missingCollar: CollarColourInfo;
 }

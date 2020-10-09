@@ -1,8 +1,8 @@
-.sheep-colour-count-content {
+.register-content {
 	--background: #1C262F;
 }
 
-.sheep-colour-count-container {
+.register-container {
 	height: 100%;
 
 	display: flex;
@@ -14,8 +14,9 @@
 	height: 50%;
 }
 
-.sheep-colour-count-heading {
+.register-heading {
 	text-align: center;
 	margin-top: 30px;
 	font-size: xx-large;
+	text-transform: uppercase;
 }

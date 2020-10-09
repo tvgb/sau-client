@@ -23,14 +23,14 @@ export class CounterComponent implements OnInit {
 	}
 
 	onSwipeLeft(e): void {
-		if (this.categories.length > 0) {
+		if (this.categories.length > 1) {
 			this.categoryLeft.emit(e);
 			this.vibration.vibrate(200);
 		}
 	}
 
 	onSwipeRight(e): void {
-		if (this.categories.length > 0) {
+		if (this.categories.length > 1) {
 			this.categoryRight.emit(e);
 			this.vibration.vibrate(200);
 		}

@@ -3,7 +3,7 @@
 		<ion-icon size="large" name="add-outline"></ion-icon>
 	</div>
 	<div
-		*ngIf="categories.length > 0"
+		*ngIf="categories.length > 1"
 		(click)="onSwipeLeft($event)"
 		class="left">
 		<ion-icon size="large" name="chevron-back-circle-outline"></ion-icon>
@@ -17,7 +17,7 @@
 		{{ selectedCategory }}
 	</div>
 	<div
-		*ngIf="categories.length > 0"
+		*ngIf="categories.length > 1"
 		(click)="onSwipeRight($event)"
 		class="right">
 		<ion-icon size="large" name="chevron-forward-circle-outline"></ion-icon>	
