@@ -20,3 +20,16 @@
 	font-size: xx-large;
 	text-transform: uppercase;
 }
+
+.count-overview-container {
+	width: 100%;
+	height: 20%;
+	border: 1px solid red;
+}
+
+.count-overview {
+	width: 100%;
+	
+	display: flex;
+	justify-content: space-between;
+}
