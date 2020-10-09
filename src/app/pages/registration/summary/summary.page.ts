@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { Select } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
+import { StateResetAll } from 'ngxs-reset-plugin';
 import { Observable } from 'rxjs';
 import { SheepInfoCategoryGrouping } from 'src/app/shared/classes/SheepInfoCategoryGrouping';
 import { SheepInfoModel } from 'src/app/shared/interfaces/SheepInfoModel';
@@ -21,7 +22,7 @@ export class SummaryPage implements OnInit {
 	@Select(SheepInfoState.getSheepInfo) sheepInfo$: Observable<SheepInfoModel>;
 	@Select(AppInfoState.getCurrentSheepInfoCategoryGrouping) currentCategoryGrouping$: Observable<SheepInfoCategoryGrouping>;
 
-  	constructor(private navController: NavController, private tts: TextToSpeechService) { }
+  	constructor(private navController: NavController, private tts: TextToSpeechService, private store: Store) { }
 
 	ngOnInit() {
 		this.tts.speak('Oppsummering');
@@ -38,5 +39,9 @@ export class SummaryPage implements OnInit {
 	navigateBack() {
 		this.tts.speak(`Registrer ${this.currentCategoryGrouping.name}`);
 		this.navController.back();
+	}
+
+	completeRegistration() {
+		this.store.dispatch(new StateResetAll());
 	}
 }

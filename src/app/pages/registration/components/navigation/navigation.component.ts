@@ -2,12 +2,11 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Vibration } from '@ionic-native/vibration/ngx';
 import { TextToSpeechService } from '../../services/text-to-speech.service';
-import { Select } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 import { Observable } from 'rxjs';
-import { Pages } from 'src/app/shared/classes/Pages';
 import { Page } from 'src/app/shared/enums/Page';
-import { UpdateCurrentPage, UpdatePrevPage } from 'src/app/shared/store/appInfo.actions';
+import { StateResetAll } from 'ngxs-reset-plugin';
 
 @Component({
 	selector: 'app-navigation',
@@ -36,7 +35,7 @@ export class NavigationComponent implements OnInit {
 	@Select(AppInfoState.getCurrentPage) currentPage$: Observable<Page>;
 	@Select(AppInfoState.getPrevPage) prevPage$: Observable<Page>;
 
-	constructor(private vibration: Vibration, private ttsService: TextToSpeechService, private router: Router) { }
+	constructor(private vibration: Vibration, private ttsService: TextToSpeechService, private router: Router, private store: Store) { }
 
 	ngOnInit(): void {}
 
@@ -52,6 +51,8 @@ export class NavigationComponent implements OnInit {
 
 	cancel(): void {
 		this.router.navigate([this.cancelRoute]);
+		console.log('Returning to map page, clearing state');
+		this.store.dispatch(new StateResetAll());
 		this.cancelRegistration.emit();
 	}
 
