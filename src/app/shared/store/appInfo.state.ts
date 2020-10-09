@@ -14,7 +14,7 @@ import { SetCurrentSheepInfoCategory, SetCurrentSheepInfoCategoryGrouping, Updat
 		currentCategory: SheepInfoCategory.totalSheepInfo,
 		currentCategoryGrouping: {
 			name: 'Sau Totalt',
-			speakText: 'Registrer sau totalt',
+			speakText: '',
 			sheepInfoCategories: [
 				SheepInfoCategory.totalSheepInfo,
 			],
