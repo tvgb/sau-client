@@ -36,7 +36,7 @@ export class SummaryPage implements OnInit {
 	}
 
 	navigateBack() {
-		this.tts.speak(`Registrer ${this.currentCategoryGrouping.speakText}`);
+		this.tts.speak(`Registrer ${this.currentCategoryGrouping.name}`);
 		this.navController.back();
 	}
 }

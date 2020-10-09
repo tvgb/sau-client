@@ -22,14 +22,14 @@ export class RegisterPage implements OnInit {
 	categoryGroupings: SheepInfoCategoryGrouping[] = [
 		{
 			name: 'Sau totalt',
-			speakText: 'sau totalt',
+			speakText: '',
 			sheepInfoCategories: [
 				SheepInfoCategory.totalSheepInfo
 			]
 		},
 		{
 			name: 'Farge',
-			speakText: 'farge',
+			speakText: 'sau',
 			sheepInfoCategories: [
 				SheepInfoCategory.greyWhiteSheepInfo,
 				SheepInfoCategory.whiteBlackHeadSheepInfo,
@@ -39,7 +39,7 @@ export class RegisterPage implements OnInit {
 		},
 		{
 			name: 'Type',
-			speakText: 'type',
+			speakText: '',
 			sheepInfoCategories: [
 				SheepInfoCategory.eweInfo,
 				SheepInfoCategory.lambInfo
@@ -130,7 +130,7 @@ export class RegisterPage implements OnInit {
 		this.categoryCount = this.currentGrouping.sheepInfoCategories.length;
 		this.store.dispatch(new SetCurrentSheepInfoCategory(this.currentGrouping.sheepInfoCategories[this.currentCategoryIndex]));
 		this.store.dispatch(new SetCurrentSheepInfoCategoryGrouping(this.currentGrouping));
-		this.tts.speak(`Registrer ${this.currentGrouping.speakText}`);
+		this.tts.speak(`Registrer ${this.currentGrouping.name}`);
 	}
 
 	onComplete(): void {
