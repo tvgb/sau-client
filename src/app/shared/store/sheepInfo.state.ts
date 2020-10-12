@@ -1,93 +1,129 @@
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { Injectable } from '@angular/core';
 import { SheepInfoModel } from '../interfaces/SheepInfoModel';
-import { throwError } from 'rxjs';
-import { SheepColour } from '../enums/SheepColour';
-import { CollarColour } from '../enums/CollarColour';
-import { SheepType } from '../enums/SheepType';
-import { DecrementSheepInfoCategoryCount, IncrementSheepInfoCategoryCount } from './sheepInfo.actions';
-import { SheepInfoCategory } from '../enums/SheepInfoCategory';
+import { DecrementSheepInfoCount, IncrementSheepInfoCount } from './sheepInfo.actions';
 import { AppInfoState } from './appInfo.state';
 import { AppInfoModel } from '../interfaces/AppInfoModel';
 import { SheepInfo } from '../classes/SheepInfo';
+import { Category } from '../enums/Category';
+import { SheepInfoType } from '../enums/SheepInfoType';
+import { SheepInfoCategory } from '../classes/SheepInfoCategory';
 
 
 @State<SheepInfoModel>({
 	name: 'sheepInfo',
 	defaults: {
+
 		totalSheep: {
-			sheepInfoCategory: SheepInfoCategory.totalSheepInfo,
+			category: Category.TotalSheepCategory,
 			name: 'Sau totalt',
-			count: 0
+			speakText: 'sau totalt',
+
+			totalSheep: {
+				sheepInfoCategory: Category.TotalSheepCategory,
+				sheepInfoType: SheepInfoType.TotalSheepInfo,
+				name: 'Sau totalt',
+				speakText: 'sau totalt',
+				count: 0
+			}
 		},
 
-		blackSheep: {
-			sheepInfoCategory: SheepInfoCategory.blackSheepInfo,
-			name: 'Svart',
-			count: 0,
-			sheepColour: SheepColour.Black
-		},
-		greyWhiteSheep: {
-			sheepInfoCategory: SheepInfoCategory.greyWhiteSheepInfo,
-			name: 'Grå og hvit',
-			count: 0,
-			sheepColour: SheepColour.GreyWhite
-		},
-		brownSheep: {
-			sheepInfoCategory: SheepInfoCategory.brownSheepInfo,
-			name: 'Brun',
-			count: 0,
-			sheepColour: SheepColour.Brown
-		},
-		whiteBlackHeadSheep: {
-			sheepInfoCategory: SheepInfoCategory.whiteBlackHeadSheepInfo,
-			name: 'Hvit, svart hode',
-			count: 0,
-			sheepColour: SheepColour.WhiteBlackHead
+		sheepColour: {
+			category: Category.SheepColourCategory,
+			name: 'Farge',
+			speakText: 'farge',
+
+			blackSheep: {
+				sheepInfoCategory: Category.SheepColourCategory,
+				sheepInfoType: SheepInfoType.BlackSheepInfo,
+				name: 'Svart',
+				speakText: 'svart',
+				count: 0
+			},
+			greyWhiteSheep: {
+				sheepInfoCategory: Category.SheepColourCategory,
+				sheepInfoType: SheepInfoType.GreyWhiteSheepInfo,
+				name: 'Grå og hvit',
+				speakText: 'grå og hvit',
+				count: 0
+			},
+			brownSheep: {
+				sheepInfoCategory: Category.SheepColourCategory,
+				sheepInfoType: SheepInfoType.BrownSheepInfo,
+				name: 'Brun',
+				speakText: 'brun',
+				count: 0
+			},
+			whiteBlackHeadSheep: {
+				sheepInfoCategory: Category.SheepColourCategory,
+				sheepInfoType: SheepInfoType.WhiteBlackHeadSheepInfo,
+				name: 'Hvit, svart hode',
+				speakText: 'hvit, svart hode',
+				count: 0
+			},
 		},
 
-		ewe: {
-			sheepInfoCategory: SheepInfoCategory.eweInfo,
-			name: 'Søy',
-			count: 0,
-			sheepType: SheepType.Ewe
-		},
-		lamb: {
-			sheepInfoCategory: SheepInfoCategory.lambInfo,
-			name: 'Lam',
-			count: 0,
-			sheepType: SheepType.Lamb
+		sheepType: {
+			category: Category.SheepTypeCategory,
+			name: 'Type',
+			speakText: 'type',
+
+			ewe: {
+				sheepInfoCategory: Category.SheepTypeCategory,
+				sheepInfoType: SheepInfoType.EweInfo,
+				name: 'Søy',
+				speakText: 'søy',
+				count: 0
+			},
+			lamb: {
+				sheepInfoCategory: Category.SheepTypeCategory,
+				sheepInfoType: SheepInfoType.LambInfo,
+				name: 'Lam',
+				speakText: 'lam',
+				count: 0
+			},
 		},
 
-		blueCollar: {
-			sheepInfoCategory: SheepInfoCategory.blueCollarInfo,
-			name: 'Blå',
-			count: 0,
-			collarColour: CollarColour.Blue
-		},
-		greenCollar: {
-			sheepInfoCategory: SheepInfoCategory.greenCollarInfo,
-			name: 'Grønn',
-			count: 0,
-			collarColour: CollarColour.Green
-		},
-		yellowCollar: {
-			sheepInfoCategory: SheepInfoCategory.yellowCollarInfo,
-			name: 'Gul',
-			count: 0,
-			collarColour: CollarColour.Yellow
-		},
-		redCollar: {
-			sheepInfoCategory: SheepInfoCategory.redCollarInfo,
-			name: 'Rød',
-			count: 0,
-			collarColour: CollarColour.Red
-		},
-		missingCollar: {
-			sheepInfoCategory: SheepInfoCategory.missingCollarInfo,
-			name: 'Mangler',
-			count: 0,
-			collarColour: CollarColour.Missing
+		collarColour: {
+			category: Category.CollarColourCategory,
+			name: 'Slips',
+			speakText: 'slips',
+
+			blueCollar: {
+				sheepInfoCategory: Category.CollarColourCategory,
+				sheepInfoType: SheepInfoType.BlueCollarInfo,
+				name: 'Blå',
+				speakText: 'blå',
+				count: 0
+			},
+			greenCollar: {
+				sheepInfoCategory: Category.CollarColourCategory,
+				sheepInfoType: SheepInfoType.GreenCollarInfo,
+				name: 'Grønn',
+				speakText: 'grønn',
+				count: 0
+			},
+			yellowCollar: {
+				sheepInfoCategory: Category.CollarColourCategory,
+				sheepInfoType: SheepInfoType.YellowCollarInfo,
+				name: 'Gul',
+				speakText: 'gul',
+				count: 0
+			},
+			redCollar: {
+				sheepInfoCategory: Category.CollarColourCategory,
+				sheepInfoType: SheepInfoType.RedCollarInfo,
+				name: 'Rød',
+				speakText: 'rød',
+				count: 0
+			},
+			missingCollar: {
+				sheepInfoCategory: Category.CollarColourCategory,
+				sheepInfoType: SheepInfoType.MissingCollarInfo,
+				name: 'Mangler',
+				speakText: 'mangler',
+				count: 0
+			}
 		}
 	}
 })
@@ -105,58 +141,56 @@ export class SheepInfoState {
 	@Selector([AppInfoState])
 	static getCurrentSheepInfo(state: SheepInfoModel, appInfoState: AppInfoModel): SheepInfo {
 		const currentCategory = appInfoState.currentCategory;
-		let currentSheepInfo: SheepInfo;
+		const currentSheepInfoType = appInfoState.currentSheepInfoType;
 
-		Object.entries(state).forEach(([key, value]) => {
-			if (value.sheepInfoCategory === currentCategory) {
-				currentSheepInfo = state[key];
-			}
-		});
+		console.log(currentCategory, currentSheepInfoType);
 
-		return currentSheepInfo;
+		return state[currentCategory][currentSheepInfoType];
 	}
 
-	@Action(IncrementSheepInfoCategoryCount)
-	incrementSheepInfoCategoryCount(ctx: StateContext<SheepInfoModel>, action: IncrementSheepInfoCategoryCount) {
-		const state = ctx.getState();
+	@Selector([AppInfoState])
+	static getCurrentSheepInfoCategory(state: SheepInfoModel, appInfoState: AppInfoModel): SheepInfoCategory {
+		const currentCategory = appInfoState.currentCategory;
 
-		Object.entries(state).forEach(([key, value]) => {
-			if (value.sheepInfoCategory === action.sheepInfoCategory) {
-				ctx.patchState({
-					[key]: {
-						sheepInfoCategory: value.sheepInfoCategory,
-						name: value.name,
-						count: value.count + 1,
-						sheepColour: value.sheepColour
-					}
-				});
-
-				return;
-			}
-		});
+		return state[currentCategory];
 	}
 
-	@Action(DecrementSheepInfoCategoryCount)
-	decrementSheepInfoCategoryCount(ctx: StateContext<SheepInfoModel>, action: DecrementSheepInfoCategoryCount) {
+	@Action(IncrementSheepInfoCount)
+	incrementSheepInfoCount(ctx: StateContext<SheepInfoModel>, action: IncrementSheepInfoCount) {
 		const state = ctx.getState();
 
-		Object.entries(state).forEach(([key, value]) => {
-			if (value.sheepInfoCategory === action.sheepInfoCategory) {
+		const currentCategory = state[action.payload.category];
+		const currentSheepInfo = currentCategory[action.payload.sheepInfoType];
 
-				if (value.count > 0) {
-					ctx.patchState({
-						[key]: {
-							sheepInfoCategory: value.sheepInfoCategory,
-							name: value.name,
-							count: value.count - 1,
-							sheepColour: value.sheepColour
-						}
-					});
-				} else {
-					throwError(new Error('Cannot decrement. Count already at 0'));
+		ctx.patchState({
+			...state,
+			[action.payload.category]: {
+				...currentCategory,
+				[action.payload.sheepInfoType]: {
+					...currentSheepInfo,
+					count: currentSheepInfo.count + 1
 				}
+			}
+		});
+	}
 
-				return;
+	@Action(DecrementSheepInfoCount)
+	decrementSheepInfoCategoryCount(ctx: StateContext<SheepInfoModel>, action: DecrementSheepInfoCount) {
+		const state = ctx.getState();
+
+		const currentCategory = state[action.payload.category];
+		const currentSheepInfo = currentCategory[action.payload.sheepInfoType];
+
+		if (currentSheepInfo.count <= 0) { return; }
+
+		ctx.patchState({
+			...state,
+			[action.payload.category]: {
+				...currentCategory,
+				[action.payload.sheepInfoType]: {
+					...currentSheepInfo,
+					count: currentSheepInfo.count - 1
+				}
 			}
 		});
 	}

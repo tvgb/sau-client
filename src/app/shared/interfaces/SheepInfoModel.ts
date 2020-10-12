@@ -1,42 +1,25 @@
-import { CollarColourInfo } from '../classes/CollarColourInfo';
-import { SheepColourInfo } from '../classes/SheepColourInfo';
-import { SheepInfo } from '../classes/SheepInfo';
-import { SheepTypeInfo } from '../classes/SheepTypeInfo';
-
+import { CollarColourCategory, SheepColourCategory, SheepTypeCategory, TotalSheepCategory } from '../classes/SheepInfoCategory';
 
 export interface SheepInfoModel {
 
-	totalSheep: SheepInfo;
+	totalSheep: TotalSheepCategory;
+	sheepColour: SheepColourCategory;
+	sheepType: SheepTypeCategory;
+	collarColour: CollarColourCategory;
 
-	blackSheep: SheepColourInfo;
-	greyWhiteSheep: SheepColourInfo;
-	brownSheep: SheepColourInfo;
-	whiteBlackHeadSheep: SheepColourInfo;
+	// totalSheep: SheepInfo;
 
-	lamb: SheepTypeInfo;
-	ewe: SheepTypeInfo;
+	// blackSheep: SheepInfo;
+	// greyWhiteSheep: SheepInfo;
+	// brownSheep: SheepInfo;
+	// whiteBlackHeadSheep: SheepInfo;
 
-	blueCollar: CollarColourInfo;
-	greenCollar: CollarColourInfo;
-	yellowCollar: CollarColourInfo;
-	redCollar: CollarColourInfo;
-	missingCollar: CollarColourInfo;
-}
+	// lamb: SheepInfo;
+	// ewe: SheepInfo;
 
-export interface SheepInfoModel {
-	totalSheep: SheepInfo;
-
-	blackSheep: SheepColourInfo;
-	greyWhiteSheep: SheepColourInfo;
-	brownSheep: SheepColourInfo;
-	whiteBlackHeadSheep: SheepColourInfo;
-
-	lamb: SheepTypeInfo;
-	ewe: SheepTypeInfo;
-
-	blueCollar: CollarColourInfo;
-	greenCollar: CollarColourInfo;
-	yellowCollar: CollarColourInfo;
-	redCollar: CollarColourInfo;
-	missingCollar: CollarColourInfo;
+	// blueCollar: SheepInfo;
+	// greenCollar: SheepInfo;
+	// yellowCollar: SheepInfo;
+	// redCollar: SheepInfo;
+	// missingCollar: SheepInfo;
 }

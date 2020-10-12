@@ -14,29 +14,26 @@ import { Pages } from 'src/app/shared/classes/Pages';
 })
 export class NavigationComponent implements OnInit {
 
-	@Output() nextGrouping = new EventEmitter();
-	@Output() prevGrouping = new EventEmitter();
+	@Output() nextCategory = new EventEmitter();
+	@Output() prevCategory = new EventEmitter();
 	@Output() cancelRegistration = new EventEmitter();
 	@Output() completeRegistration = new EventEmitter();
 
 	completeRoute = '/registration/summary';
 	cancelRoute = '/map';
 
-	@Select(AppInfoState.getCurrentPage) currentPage$: Observable<Pages>;
-	@Select(AppInfoState.getPrevPage) prevPage$: Observable<Pages>;
-
 	constructor(private vibration: Vibration, private ttsService: TextToSpeechService, private router: Router) { }
 
 	ngOnInit(): void {}
 
-	nextGroupingClick() {
+	nextCategoryClick() {
 		this.vibration.vibrate(200);
-		this.nextGrouping.emit();
+		this.nextCategory.emit();
 	}
 
-	prevGroupingClick() {
+	prevCategoryClick() {
 		this.vibration.vibrate(200);
-		this.prevGrouping.emit();
+		this.prevCategory.emit();
 	}
 
 	cancel(): void {

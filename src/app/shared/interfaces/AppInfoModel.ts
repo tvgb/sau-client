@@ -1,9 +1,9 @@
-import { SheepInfo } from '../classes/SheepInfo';
-import { Page } from '../enums/Page';
-import { SheepInfoCategory } from '../enums/SheepInfoCategory';
+import { Category } from '../enums/Category';
+import { SheepInfoType } from '../enums/SheepInfoType';
 
 export interface AppInfoModel {
-	currentPage: Page;
-	prevPage: Page;
-	currentCategory: SheepInfoCategory;
+	// currentPage: Page;
+	// prevPage: Page;
+	currentCategory: Category;
+	currentSheepInfoType: SheepInfoType;
 }

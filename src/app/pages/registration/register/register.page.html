@@ -1,8 +1,8 @@
 <ion-content class="register-content">
 	<div class="register-container">
-		<h1 class="register-heading"> {{ currentGrouping.name }} </h1>
+		<h1 class="register-heading"> {{ sheepInfoCategory.name }} </h1>
 		<div class="count-overview-container">
-			<div class="count-overview" *ngIf="currentGroupingIndex == 0">
+			<div class="count-overview">
 				<div class="count-box">
 					ANTALL
 				</div>
@@ -11,15 +11,15 @@
 		<app-counter 
 			(increment)="onIncrement()"
 			(decrement)="onDecrement()"
-			(categoryLeft)="onCategoryLeft()"
-			(categoryRight)="onCategoryRight()"
-			[categories]="currentGrouping.sheepInfoCategories" 
-			[selectedCategory]="sheepInfo.name"
+			(sheepInfoLeft)="onSheepInfoLeft()"
+			(sheepInfoRight)="onSheepInfoRight()"
+			[sheepInfosCount]="sheepInfoCountInCurrentCategory" 
+			[selectedSheepInfo]="sheepInfo.name"
 			class="counter">
 		</app-counter>
 		<app-navigation
-			(nextGrouping)="onNextGrouping()"
-			(prevGrouping)="onPrevGrouping()"
+			(nextCategory)="onNextCategory()"
+			(prevCategory)="onPrevCategory()"
 			(cancelRegistration)="onCancel()"
 			(completeRegistration)="onComplete()"
 			class="navigation">
