@@ -8,13 +8,13 @@ import { Vibration } from '@ionic-native/vibration/ngx';
 })
 export class CounterComponent implements OnInit {
 
-	@Input() categories: [];
-	@Input() selectedCategory: string;
+	@Input() sheepInfosCount: number;
+	@Input() selectedSheepInfo: string;
 
 	@Output() increment = new EventEmitter();
 	@Output() decrement = new EventEmitter();
-	@Output() categoryRight = new EventEmitter();
-	@Output() categoryLeft = new EventEmitter();
+	@Output() sheepInfoRight = new EventEmitter();
+	@Output() sheepInfoLeft = new EventEmitter();
 
 	constructor(private vibration: Vibration) { }
 
@@ -23,15 +23,15 @@ export class CounterComponent implements OnInit {
 	}
 
 	onSwipeLeft(e): void {
-		if (this.categories.length > 1) {
-			this.categoryLeft.emit(e);
+		if (this.sheepInfosCount > 1) {
+			this.sheepInfoLeft.emit(e);
 			this.vibration.vibrate(200);
 		}
 	}
 
 	onSwipeRight(e): void {
-		if (this.categories.length > 1) {
-			this.categoryRight.emit(e);
+		if (this.sheepInfosCount > 1) {
+			this.sheepInfoRight.emit(e);
 			this.vibration.vibrate(200);
 		}
 	}

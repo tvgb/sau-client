@@ -1,23 +1,12 @@
-import { SheepInfoCategoryGrouping } from '../classes/SheepInfoCategoryGrouping';
-import { Page } from '../enums/Page';
-import { SheepInfoCategory } from '../enums/SheepInfoCategory';
-
-export class UpdateCurrentPage {
-	static readonly type = '[Page] UpdateCurrentPage';
-	constructor(public currentPage: Page ) {}
-}
-
-export class UpdatePrevPage {
-	static readonly type = '[Page] UpdatePrevPage';
-	constructor(public prevPage: Page ) {}
-}
+import { Category } from '../enums/Category';
+import { SheepInfoType } from '../enums/SheepInfoType';
 
 export class SetCurrentSheepInfoCategory {
 	static readonly type = '[Registration Page] SetCurrentSheepInfoCategory';
-	constructor(public sheepInfoCategory: SheepInfoCategory) {}
+	constructor(public sheepInfoCategory: Category) {}
 }
 
-export class SetCurrentSheepInfoCategoryGrouping {
-	static readonly type = '[Registration Page] SetCurrentSheepInfoCategoryGrouping';
-	constructor(public sheepInfoCategoryGrouping: SheepInfoCategoryGrouping) {}
+export class SetCurrentSheepInfoType {
+	static readonly type = '[Registration Page] SetCurrentSheepInfoType';
+	constructor(public sheepInfoType: SheepInfoType) {}
 }

@@ -1,24 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { SheepInfoCategory } from '../enums/SheepInfoCategory';
+import { Category } from '../enums/Category';
+import { SheepInfoType } from '../enums/SheepInfoType';
 import { AppInfoModel } from '../interfaces/AppInfoModel';
-import { SetCurrentSheepInfoCategory, SetCurrentSheepInfoCategoryGrouping, UpdateCurrentPage, UpdatePrevPage } from './appInfo.actions';
+import { SetCurrentSheepInfoCategory, SetCurrentSheepInfoType } from './appInfo.actions';
 
 
 
 @State<AppInfoModel>({
 	name: 'appInfo',
 	defaults: {
-		currentPage: 0,
-		prevPage: 0,
-		currentCategory: SheepInfoCategory.totalSheepInfo,
-		currentCategoryGrouping: {
-			name: 'Sau Totalt',
-			speakText: '',
-			sheepInfoCategories: [
-				SheepInfoCategory.totalSheepInfo,
-			],
-		}
+		currentCategory: Category.TotalSheepCategory,
+		currentSheepInfoType: SheepInfoType.TotalSheepInfo
 	}
 })
 
@@ -26,49 +19,25 @@ import { SetCurrentSheepInfoCategory, SetCurrentSheepInfoCategoryGrouping, Updat
 export class AppInfoState {
 
 	@Selector()
-	static getCurrentPage(state: AppInfoModel) {
-		return state.currentPage;
-	}
-
-	@Selector()
-	static getPrevPage(state: AppInfoModel) {
-		return state.prevPage;
-	}
-
-	@Selector()
 	static getCurrentSheepInfoCategory(state: AppInfoModel) {
 		return state.currentCategory;
 	}
 
-	@Selector()
-	static getCurrentSheepInfoCategoryGrouping(state: AppInfoModel) {
-		return state.currentCategoryGrouping;
-	}
-
-	@Action(UpdateCurrentPage)
-	updateCurrentPage(ctx: StateContext<AppInfoModel>, action: UpdateCurrentPage){
-		const state = ctx.getState();
-		ctx.setState({
-			...state,
-			currentPage: action.currentPage,
-		});
-	}
-
-	@Action(UpdatePrevPage)
-	updatePrevPage(ctx: StateContext<AppInfoModel>, action: UpdatePrevPage) {
-		const state = ctx.getState();
-		ctx.setState({
-			...state,
-			prevPage: action.prevPage,
-		});
-	}
-
 	@Action(SetCurrentSheepInfoCategory)
-	setCurrentSheepInfo(ctx: StateContext<AppInfoModel>, action: SetCurrentSheepInfoCategory) {
+	setCurrentSheepInfoCategory(ctx: StateContext<AppInfoModel>, action: SetCurrentSheepInfoCategory) {
 		const state = ctx.getState();
 		ctx.setState({
 			...state,
 			currentCategory: action.sheepInfoCategory,
+		});
+	}
+
+	@Action(SetCurrentSheepInfoType)
+	setCurrentSheepInfoType(ctx: StateContext<AppInfoModel>, action: SetCurrentSheepInfoType) {
+		const state = ctx.getState();
+		ctx.setState({
+			...state,
+			currentSheepInfoType: action.sheepInfoType,
 		});
 	}
 

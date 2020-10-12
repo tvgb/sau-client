@@ -1,10 +1,7 @@
-import { SheepInfoCategoryGrouping } from '../classes/SheepInfoCategoryGrouping';
-import { Page } from '../enums/Page';
-import { SheepInfoCategory } from '../enums/SheepInfoCategory';
+import { Category } from '../enums/Category';
+import { SheepInfoType } from '../enums/SheepInfoType';
 
 export interface AppInfoModel {
-	currentPage: Page;
-	prevPage: Page;
-	currentCategory: SheepInfoCategory;
-	currentCategoryGrouping: SheepInfoCategoryGrouping;
+	currentCategory: Category;
+	currentSheepInfoType: SheepInfoType;
 }

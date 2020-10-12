@@ -1,11 +1,12 @@
-import { SheepInfoCategory } from '../enums/SheepInfoCategory';
+import { Category } from '../enums/Category';
+import { SheepInfoType } from '../enums/SheepInfoType';
 
-export class IncrementSheepInfoCategoryCount {
-	static readonly type = '[Register Page] IncrementSheepInfoCategoryCount';
-	constructor(public sheepInfoCategory: SheepInfoCategory) {}
+export class IncrementSheepInfoCount {
+	static readonly type = '[Register Page] IncrementSheepInfoCount';
+	constructor(public payload: { category: Category, sheepInfoType: SheepInfoType }) {}
 }
 
-export class DecrementSheepInfoCategoryCount {
-	static readonly type = '[Register Page] DecrementSheepInfoCategoryCount';
-	constructor(public sheepInfoCategory: SheepInfoCategory) {}
+export class DecrementSheepInfoCount {
+	static readonly type = '[Register Page] DecrementSheepInfoCount';
+	constructor(public payload: { category: Category, sheepInfoType: SheepInfoType }) {}
 }
