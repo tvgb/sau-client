@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { SheepInfoCategory } from 'src/app/shared/classes/SheepInfoCategory';
 import { SheepInfoModel } from 'src/app/shared/interfaces/SheepInfoModel';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
+import { RegistrationService } from '../services/registration.service';
 import { TextToSpeechService } from '../services/text-to-speech.service';
 
 @Component({
@@ -20,14 +21,15 @@ export class SummaryPage implements OnInit {
 	currentSheepInfoCategory: SheepInfoCategory;
 
 	@Select(SheepInfoState.getSheepInfo) sheepInfo$: Observable<SheepInfoModel>;
-	@Select(SheepInfoState.getCurrentSheepInfoCategory) currentSheepInfoCategory$: Observable<SheepInfoCategory>;
+	@Select(SheepInfoState.getCurrentSheepInfoCategory) currentSheepInfoCategory$: Observable<any>;
 
   	constructor(
 		private navController: NavController,
 		private tts: TextToSpeechService,
 		private store: Store,
 		private alertController: AlertController,
-		private router: Router) { }
+		private router: Router,
+		private registrationService: RegistrationService) { }
 
 	ngOnInit() {
 		this.tts.speak('Oppsummering');
@@ -68,6 +70,7 @@ export class SummaryPage implements OnInit {
 					handler: () => {
 						this.store.dispatch(new StateResetAll());
 						this.router.navigate(['/map']);
+						this.registrationService.complete();
 						console.log('Returning to map page, clearing state');
 					}
 				}

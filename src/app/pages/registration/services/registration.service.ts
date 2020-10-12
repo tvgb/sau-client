@@ -24,9 +24,9 @@ export class RegistrationService {
 		],
 		[
 			SheepInfoType.GreyWhiteSheepInfo,
-			SheepInfoType.BlackSheepInfo,
+			SheepInfoType.WhiteBlackHeadSheepInfo,
 			SheepInfoType.BrownSheepInfo,
-			SheepInfoType.WhiteBlackHeadSheepInfo
+			SheepInfoType.BlackSheepInfo
 		],
 		[
 			SheepInfoType.EweInfo,
@@ -73,6 +73,7 @@ export class RegistrationService {
 			this.currentCategory = this.categories[this.currentCategoryIndex];
 		}
 
+		this.sheepInfoCountInCurrentCategory.next(this.sheepInfo[this.currentCategoryIndex].length);
 		this.store.dispatch(new SetCurrentSheepInfoCategory(this.currentCategory));
 		this.store.dispatch(new SetCurrentSheepInfoType(this.currentSheepInfo));
 		return true;
@@ -89,6 +90,7 @@ export class RegistrationService {
 			this.currentCategory = this.categories[this.currentCategoryIndex];
 		}
 
+		this.sheepInfoCountInCurrentCategory.next(this.sheepInfo[this.currentCategoryIndex].length);
 		this.store.dispatch(new SetCurrentSheepInfoCategory(this.currentCategory));
 		this.store.dispatch(new SetCurrentSheepInfoType(this.currentSheepInfo));
 		return true;
@@ -106,8 +108,8 @@ export class RegistrationService {
 	}
 
 	prevSheepInfo(): void {
-		if (this.currentSheepInfoIndex - 1 < 0) {
-			this.currentSheepInfoIndex = this.sheepInfo[this.currentCategoryIndex].length;
+		if (this.currentSheepInfoIndex <= 0) {
+			this.currentSheepInfoIndex = this.sheepInfo[this.currentCategoryIndex].length - 1;
 		} else {
 			this.currentSheepInfoIndex--;
 		}
@@ -120,10 +122,21 @@ export class RegistrationService {
 		return this.sheepInfoCountInCurrentCategory.asObservable();
 	}
 
+	complete(): void {
+		this.resetState();
+	}
+
 	cancel(): void {
+		this.resetState();
+	}
+
+	private resetState(): void {
 		this.currentCategoryIndex = 0;
 		this.currentSheepInfoIndex = 0;
 		this.currentCategory = this.categories[this.currentCategoryIndex];
 		this.currentSheepInfo = this.sheepInfo[this.currentCategoryIndex][this.currentSheepInfoIndex];
+		this.sheepInfoCountInCurrentCategory.next(this.sheepInfo[this.currentCategoryIndex].length);
+		this.store.dispatch(new SetCurrentSheepInfoType(this.currentSheepInfo));
+		this.store.dispatch(new SetCurrentSheepInfoCategory(this.currentCategory));
 	}
 }

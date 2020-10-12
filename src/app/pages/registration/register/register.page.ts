@@ -6,8 +6,8 @@ import { SheepInfo } from 'src/app/shared/classes/SheepInfo';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { RegistrationService } from '../services/registration.service';
 import { TextToSpeechService } from '../services/text-to-speech.service';
-import { SheepInfoCategory } from '../../../shared/classes/SheepInfoCategory';
 import { Platform } from '@ionic/angular';
+import { Category } from 'src/app/shared/enums/Category';
 
 @Component({
 	selector: 'app-register',
@@ -17,12 +17,13 @@ import { Platform } from '@ionic/angular';
 export class RegisterPage implements OnInit {
 
 	currentSheepInfo: SheepInfo;
-	currentSheepInfoCategory: SheepInfoCategory;
+	currentSheepInfoCategory: any;
+	category = Category;
 
 	sheepInfoCountInCurrentCategory: number;
 
 	@Select(SheepInfoState.getCurrentSheepInfo) currentSheepInfo$: Observable<SheepInfo>;
-	@Select(SheepInfoState.getCurrentSheepInfoCategory) currentSheepInfoCategory$: Observable<SheepInfoCategory>;
+	@Select(SheepInfoState.getCurrentSheepInfoCategory) currentSheepInfoCategory$: Observable<any>;
 
 	constructor(
 		private store: Store,
@@ -46,6 +47,7 @@ export class RegisterPage implements OnInit {
 
 		this.registrationService.getSheepInfoCountInCurrentCategory().subscribe(res => {
 			if (res) {
+				console.log(res);
 				this.sheepInfoCountInCurrentCategory = res;
 			}
 		});
