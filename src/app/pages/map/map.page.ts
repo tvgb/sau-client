@@ -1,14 +1,13 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { GpsService } from './services/gps.service';
 import { Router } from '@angular/router';
-import { Select, Store } from '@ngxs/store';
-import { AppInfoState } from 'src/app/shared/store/appInfo.state';
+import { Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
-import { SheepInfoCategoryGrouping } from 'src/app/shared/classes/SheepInfoCategoryGrouping';
-import { toTypeScript } from '@angular/compiler';
 import { TextToSpeechService } from '../registration/services/text-to-speech.service';
+import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
+import { SheepInfoCategory } from 'src/app/shared/classes/SheepInfoCategory';
 
 @Component({
 	selector: 'app-map',
@@ -20,15 +19,19 @@ export class MapPage implements OnInit, AfterViewInit {
 	private routeLink = ['/registration/register'];
 	private map;
 	private readonly OFFLINE_MAP = false;
-	private currentGrouping: SheepInfoCategoryGrouping;
+	private currentSheepInfoCategory: SheepInfoCategory;
 
-	@Select(AppInfoState.getCurrentSheepInfoCategoryGrouping) currentGrouping$: Observable<SheepInfoCategoryGrouping>;
+	@Select(SheepInfoState.getCurrentSheepInfoCategory) currentSheepInfoCategory$: Observable<SheepInfoCategory>;
 
-	constructor(private mapService: MapService, private gpsService: GpsService, private ttsService: TextToSpeechService, private router: Router) { }
+	constructor(
+		private mapService: MapService,
+		private gpsService: GpsService,
+		private ttsService: TextToSpeechService,
+		private router: Router) { }
 
 	ngOnInit(): void {
-		this.currentGrouping$.subscribe(res => {
-			this.currentGrouping = res;
+		this.currentSheepInfoCategory$.subscribe(res => {
+			this.currentSheepInfoCategory = res;
 		});
 		// This covers Gløshaugen ++++
 		// const startLat = 63.433167;
@@ -63,7 +66,7 @@ export class MapPage implements OnInit, AfterViewInit {
 
 	navigateToRegistration() {
 		console.log('navigate method');
-		this.ttsService.speak(`Registrer ${this.currentGrouping.name}`);
+		this.ttsService.speak(`Registrer ${this.currentSheepInfoCategory.name}`);
 		this.router.navigate(this.routeLink);
 	}
 	initMap(): void {

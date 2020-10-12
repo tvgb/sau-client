@@ -1,7 +1,6 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Vibration } from '@ionic-native/vibration/ngx';
-import { Page } from 'src/app/shared/enums/Page';
 import { StateResetAll } from 'ngxs-reset-plugin';
 import {AlertController} from '@ionic/angular';
 import { Store } from '@ngxs/store';
@@ -18,15 +17,6 @@ export class NavigationComponent implements OnInit {
 	@Output() cancelRegistration = new EventEmitter();
 	@Output() completeRegistration = new EventEmitter();
 
-	pages: Page[] = [
-		Page.MapPage,
-		Page.TotalSheepPage,
-		Page.SheepColourPage,
-		Page.SheepTypePage,
-		Page.CollarColourPage
-	];
-
-	selectedPageIndex = 0;
 	completeRoute = '/registration/summary';
 	cancelRoute = '/map';
 

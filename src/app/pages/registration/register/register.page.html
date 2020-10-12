@@ -1,6 +1,6 @@
 <ion-content class="register-content">
 	<div class="register-container">
-		<h1 class="register-heading"> {{ sheepInfoCategory.name }} </h1>
+		<h1 class="register-heading"> {{ currentSheepInfoCategory.name }} </h1>
 		<div class="count-overview-container">
 			<div class="count-overview">
 				<div class="count-box">
@@ -14,7 +14,7 @@
 			(sheepInfoLeft)="onSheepInfoLeft()"
 			(sheepInfoRight)="onSheepInfoRight()"
 			[sheepInfosCount]="sheepInfoCountInCurrentCategory" 
-			[selectedSheepInfo]="sheepInfo.name"
+			[selectedSheepInfo]="currentSheepInfo.name"
 			class="counter">
 		</app-counter>
 		<app-navigation

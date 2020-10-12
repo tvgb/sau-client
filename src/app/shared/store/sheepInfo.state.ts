@@ -20,7 +20,6 @@ import { SheepInfoCategory } from '../classes/SheepInfoCategory';
 			speakText: 'sau totalt',
 
 			totalSheep: {
-				sheepInfoCategory: Category.TotalSheepCategory,
 				sheepInfoType: SheepInfoType.TotalSheepInfo,
 				name: 'Sau totalt',
 				speakText: 'sau totalt',
@@ -34,28 +33,24 @@ import { SheepInfoCategory } from '../classes/SheepInfoCategory';
 			speakText: 'farge',
 
 			blackSheep: {
-				sheepInfoCategory: Category.SheepColourCategory,
 				sheepInfoType: SheepInfoType.BlackSheepInfo,
 				name: 'Svart',
 				speakText: 'svart',
 				count: 0
 			},
 			greyWhiteSheep: {
-				sheepInfoCategory: Category.SheepColourCategory,
 				sheepInfoType: SheepInfoType.GreyWhiteSheepInfo,
 				name: 'Grå og hvit',
 				speakText: 'grå og hvit',
 				count: 0
 			},
 			brownSheep: {
-				sheepInfoCategory: Category.SheepColourCategory,
 				sheepInfoType: SheepInfoType.BrownSheepInfo,
 				name: 'Brun',
 				speakText: 'brun',
 				count: 0
 			},
 			whiteBlackHeadSheep: {
-				sheepInfoCategory: Category.SheepColourCategory,
 				sheepInfoType: SheepInfoType.WhiteBlackHeadSheepInfo,
 				name: 'Hvit, svart hode',
 				speakText: 'hvit, svart hode',
@@ -69,14 +64,12 @@ import { SheepInfoCategory } from '../classes/SheepInfoCategory';
 			speakText: 'type',
 
 			ewe: {
-				sheepInfoCategory: Category.SheepTypeCategory,
 				sheepInfoType: SheepInfoType.EweInfo,
 				name: 'Søy',
 				speakText: 'søy',
 				count: 0
 			},
 			lamb: {
-				sheepInfoCategory: Category.SheepTypeCategory,
 				sheepInfoType: SheepInfoType.LambInfo,
 				name: 'Lam',
 				speakText: 'lam',
@@ -90,35 +83,30 @@ import { SheepInfoCategory } from '../classes/SheepInfoCategory';
 			speakText: 'slips',
 
 			blueCollar: {
-				sheepInfoCategory: Category.CollarColourCategory,
 				sheepInfoType: SheepInfoType.BlueCollarInfo,
 				name: 'Blå',
 				speakText: 'blå',
 				count: 0
 			},
 			greenCollar: {
-				sheepInfoCategory: Category.CollarColourCategory,
 				sheepInfoType: SheepInfoType.GreenCollarInfo,
 				name: 'Grønn',
 				speakText: 'grønn',
 				count: 0
 			},
 			yellowCollar: {
-				sheepInfoCategory: Category.CollarColourCategory,
 				sheepInfoType: SheepInfoType.YellowCollarInfo,
 				name: 'Gul',
 				speakText: 'gul',
 				count: 0
 			},
 			redCollar: {
-				sheepInfoCategory: Category.CollarColourCategory,
 				sheepInfoType: SheepInfoType.RedCollarInfo,
 				name: 'Rød',
 				speakText: 'rød',
 				count: 0
 			},
 			missingCollar: {
-				sheepInfoCategory: Category.CollarColourCategory,
 				sheepInfoType: SheepInfoType.MissingCollarInfo,
 				name: 'Mangler',
 				speakText: 'mangler',

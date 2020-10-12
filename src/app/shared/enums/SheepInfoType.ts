@@ -10,7 +10,7 @@ export enum SheepInfoType {
 	EweInfo = 'ewe',
 
 	BlueCollarInfo = 'blueCollar',
-	GreenCollarInfo = 'greemCollar',
+	GreenCollarInfo = 'greenCollar',
 	YellowCollarInfo = 'yellowCollar',
 	RedCollarInfo = 'redCollar',
 	MissingCollarInfo = 'missingCollar'

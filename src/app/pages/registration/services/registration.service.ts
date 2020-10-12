@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngxs/store';
-import { BehaviorSubject, observable, Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Category } from 'src/app/shared/enums/Category';
 import { SheepInfoType } from 'src/app/shared/enums/SheepInfoType';
 import { SetCurrentSheepInfoCategory, SetCurrentSheepInfoType } from 'src/app/shared/store/appInfo.actions';

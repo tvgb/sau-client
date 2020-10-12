@@ -6,7 +6,6 @@ import { AppInfoModel } from '../interfaces/AppInfoModel';
 import { SetCurrentSheepInfoCategory, SetCurrentSheepInfoType } from './appInfo.actions';
 
 
-
 @State<AppInfoModel>({
 	name: 'appInfo',
 	defaults: {
@@ -17,7 +16,6 @@ import { SetCurrentSheepInfoCategory, SetCurrentSheepInfoType } from './appInfo.
 
 @Injectable()
 export class AppInfoState {
-
 	@Selector()
 	static getCurrentSheepInfoCategory(state: AppInfoModel) {
 		return state.currentCategory;
@@ -38,15 +36,6 @@ export class AppInfoState {
 		ctx.setState({
 			...state,
 			currentSheepInfoType: action.sheepInfoType,
-		});
-	}
-
-	@Action(SetCurrentSheepInfoCategoryGrouping)
-	setCurrentSheepInfoCategoryGrouping(ctx: StateContext<AppInfoModel>, action: SetCurrentSheepInfoCategoryGrouping) {
-		const state = ctx.getState();
-		ctx.setState({
-			...state,
-			currentCategoryGrouping: action.sheepInfoCategoryGrouping,
 		});
 	}
 }

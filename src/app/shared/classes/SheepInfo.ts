@@ -2,7 +2,6 @@ import { Category } from '../enums/Category';
 import { SheepInfoType } from '../enums/SheepInfoType';
 
 interface ISheepInfo {
-	sheepInfoCategory: Category;
 	sheepInfoType: SheepInfoType;
 	name: string;
 	speakText: string;
@@ -10,7 +9,6 @@ interface ISheepInfo {
 }
 
 export class SheepInfo implements ISheepInfo {
-	sheepInfoCategory: Category;
 	sheepInfoType: SheepInfoType;
 	name: string;
 	speakText: string;
