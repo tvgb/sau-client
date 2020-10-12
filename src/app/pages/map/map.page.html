@@ -5,7 +5,7 @@
 		</div>
 	</div>
 	<ion-fab id="add-registration-fab" vertical="bottom" horizontal="end" slot="fixed">
-		<ion-fab-button [routerLink]="['/registration/register']" id="add-registration-btn">
+		<ion-fab-button (click)="navigateToRegistration()" id="add-registration-btn">
 		  	<ion-icon name="add"></ion-icon>
 		</ion-fab-button>
 	  </ion-fab>	

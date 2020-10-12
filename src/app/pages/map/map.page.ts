@@ -2,6 +2,13 @@ import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angula
 import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { GpsService } from './services/gps.service';
+import { Router } from '@angular/router';
+import { Select, Store } from '@ngxs/store';
+import { AppInfoState } from 'src/app/shared/store/appInfo.state';
+import { Observable } from 'rxjs';
+import { SheepInfoCategoryGrouping } from 'src/app/shared/classes/SheepInfoCategoryGrouping';
+import { toTypeScript } from '@angular/compiler';
+import { TextToSpeechService } from '../registration/services/text-to-speech.service';
 
 @Component({
 	selector: 'app-map',
@@ -10,12 +17,19 @@ import { GpsService } from './services/gps.service';
 })
 export class MapPage implements OnInit, AfterViewInit {
 
+	private routeLink = ['/registration/register'];
 	private map;
 	private readonly OFFLINE_MAP = false;
-	constructor(private mapService: MapService, private gpsService: GpsService) { }
+	private currentGrouping: SheepInfoCategoryGrouping;
+
+	@Select(AppInfoState.getCurrentSheepInfoCategoryGrouping) currentGrouping$: Observable<SheepInfoCategoryGrouping>;
+
+	constructor(private mapService: MapService, private gpsService: GpsService, private ttsService: TextToSpeechService, private router: Router) { }
 
 	ngOnInit(): void {
-
+		this.currentGrouping$.subscribe(res => {
+			this.currentGrouping = res;
+		});
 		// This covers Gløshaugen ++++
 		// const startLat = 63.433167;
 		// const startLong =  10.358562;
@@ -47,6 +61,11 @@ export class MapPage implements OnInit, AfterViewInit {
 		});
 	}
 
+	navigateToRegistration() {
+		console.log('navigate method');
+		this.ttsService.speak(`Registrer ${this.currentGrouping.name}`);
+		this.router.navigate(this.routeLink);
+	}
 	initMap(): void {
 		// Coordinates for the middle of Gløshaugen
 		const lat = 63.418604;
