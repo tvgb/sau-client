@@ -143,8 +143,6 @@ export class SheepInfoState {
 		const currentCategory = appInfoState.currentCategory;
 		const currentSheepInfoType = appInfoState.currentSheepInfoType;
 
-		console.log(currentCategory, currentSheepInfoType);
-
 		return state[currentCategory][currentSheepInfoType];
 	}
 
