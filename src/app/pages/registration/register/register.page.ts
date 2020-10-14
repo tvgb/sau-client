@@ -69,12 +69,12 @@ export class RegisterPage implements OnInit {
 	}
 
 	onSheepInfoRight(): void {
-		this.registrationService.nextSheepInfo();
+		this.registrationService.prevSheepInfo();
 		this.tts.speak(`${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
 	}
 
 	onSheepInfoLeft(): void {
-		this.registrationService.prevSheepInfo();
+		this.registrationService.nextSheepInfo();
 		this.tts.speak(`${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
 	}
 

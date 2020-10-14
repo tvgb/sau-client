@@ -1,0 +1,57 @@
+.counter-container {
+	display: flex;
+
+	justify-content: center;
+	align-items: center;
+
+	width: 100%;
+	height: 100%;
+}
+
+.dead-zone {
+	width: 150px;
+	height: 150px;
+	border: 3px solid white;
+	border-radius: 5px;
+	opacity: 0.2;
+
+	position: absolute;
+	z-index: 1;
+}
+
+.block-horizontal {
+	width: 200px;
+	height: 60px;
+	background-color: #1C262F;
+	
+	position: absolute;
+	z-index: 2;
+}
+
+.block-vertical {
+	width: 60px;
+	height: 200px;
+	background-color: #1C262F;
+	
+	position: absolute;
+	z-index: 3;
+
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.left-triangle {
+	-moz-transform: scale(-1, 1);
+	-webkit-transform: scale(-1, 1);
+	-o-transform: scale(-1, 1);
+	-ms-transform: scale(-1, 1);
+	transform: scale(-1, 1);
+}
+
+.left-triangle, .right-triangle {
+	display: block;
+	width: 50px;
+	margin: 0;
+}
+

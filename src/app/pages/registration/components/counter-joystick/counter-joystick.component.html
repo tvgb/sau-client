@@ -1,10 +1,28 @@
 <div class="counter-container"> 
-	<div class="plus" (click)="onSwipeUp($event)">
+
+	<div class="block-horizontal">
+		<div class="right-triangle">
+			<ion-icon size="large" name="play-outline"></ion-icon>
+		</div>
+		<div class="left-triangle">
+			<ion-icon size="large" name="play-outline"></ion-icon>
+		</div>
+	</div>
+
+	<div class="block-vertical">
+
+	</div>
+
+	<div class="dead-zone">
+
+	</div>
+
+	<!-- <div class="plus" (click)="onSwipeUp($event)">
 		<ion-icon size="large" name="add-outline"></ion-icon>
 	</div>
 	<div
 		*ngIf="sheepInfosCount > 1"
-		(click)="onSwipeRight($event)"
+		(click)="onSwipeLeft($event)"
 		class="left">
 		<ion-icon size="large" name="chevron-back-outline"></ion-icon>
 	</div>
@@ -18,11 +36,11 @@
 	</div>
 	<div
 		*ngIf="sheepInfosCount > 1"
-		(click)="onSwipeLeft($event)"
+		(click)="onSwipeRight($event)"
 		class="right">
 		<ion-icon size="large" name="chevron-forward-outline"></ion-icon>
 	</div>
 	<div class="minus" (click)="onSwipeDown($event)">
 		<ion-icon size="large" name="remove-outline"></ion-icon>
-	</div>
+	</div> -->
 </div>
