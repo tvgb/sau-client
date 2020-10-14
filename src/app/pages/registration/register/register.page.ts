@@ -81,13 +81,16 @@ export class RegisterPage implements OnInit {
 	onNextCategory(): void {
 		if (!this.registrationService.nextCategory()) {
 			this.router.navigate(['/registration/summary']);
+
 		}
+		this.tts.speak(`Registrer ${this.currentSheepInfoCategory.name}, ${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
 	}
 
 	onPrevCategory(): void {
 		if (!this.registrationService.prevCategroy()) {
 			this.router.navigate(['/map']);
 		}
+		this.tts.speak(`Registrer ${this.currentSheepInfoCategory.name}, ${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
 	}
 
 	onComplete(): void {
