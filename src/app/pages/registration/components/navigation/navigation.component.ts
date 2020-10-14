@@ -1,13 +1,9 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Vibration } from '@ionic-native/vibration/ngx';
-import { TextToSpeechService } from '../../services/text-to-speech.service';
-import { Select, Store } from '@ngxs/store';
-import { AppInfoState } from 'src/app/shared/store/appInfo.state';
-import { Observable } from 'rxjs';
-import { Page } from 'src/app/shared/enums/Page';
 import { StateResetAll } from 'ngxs-reset-plugin';
 import {AlertController} from '@ionic/angular';
+import { Store } from '@ngxs/store';
 
 @Component({
 	selector: 'app-navigation',
@@ -16,38 +12,26 @@ import {AlertController} from '@ionic/angular';
 })
 export class NavigationComponent implements OnInit {
 
-	@Output() nextGrouping = new EventEmitter();
-	@Output() prevGrouping = new EventEmitter();
+	@Output() nextCategory = new EventEmitter();
+	@Output() prevCategory = new EventEmitter();
 	@Output() cancelRegistration = new EventEmitter();
 	@Output() completeRegistration = new EventEmitter();
 
-	pages: Page[] = [
-		Page.MapPage,
-		Page.TotalSheepPage,
-		Page.SheepColourPage,
-		Page.SheepTypePage,
-		Page.CollarColourPage
-	];
-
-	selectedPageIndex = 0;
 	completeRoute = '/registration/summary';
 	cancelRoute = '/map';
-
-	@Select(AppInfoState.getCurrentPage) currentPage$: Observable<Page>;
-	@Select(AppInfoState.getPrevPage) prevPage$: Observable<Page>;
 
 	constructor(private vibration: Vibration, private router: Router, private store: Store, private alertController: AlertController) { }
 
 	ngOnInit(): void {}
 
-	nextGroupingClick() {
+	nextCategoryClick() {
 		this.vibration.vibrate(200);
-		this.nextGrouping.emit();
+		this.nextCategory.emit();
 	}
 
-	prevGroupingClick() {
+	prevCategoryClick() {
 		this.vibration.vibrate(200);
-		this.prevGrouping.emit();
+		this.prevCategory.emit();
 	}
 
 	cancel(): void {

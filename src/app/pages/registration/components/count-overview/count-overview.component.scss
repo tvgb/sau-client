@@ -1,0 +1,38 @@
+:host {
+	width: 100%;
+}
+
+.count-overview {
+	width: 100%;
+
+	display: flex;
+	justify-content: space-evenly;
+}
+
+.count-element {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.colour-bar {
+	width: 30px;
+	height: 7px;
+	border-radius: 2px;
+}
+
+.count-text {
+	display: flex;
+	align-items: center;
+	height: 24px;
+	text-align: center;
+	font-size: 17px;
+	font-weight: 400;
+	text-transform: uppercase;
+}
+
+.count-number {
+	height: 24px;
+	font-size: 22px;
+	font-weight: 400;
+}

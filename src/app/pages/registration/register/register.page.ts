@@ -1,18 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { SelectControlValueAccessor } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { SheepInfo } from 'src/app/shared/classes/SheepInfo';
-import { SheepInfoCategoryGrouping } from 'src/app/shared/classes/SheepInfoCategoryGrouping';
-import { SheepInfoCategory } from 'src/app/shared/enums/SheepInfoCategory';
-import { SetCurrentSheepInfoCategory, SetCurrentSheepInfoCategoryGrouping } from 'src/app/shared/store/appInfo.actions';
-import { AppInfoState } from 'src/app/shared/store/appInfo.state';
-import { DecrementSheepInfoCategoryCount, IncrementSheepInfoCategoryCount } from 'src/app/shared/store/sheepInfo.actions';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
+import { RegistrationService } from '../services/registration.service';
 import { TextToSpeechService } from '../services/text-to-speech.service';
 import { Platform } from '@ionic/angular';
-
+import { Category } from 'src/app/shared/enums/Category';
 
 @Component({
 	selector: 'app-register',
@@ -21,122 +16,78 @@ import { Platform } from '@ionic/angular';
 })
 export class RegisterPage implements OnInit {
 
-	categoryGroupings: SheepInfoCategoryGrouping[] = [
-		{
-			name: 'Sau totalt',
-			speakText: '',
-			sheepInfoCategories: [
-				SheepInfoCategory.totalSheepInfo
-			]
-		},
-		{
-			name: 'Farge',
-			speakText: 'sau',
-			sheepInfoCategories: [
-				SheepInfoCategory.greyWhiteSheepInfo,
-				SheepInfoCategory.whiteBlackHeadSheepInfo,
-				SheepInfoCategory.blackSheepInfo,
-				SheepInfoCategory.brownSheepInfo
-			]
-		},
-		{
-			name: 'Type',
-			speakText: '',
-			sheepInfoCategories: [
-				SheepInfoCategory.eweInfo,
-				SheepInfoCategory.lambInfo
-			]
-		},
-		{
-			name: 'Slips',
-			speakText: 'slips',
-			sheepInfoCategories: [
-				SheepInfoCategory.blueCollarInfo,
-				SheepInfoCategory.greenCollarInfo,
-				SheepInfoCategory.yellowCollarInfo,
-				SheepInfoCategory.redCollarInfo,
-				SheepInfoCategory.missingCollarInfo
-			]
-		},
-	];
+	currentSheepInfo: SheepInfo;
+	currentSheepInfoCategory: any;
+	category = Category;
 
-	currentGroupingIndex: number;
-	currentCategoryIndex: number;
-	currentGrouping: SheepInfoCategoryGrouping;
-	categoryCount: number;
-	sheepInfo: SheepInfo;
+	sheepInfoCountInCurrentCategory: number;
 
 	@Select(SheepInfoState.getCurrentSheepInfo) currentSheepInfo$: Observable<SheepInfo>;
-	@Select(AppInfoState.getCurrentSheepInfoCategoryGrouping) currentCategoryGrouping$: Observable<SheepInfoCategoryGrouping>;
+	@Select(SheepInfoState.getCurrentSheepInfoCategory) currentSheepInfoCategory$: Observable<any>;
 
-	constructor(private store: Store, private tts: TextToSpeechService, private router: Router, private platform: Platform) {
+	constructor(
+		private store: Store,
+		private registrationService: RegistrationService,
+		private tts: TextToSpeechService,
+		private router: Router,
+		private platform: Platform)
+
+	{
 		this.platform.backButton.subscribeWithPriority(10, () => {
-			this.onPrevGrouping();
-		  });
-	 }
+			this.onPrevCategory();
+		});
+	}
 
 	ngOnInit() {
-		this.currentGroupingIndex = 0;
-		this.currentCategoryIndex = 0;
-
-		this.currentGrouping = this.categoryGroupings[this.currentCategoryIndex];
-		this.categoryCount = this.currentGrouping.sheepInfoCategories.length;
-
 		this.currentSheepInfo$.subscribe(res => {
-			this.sheepInfo = res;
+			if (res) {
+				this.currentSheepInfo = res;
+			}
 		});
-		this.currentCategoryGrouping$.subscribe(res => {
-			this.currentGrouping = res;
+
+		this.registrationService.getSheepInfoCountInCurrentCategory().subscribe(res => {
+			if (res) {
+				this.sheepInfoCountInCurrentCategory = res;
+			}
+		});
+
+		this.currentSheepInfoCategory$.subscribe(res => {
+			if (res) {
+				this.currentSheepInfoCategory = res;
+			}
 		});
 	}
 
 	onIncrement(): void {
-		this.store.dispatch(new IncrementSheepInfoCategoryCount(this.currentGrouping.sheepInfoCategories[this.currentCategoryIndex]));
-		this.tts.speak(`${this.sheepInfo.count} ${this.sheepInfo.name} ${this.currentGrouping.speakText}`);
+		this.registrationService.increment();
+		this.tts.speak(`${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
 	}
 
 	onDecrement(): void {
-		this.store.dispatch(new DecrementSheepInfoCategoryCount(this.currentGrouping.sheepInfoCategories[this.currentCategoryIndex]));
-		this.tts.speak(`${this.sheepInfo.count} ${this.sheepInfo.name} ${this.currentGrouping.speakText}`);
+		this.registrationService.decrement();
+		this.tts.speak(`${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
 	}
 
-	onCategoryRight(): void {
-		this.currentCategoryIndex >= this.categoryCount - 1 ? this.currentCategoryIndex = 0 : this.currentCategoryIndex++;
-		this.store.dispatch(new SetCurrentSheepInfoCategory(this.currentGrouping.sheepInfoCategories[this.currentCategoryIndex]));
-		this.tts.speak(`${this.sheepInfo.count} ${this.sheepInfo.name} ${this.currentGrouping.speakText}`);
+	onSheepInfoRight(): void {
+		this.registrationService.nextSheepInfo();
+		this.tts.speak(`${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
 	}
 
-	onCategoryLeft(): void {
-		this.currentCategoryIndex <= 0 ? this.currentCategoryIndex = this.categoryCount - 1 : this.currentCategoryIndex--;
-		this.store.dispatch(new SetCurrentSheepInfoCategory(this.currentGrouping.sheepInfoCategories[this.currentCategoryIndex]));
-		this.tts.speak(`${this.sheepInfo.count} ${this.sheepInfo.name} ${this.currentGrouping.speakText}`);
+	onSheepInfoLeft(): void {
+		this.registrationService.prevSheepInfo();
+		this.tts.speak(`${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
 	}
 
-	onNextGrouping(): void {
-		if (this.currentGroupingIndex >= this.categoryGroupings.length - 1) {
+	onNextCategory(): void {
+		if (!this.registrationService.nextCategory()) {
 			this.router.navigate(['/registration/summary']);
-		} else {
-			this.currentGroupingIndex++;
-			this.changeGrouping();
 		}
 	}
 
-	onPrevGrouping(): void {
-		if (this.currentGroupingIndex <= 0) {
+	onPrevCategory(): void {
+		if (!this.registrationService.prevCategroy()) {
 			this.router.navigate(['/map']);
-		} else {
-			this.currentGroupingIndex--;
-			this.changeGrouping();
 		}
-	}
-
-	changeGrouping(): void {
-		this.currentGrouping = this.categoryGroupings[this.currentGroupingIndex];
-		this.currentCategoryIndex = 0;
-		this.categoryCount = this.currentGrouping.sheepInfoCategories.length;
-		this.store.dispatch(new SetCurrentSheepInfoCategory(this.currentGrouping.sheepInfoCategories[this.currentCategoryIndex]));
-		this.store.dispatch(new SetCurrentSheepInfoCategoryGrouping(this.currentGrouping));
-		this.tts.speak(`Registrer ${this.currentGrouping.name}`);
 	}
 
 	onComplete(): void {
@@ -144,11 +95,6 @@ export class RegisterPage implements OnInit {
 	}
 
 	onCancel(): void {
-		this.currentGroupingIndex = 0;
-		this.currentCategoryIndex = 0;
-
-		this.currentGrouping = this.categoryGroupings[this.currentCategoryIndex];
-		this.categoryCount = this.currentGrouping.sheepInfoCategories.length;
-		this.store.dispatch(new SetCurrentSheepInfoCategory(SheepInfoCategory.totalSheepInfo));
+		this.registrationService.cancel();
 	}
 }

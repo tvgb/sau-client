@@ -4,10 +4,11 @@ import { AlertController, NavController } from '@ionic/angular';
 import { Select, Store } from '@ngxs/store';
 import { StateResetAll } from 'ngxs-reset-plugin';
 import { Observable } from 'rxjs';
-import { SheepInfoCategoryGrouping } from 'src/app/shared/classes/SheepInfoCategoryGrouping';
+import { SheepInfoCategory } from 'src/app/shared/classes/SheepInfoCategory';
+import { Category } from 'src/app/shared/enums/Category';
 import { SheepInfoModel } from 'src/app/shared/interfaces/SheepInfoModel';
-import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
+import { RegistrationService } from '../services/registration.service';
 import { TextToSpeechService } from '../services/text-to-speech.service';
 
 @Component({
@@ -17,28 +18,37 @@ import { TextToSpeechService } from '../services/text-to-speech.service';
 })
 export class SummaryPage implements OnInit {
 
-	sheepInfo: SheepInfoModel;
-	currentCategoryGrouping: SheepInfoCategoryGrouping;
+	currentSheepInfo: SheepInfoModel;
+	currentSheepInfoCategory: SheepInfoCategory;
+	category = Category;
 
 	@Select(SheepInfoState.getSheepInfo) sheepInfo$: Observable<SheepInfoModel>;
-	@Select(AppInfoState.getCurrentSheepInfoCategoryGrouping) currentCategoryGrouping$: Observable<SheepInfoCategoryGrouping>;
+	@Select(SheepInfoState.getCurrentSheepInfoCategory) currentSheepInfoCategory$: Observable<any>;
 
-  	constructor(private navController: NavController, private tts: TextToSpeechService, private store: Store, private alertController: AlertController, private router: Router) { }
+  	constructor(
+		private navController: NavController,
+		private tts: TextToSpeechService,
+		private store: Store,
+		private alertController: AlertController,
+		private router: Router,
+		private registrationService: RegistrationService) { }
 
 	ngOnInit() {
 		this.tts.speak('Oppsummering');
 
 		this.sheepInfo$.subscribe(res => {
-			this.sheepInfo = res;
+			this.currentSheepInfo = res;
 		});
 
-		this.currentCategoryGrouping$.subscribe(res => {
-			this.currentCategoryGrouping = res;
+		this.currentSheepInfoCategory$.subscribe(res => {
+			if (res) {
+				this.currentSheepInfoCategory = res;
+			}
 		});
 	}
 
 	navigateBack() {
-		this.tts.speak(`Registrer ${this.currentCategoryGrouping.name}`);
+		this.tts.speak(`Registrer ${this.currentSheepInfoCategory.name}`);
 		this.navController.back();
 	}
 
@@ -62,6 +72,7 @@ export class SummaryPage implements OnInit {
 					handler: () => {
 						this.store.dispatch(new StateResetAll());
 						this.router.navigate(['/map']);
+						this.registrationService.complete();
 						console.log('Returning to map page, clearing state');
 					}
 				}

@@ -1,0 +1,16 @@
+<div class="count-overview">
+
+	<div *ngFor="let infoType of infoTypes; index as i;" class="count-element" [style]="'width: ' + ((100 / infoTypes.length) - ((6 - infoTypes.length) * 10)) + '%'">
+		<div class="count-text" [style]="getTextStyle(infoType)">
+			{{ infoType }}
+		</div>
+
+		<div [style]="getBarStyle(i)" class="colour-bar">
+
+		</div>
+
+		<div class="count-number">
+			{{ counts[i] }}
+		</div>
+	</div>
+</div>
