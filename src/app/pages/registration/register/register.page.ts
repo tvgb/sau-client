@@ -47,7 +47,6 @@ export class RegisterPage implements OnInit {
 
 		this.registrationService.getSheepInfoCountInCurrentCategory().subscribe(res => {
 			if (res) {
-				console.log(res);
 				this.sheepInfoCountInCurrentCategory = res;
 			}
 		});

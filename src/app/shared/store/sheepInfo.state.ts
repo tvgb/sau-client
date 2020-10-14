@@ -32,16 +32,16 @@ import { SheepInfoCategory } from '../classes/SheepInfoCategory';
 			name: 'Farge',
 			speakText: 'farge',
 
+			whiteSheep: {
+				sheepInfoType: SheepInfoType.WhiteSheepInfo,
+				name: 'Hvit',
+				speakText: 'hvit',
+				count: 0
+			},
 			blackSheep: {
 				sheepInfoType: SheepInfoType.BlackSheepInfo,
 				name: 'Svart',
 				speakText: 'svart',
-				count: 0
-			},
-			greyWhiteSheep: {
-				sheepInfoType: SheepInfoType.GreyWhiteSheepInfo,
-				name: 'Grå og hvit',
-				speakText: 'grå og hvit',
 				count: 0
 			},
 			brownSheep: {
@@ -49,13 +49,7 @@ import { SheepInfoCategory } from '../classes/SheepInfoCategory';
 				name: 'Brun',
 				speakText: 'brun',
 				count: 0
-			},
-			whiteBlackHeadSheep: {
-				sheepInfoType: SheepInfoType.WhiteBlackHeadSheepInfo,
-				name: 'Hvit, svart hode',
-				speakText: 'hvit, svart hode',
-				count: 0
-			},
+			}
 		},
 
 		sheepType: {

@@ -10,6 +10,11 @@
 	justify-content: space-between;
 }
 
+.register-top-part {
+	display: flex;
+	flex-direction: column;
+}
+
 .counter {
 	height: 50%;
 }
@@ -27,56 +32,4 @@
 	width: 100%;
 }
 
-.count-overview {
-	width: 100%;
 
-	display: flex;
-	justify-content: space-evenly;
-}
-
-.count-element {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-}
-
-.type-count-element {
-	display: flex;
-	justify-content: space-evenly;
-	
-	.count-text {
-		width: 80px;
-	}
-}
-
-.count-text {
-	width: 110px;
-	text-align: right;
-	font-size: x-large;
-	font-weight: 200;
-	margin-right: 12px;
-
-	text-transform: uppercase;
-}
-
-.count-number {
-	width: 40px;
-	font-size: x-large;
-	font-weight: 400;
-}
-
-.count-icon {
-	width: 20px;
-	height: 20px;
-	display: flex;
-	align-items: center;
-	margin: 0px 7px 0px 0px;
-	text-align: right;
-	font-size: x-large;
-	font-weight: 600;
-}
-
-.icon-left, .icon-right {
-	width: 50%;
-	height: 100%;
-}

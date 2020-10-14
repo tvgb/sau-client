@@ -5,6 +5,7 @@ import { Select, Store } from '@ngxs/store';
 import { StateResetAll } from 'ngxs-reset-plugin';
 import { Observable } from 'rxjs';
 import { SheepInfoCategory } from 'src/app/shared/classes/SheepInfoCategory';
+import { Category } from 'src/app/shared/enums/Category';
 import { SheepInfoModel } from 'src/app/shared/interfaces/SheepInfoModel';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { RegistrationService } from '../services/registration.service';
@@ -19,6 +20,7 @@ export class SummaryPage implements OnInit {
 
 	currentSheepInfo: SheepInfoModel;
 	currentSheepInfoCategory: SheepInfoCategory;
+	category = Category;
 
 	@Select(SheepInfoState.getSheepInfo) sheepInfo$: Observable<SheepInfoModel>;
 	@Select(SheepInfoState.getCurrentSheepInfoCategory) currentSheepInfoCategory$: Observable<any>;

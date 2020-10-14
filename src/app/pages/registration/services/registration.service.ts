@@ -23,10 +23,9 @@ export class RegistrationService {
 			SheepInfoType.TotalSheepInfo
 		],
 		[
-			SheepInfoType.GreyWhiteSheepInfo,
-			SheepInfoType.WhiteBlackHeadSheepInfo,
-			SheepInfoType.BrownSheepInfo,
-			SheepInfoType.BlackSheepInfo
+			SheepInfoType.WhiteSheepInfo,
+			SheepInfoType.BlackSheepInfo,
+			SheepInfoType.BrownSheepInfo
 		],
 		[
 			SheepInfoType.EweInfo,

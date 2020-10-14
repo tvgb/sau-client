@@ -7,133 +7,51 @@
 				
 
 				<!-- COUNT OVERVIEW FOR TOTAL AMOUNT -->
-				<div class="count-overview" *ngIf="currentSheepInfoCategory.category === category.TotalSheepCategory">
-					<div class="count-element">
-						<div class="count-text">
-							ANTALL
-						</div>
-						<div class="count-number">
-							{{ currentSheepInfoCategory.totalSheep.count }}
-						</div>
-					</div>
-				</div>
+				<app-count-overview
+					*ngIf="currentSheepInfoCategory.category === category.TotalSheepCategory"
+					[category]="category.TotalSheepCategory"
+					[infoTypes]="['Antall']"
+					[counts]="[currentSheepInfoCategory.totalSheep.count]">
+				</app-count-overview>
 
 				<!-- COUNT OVERVIEW FOR SHEEP COLOUR -->
-				<div class="count-overview" *ngIf="currentSheepInfoCategory.category === category.SheepColourCategory">
-					<div style="width: 10px; height: 100%;"> 
-						<!-- SPACER -->
-					</div>
-
-					<div class="count-element colour-count-element">
-						<div class="count-icon">
-							<div class="icon-left" style="background-color: grey;"></div>
-							<div class="icon-right" style="background-color: white;"></div>
-						</div>
-						<div class="count-number">
-							{{ currentSheepInfoCategory.greyWhiteSheep.count }}
-						</div>
-					</div>
-					<div class="count-element colour-count-element">
-						<div class="count-icon">
-							<div class="icon-left" style="background-color: white;"></div>
-							<div class="icon-right" style="background-color: black;"></div>
-						</div>
-						<div class="count-number">
-							{{ currentSheepInfoCategory.whiteBlackHeadSheep.count }}
-						</div>
-					</div>
-					<div class="count-element colour-count-element">
-						<div class="count-icon">
-							<div class="icon-left" style="background-color: #643810;"></div>
-							<div class="icon-right" style="background-color: #643810;"></div>
-						</div>
-						<div class="count-number">
-							{{ currentSheepInfoCategory.brownSheep.count }}
-						</div>
-					</div>
-					<div class="count-element colour-count-element">
-						<div class="count-icon">
-							<div class="icon-left" style="background-color: black;"></div>
-							<div class="icon-right" style="background-color: black;"></div>
-						</div>
-						<div class="count-number">
-							{{ currentSheepInfoCategory.blackSheep.count }}
-						</div>
-					</div>
-				</div>
+				<app-count-overview
+					*ngIf="currentSheepInfoCategory.category === category.SheepColourCategory"
+					[category]="category.SheepColourCategory"
+					[infoTypes]="['Hvit', 'Svart', 'Brun']"
+					[colours]="['FFFFFF', '000000', '422916']"
+					[counts]="[
+						currentSheepInfoCategory.whiteSheep.count,
+						currentSheepInfoCategory.blackSheep.count,
+						currentSheepInfoCategory.brownSheep.count
+					]">
+				</app-count-overview>
 
 				<!-- COUNT OVERVIEW FOR SHEEP TYPE -->
-				<div class="count-overview" *ngIf="currentSheepInfoCategory.category === category.SheepTypeCategory">
-					<div class="type-count-element">
-						<div class="count-text">
-							{{ currentSheepInfoCategory.ewe.name }}
-						</div>
-						<div class="count-number">
-							{{ currentSheepInfoCategory.ewe.count }}
-						</div>
-					</div>
-					<div class="type-count-element">
-						<div class="count-text">
-							{{ currentSheepInfoCategory.lamb.name }}
-						</div>
-						<div class="count-number">
-							{{ currentSheepInfoCategory.lamb.count }}
-						</div>
-					</div>
-				</div>
-
+				<app-count-overview
+					*ngIf="currentSheepInfoCategory.category === category.SheepTypeCategory"
+					[category]="category.SheepTypeCategory"
+					[infoTypes]="['Søy', 'Lam']"
+					[counts]="[
+						currentSheepInfoCategory.ewe.count,
+						currentSheepInfoCategory.lamb.count
+					]">
+				</app-count-overview>
 
 				<!-- COUNT OVERVIEW FOR COLLAR COLOUR -->
-				<div class="count-overview" *ngIf="currentSheepInfoCategory.category === category.CollarColourCategory">
-					<div style="width: 20px; height: 100%;"> 
-						<!-- SPACER -->
-					</div>
-					
-					<div class="count-element colour-count-element">
-						<div class="count-icon">
-							<div class="icon-left" style="background-color: #005BE4;"></div>
-							<div class="icon-right" style="background-color: #005BE4;"></div>
-						</div>
-						<div class="count-number">
-							{{ currentSheepInfoCategory.blueCollar.count }}
-						</div>
-					</div>
-					<div class="count-element colour-count-element">
-						<div class="count-icon">
-							<div class="icon-left" style="background-color: #198C0F;"></div>
-							<div class="icon-right" style="background-color: #198C0F;"></div>
-						</div>
-						<div class="count-number">
-							{{ currentSheepInfoCategory.greenCollar.count }}
-						</div>
-					</div>
-					<div class="count-element colour-count-element">
-						<div class="count-icon">
-							<div class="icon-left" style="background-color: #E2E700;"></div>
-							<div class="icon-right" style="background-color: #E2E700;"></div>
-						</div>
-						<div class="count-number">
-							{{ currentSheepInfoCategory.yellowCollar.count }}
-						</div>
-					</div>
-					<div class="count-element colour-count-element">
-						<div class="count-icon">
-							<div class="icon-left" style="background-color: #BD0000;"></div>
-							<div class="icon-right" style="background-color: #BD0000;"></div>
-						</div>
-						<div class="count-number">
-							{{ currentSheepInfoCategory.redCollar.count }}
-						</div>
-					</div>
-					<div class="count-element colour-count-element">
-						<div style="color: #BD0000;" class="count-icon">
-							X
-						</div>
-						<div class="count-number">
-							{{ currentSheepInfoCategory.missingCollar.count }}
-						</div>
-					</div>
-				</div>
+				<app-count-overview
+					*ngIf="currentSheepInfoCategory.category === category.CollarColourCategory"
+					[category]="category.CollarColourCategory"
+					[infoTypes]="['Blå', 'Grønn', 'Gul', 'Rød', 'Mangler']"
+					[colours]="['005BE4', '198C0F', 'E2E700', 'BD0000', '595959']"
+					[counts]="[
+						currentSheepInfoCategory.blueCollar.count,
+						currentSheepInfoCategory.greenCollar.count,
+						currentSheepInfoCategory.yellowCollar.count,
+						currentSheepInfoCategory.redCollar.count,
+						currentSheepInfoCategory.missingCollar.count
+					]">
+				</app-count-overview>
 			</div>
 		</div>
 		

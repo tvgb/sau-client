@@ -1,10 +1,9 @@
 export enum SheepInfoType {
 	TotalSheepInfo = 'totalSheep',
 
+	WhiteSheepInfo = 'whiteSheep',
 	BlackSheepInfo = 'blackSheep',
-	GreyWhiteSheepInfo = 'greyWhiteSheep',
 	BrownSheepInfo = 'brownSheep',
-	WhiteBlackHeadSheepInfo = 'whiteBlackHeadSheep',
 
 	LambInfo = 'lamb',
 	EweInfo = 'ewe',

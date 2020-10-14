@@ -1,112 +1,63 @@
 <ion-content id="summary-content">
-    <h1 id="summary-heading"> OPPSUMMERING </h1>
-    <div id="summary-registertext"><ion-text >Avansert registrering av sau fullført</ion-text></div>
-    <div class="summary-column">
-       <h2 class="summary-column-heading">SAU</h2>
-       <div class="summary-element">
-           <div class="summary-element-detail">
-                <ion-text>Totalt</ion-text>
-                <ion-text>{{currentSheepInfo.totalSheep.totalSheep.count}}</ion-text>
-            </div>
-            <div class="summary-element-detail">
-                <ion-text>Søyer</ion-text>
-                <ion-text>{{currentSheepInfo.sheepType.ewe.count}}</ion-text>
-            </div>
-            <div class="summary-element-detail">
-                <ion-text>Lam</ion-text>
-                <ion-text>{{currentSheepInfo.sheepType.lamb.count}}</ion-text>
-            </div>
-       </div>
-    </div>
-    <div class="summary-column">
-        <h2 class="summary-column-heading">FARGE</h2>
-        <div class="summary-element">
-            <div class="summary-element-detail">
-                <div>
-                    <ion-text>Grå/hvit</ion-text>
-                    <div style="background-color: white; width: 100%;" class="color-tag">
-                        <div style="background-color: gray; width: 50%;" class="color-tag"></div>
-                    </div>
-                    
-                </div>
-                <ion-text>{{currentSheepInfo.sheepColour.greyWhiteSheep.count}}</ion-text>
-            </div>
-            <div class="summary-element-detail" >
-                <div>
-                    <ion-text>Svart</ion-text>
-                    <div style="background-color: black;" class="color-tag"></div>
-                </div>
-                <ion-text>{{currentSheepInfo.sheepColour.blackSheep.count}}</ion-text>
-            </div>
-            <div class="summary-element-detail">
-                <div>
-                    <ion-text>Brun</ion-text>
-                    <div style="background-color: #4D2D08" class="color-tag"></div>
-                </div>
-                <ion-text>{{currentSheepInfo.sheepColour.brownSheep.count}}</ion-text>
-            </div>
-            <div class="summary-element-detail">
-                <ion-text>Hvit, svart hode</ion-text>
-                <div style="background-color: white; width: 100%;" class="color-tag">
-                    <div style="background-color: black; width: 50%;" class="color-tag"></div>
-                </div>
-                <ion-text>{{currentSheepInfo.sheepColour.whiteBlackHeadSheep.count}}</ion-text>
-            </div>
-        </div>
-    </div>
-    <div class="summary-column">
-        <h2 class="summary-column-heading">SLIPS</h2>
-        <div class="summary-element">
-        <div class="summary-element-detail">
-            <div>
-                <ion-text>Blå</ion-text>
-                <div style="background-color: #3076FF" class="color-tag"></div>
-            </div>
-            <ion-text>{{currentSheepInfo.collarColour.blueCollar.count}}</ion-text>
-        </div>
-        <div class="summary-element-detail" >
-            <div>
-                <ion-text>Grønn</ion-text>
-                <div style="background-color: #289933" class="color-tag"></div>
-            </div>
-            <ion-text>{{currentSheepInfo.collarColour.greenCollar.count}}</ion-text>
-        </div>
-        <div class="summary-element-detail">
-            <div>
-                <ion-text>Gul</ion-text>
-                <div style="background-color: #D1D423" class="color-tag"></div>
-            </div>
-            <ion-text>{{currentSheepInfo.collarColour.yellowCollar.count}}</ion-text>
-        </div>
-        <div class="summary-element-detail">
-            <div>
-                <ion-text>Rød</ion-text>
-                <div style="background-color: #B92525" class="color-tag"></div>
-            </div>
-            <ion-text>{{currentSheepInfo.collarColour.redCollar.count}}</ion-text>
-        </div>
-        <div class="summary-element-detail">
-            <div>
-                <ion-text>Mangler</ion-text>
-                <div style="background-color: #1C262F" class="color-tag"></div>
-            </div>
-            <ion-text>{{currentSheepInfo.collarColour.missingCollar.count}}</ion-text>
-        </div>
-    </div>
-    <div *ngIf="currentSheepInfo.collarColour.missingCollar.count > 0" id="warning-container">
-        <ion-icon id="warning-icon" src="/assets/warning.svg"></ion-icon>
-        <h4>Registrerte slips tilsier at det mangler {{currentSheepInfo.collarColour.missingCollar.count}} lam</h4>
-    </div>
+	<h1 id="summary-heading"> OPPSUMMERING </h1>
+	<div id="summary-registertext"><ion-text >Avansert registrering av sau fullført</ion-text></div>
+	<div class="summary-column">
+	   <h2 class="summary-column-heading">SAU</h2>
+	   <div class="summary-element">
+		   <app-count-overview
+				[infoTypes]="['Totalt', 'Søyer', 'Lam']"
+				[counts]="[
+					currentSheepInfo.totalSheep.totalSheep.count,
+					currentSheepInfo.sheepType.ewe.count,
+					currentSheepInfo.sheepType.lamb.count
+				]">
+			</app-count-overview>
+	   </div>
+	</div>
+	<div class="summary-column">
+		<h2 class="summary-column-heading">FARGE</h2>
+		<div class="summary-element">
+			<app-count-overview
+				[infoTypes]="['Hvit', 'Svart', 'Brun']"
+				[colours]="['FFFFFF', '000000', '422916']"
+				[counts]="[
+					currentSheepInfo.sheepColour.whiteSheep.count,
+					currentSheepInfo.sheepColour.blackSheep.count,
+					currentSheepInfo.sheepColour.brownSheep.count
+				]">
+			</app-count-overview>
+		</div>
+	</div>
+	<div class="summary-column">
+		<h2 class="summary-column-heading">SLIPS</h2>
+		<div class="summary-element">
+			<app-count-overview
+				[category]="category.CollarColourCategory"
+				[infoTypes]="['Blå', 'Grønn', 'Gul', 'Rød', 'Mangler']"
+				[colours]="['005BE4', '198C0F', 'E2E700', 'BD0000', '595959']"
+				[counts]="[
+					currentSheepInfo.collarColour.blueCollar.count,
+					currentSheepInfo.collarColour.greenCollar.count,
+					currentSheepInfo.collarColour.yellowCollar.count,
+					currentSheepInfo.collarColour.redCollar.count,
+					currentSheepInfo.collarColour.missingCollar.count
+				]">
+			</app-count-overview>
+		</div>
+	<div *ngIf="currentSheepInfo.collarColour.missingCollar.count > 0" id="warning-container">
+		<ion-icon id="warning-icon" src="/assets/warning.svg"></ion-icon>
+		<h4>Registrerte slips tilsier at det mangler {{currentSheepInfo.collarColour.missingCollar.count}} lam</h4>
+	</div>
 </div>
 </ion-content>
 <ion-footer>
-    <ion-row>
-        <ion-col  class="ion-no-padding">
-            <ion-button (click)="navigateBack()" id="back-button" color="tertiary" class="ion-no-margin" expand="full" size="large">TILBAKE</ion-button>
-        </ion-col>
-        <ion-col class="ion-no-padding">
-            <ion-button (click)="completeRegistration()" color="primary" id="complete-button" class="ion-no-margin" expand="full" size="large">FULLFØR</ion-button>
-        </ion-col>
-    </ion-row>
+	<ion-row>
+		<ion-col  class="ion-no-padding">
+			<ion-button (click)="navigateBack()" id="back-button" color="tertiary" class="ion-no-margin" expand="full" size="large">TILBAKE</ion-button>
+		</ion-col>
+		<ion-col class="ion-no-padding">
+			<ion-button (click)="completeRegistration()" color="primary" id="complete-button" class="ion-no-margin" expand="full" size="large">FULLFØR</ion-button>
+		</ion-col>
+	</ion-row>
 
 </ion-footer>

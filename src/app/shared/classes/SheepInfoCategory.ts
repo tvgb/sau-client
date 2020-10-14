@@ -18,10 +18,9 @@ export class TotalSheepCategory extends SheepInfoCategory {
 }
 
 export class SheepColourCategory extends SheepInfoCategory {
-	greyWhiteSheep: SheepInfo;
+	whiteSheep: SheepInfo;
 	blackSheep: SheepInfo;
 	brownSheep: SheepInfo;
-	whiteBlackHeadSheep: SheepInfo;
 }
 
 export class SheepTypeCategory extends SheepInfoCategory {

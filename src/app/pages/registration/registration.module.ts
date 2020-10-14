@@ -4,9 +4,10 @@ import { NavigationComponent } from './components/navigation/navigation.componen
 import { CounterComponent } from './components/counter/counter.component';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
+import { CountOverviewComponent } from './components/count-overview/count-overview.component';
 
 @NgModule({
-	declarations: [NavigationComponent, CounterComponent],
+	declarations: [NavigationComponent, CounterComponent, CountOverviewComponent],
 	imports: [
 		CommonModule,
 		RouterModule,
@@ -14,7 +15,8 @@ import { IonicModule } from '@ionic/angular';
 	],
 	exports: [
 		NavigationComponent,
-		CounterComponent
+		CounterComponent,
+		CountOverviewComponent
 	]
 })
 export class RegistrationModule { }
