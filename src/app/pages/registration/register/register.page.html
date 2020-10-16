@@ -55,15 +55,8 @@
 			</div>
 		</div>
 		
-		<app-counter 
-			(increment)="onIncrement()"
-			(decrement)="onDecrement()"
-			(sheepInfoLeft)="onSheepInfoLeft()"
-			(sheepInfoRight)="onSheepInfoRight()"
-			[sheepInfosCount]="sheepInfoCountInCurrentCategory" 
-			[selectedSheepInfo]="currentSheepInfo.name"
-			class="counter">
-		</app-counter>
+        <app-button-counter class="counter">
+        </app-button-counter>
 		<app-navigation
 			(nextCategory)="onNextCategory()"
 			(prevCategory)="onPrevCategory()"
