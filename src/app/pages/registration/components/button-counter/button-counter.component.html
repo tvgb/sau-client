@@ -1,19 +1,27 @@
 <div class="button-counter-container">
-    <div class="top">
+    <div 
+        class="plus"
+        (tap)="onTapUp($event)">
         <ion-icon size="large" name="add-outline"></ion-icon>
     </div>
-    <div class="left">
+    <div 
+        *ngIf="sheepInfosCount > 1"
+        (tap)="onTapLeft($event)"
+        class="left">
         <ion-icon size="large" name="chevron-back-outline"></ion-icon>
     </div>
     <div class="middle">
-        <p>
-            HELLO!
-        </p>
+        {{selectedSheepInfo}}
     </div>
-    <div class="right">
+    <div 
+        *ngIf="sheepInfosCount > 1"
+        (tap)="onTapRight($event)"
+        class="right">
         <ion-icon size="large" name="chevron-forward-outline"></ion-icon>
     </div>
-    <div class="bottom">
+    <div 
+        class="minus"
+        (tap)="onTapDown($event)">
         <ion-icon size="large" name="remove-outline"></ion-icon>
     </div>
 </div>

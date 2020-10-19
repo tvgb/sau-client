@@ -12,7 +12,7 @@
 
 
 
-.top, .bottom, .left, .right {
+.plus, .minus, .left, .right {
     justify-self: stretch;
     align-self: stretch;
     border-color: rgba($color: #ffffff, $alpha: 0.2);
@@ -23,12 +23,12 @@
     align-items: center;
 }
 
-.top {
+.plus {
     grid-column: 1 / 4;
     grid-row: 1 / 2 ;
 }
 
-.bottom {
+.minus {
     grid-column: 1 / 4;
     grid-row: 3 / 4;
   }
