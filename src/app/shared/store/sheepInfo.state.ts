@@ -17,12 +17,12 @@ import { SheepInfoCategory } from '../classes/SheepInfoCategory';
 		totalSheep: {
 			category: Category.TotalSheepCategory,
 			name: 'Sau totalt',
-			speakText: 'sau totalt',
+			speakText: '',
 
 			totalSheep: {
 				sheepInfoType: SheepInfoType.TotalSheepInfo,
 				name: 'Sau totalt',
-				speakText: 'sau totalt',
+				speakText: '',
 				count: 0
 			}
 		},
@@ -30,7 +30,7 @@ import { SheepInfoCategory } from '../classes/SheepInfoCategory';
 		sheepColour: {
 			category: Category.SheepColourCategory,
 			name: 'Farge',
-			speakText: 'farge',
+			speakText: 'sau',
 
 			whiteSheep: {
 				sheepInfoType: SheepInfoType.WhiteSheepInfo,
@@ -55,12 +55,12 @@ import { SheepInfoCategory } from '../classes/SheepInfoCategory';
 		sheepType: {
 			category: Category.SheepTypeCategory,
 			name: 'Type',
-			speakText: 'type',
+			speakText: '',
 
 			ewe: {
 				sheepInfoType: SheepInfoType.EweInfo,
 				name: 'Søy',
-				speakText: 'søy',
+				speakText: 'søye',
 				count: 0
 			},
 			lamb: {
