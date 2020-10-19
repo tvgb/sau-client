@@ -1,0 +1,53 @@
+:host {
+	display: flex;
+
+	width: 100vw;
+	height: 100vw;
+
+	justify-content: center;
+	align-items: center;
+}
+
+.counter-container {
+	display: flex;
+	flex-direction: column;
+
+	justify-content: center;
+	align-items: center;
+	width: 95vw;
+	height: 95vw;
+}
+
+.counter-box {
+	width: 100%;
+	text-align: center;
+	border: 2px solid rgba(255, 255, 255, 0.2);
+	
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.pluss-button {
+	height: 40%;
+	border-radius: 5px 5px 0 0;
+	border-bottom: 0;
+}
+
+.minus-button {
+	height: 40%;
+	border-radius: 0 0 5px 5px;
+	border-top: 0;
+}
+
+.center {
+	text-transform: uppercase;
+	font-size: x-large;
+
+	height: 20%;
+	border-top: 0;
+	border-bottom: 0;
+
+	justify-content: space-evenly;
+}

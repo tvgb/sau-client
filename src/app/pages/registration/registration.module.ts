@@ -5,10 +5,10 @@ import { CounterComponent } from './components/counter/counter.component';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { CountOverviewComponent } from './components/count-overview/count-overview.component';
-import { CounterJoystickComponent } from './components/counter-joystick/counter-joystick.component';
+import { SwipeAndTapCounterComponent } from './components/swipe-and-tap-counter/swipe-and-tap-counter.component';
 
 @NgModule({
-	declarations: [NavigationComponent, CounterComponent, CounterJoystickComponent, CountOverviewComponent],
+	declarations: [NavigationComponent, CounterComponent, CountOverviewComponent, SwipeAndTapCounterComponent],
 	imports: [
 		CommonModule,
 		RouterModule,
@@ -17,8 +17,8 @@ import { CounterJoystickComponent } from './components/counter-joystick/counter-
 	exports: [
 		NavigationComponent,
 		CounterComponent,
-		CounterJoystickComponent,
-		CountOverviewComponent
+		CountOverviewComponent,
+		SwipeAndTapCounterComponent
 	]
 })
 export class RegistrationModule { }
