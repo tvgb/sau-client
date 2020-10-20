@@ -1,3 +1,4 @@
+import { tokenName } from '@angular/compiler';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -10,7 +11,7 @@ export class TimeTakingService {
 
 	constructor() { }
 
-	startNewStopWatch(id: string) {
+	startNewStopWatch(id: string): void {
 		const t0 = performance.now();
 		this.idTimeMap.set(id, t0);
 	}
@@ -28,10 +29,21 @@ export class TimeTakingService {
 
 	getTimeMeasurements(): TimeMeasurement[] {
 		const timeMeasurements = [...this.timeMeasurements];
+		const accumulatedTimeMeasurements: TimeMeasurement[] = [];
+
+		for (const key of this.idTimeMap.keys()) {
+			accumulatedTimeMeasurements.push({
+				name: key,
+				time: timeMeasurements.filter(tm => tm.name === key).reduce((acc, tm) => acc + tm.time, 0)
+			});
+		}
+
+		return accumulatedTimeMeasurements;
+	}
+
+	clearTimeTakings(): void {
 		this.timeMeasurements = [];
 		this.idTimeMap.clear();
-
-		return timeMeasurements;
 	}
 }
 
