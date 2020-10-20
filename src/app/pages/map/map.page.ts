@@ -1,10 +1,10 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { GpsService } from './services/gps.service';
 import { Router } from '@angular/router';
 import { Select } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { TextToSpeechService } from '../registration/services/text-to-speech.service';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { SheepInfoCategory } from 'src/app/shared/classes/SheepInfoCategory';
@@ -14,7 +14,7 @@ import { SheepInfoCategory } from 'src/app/shared/classes/SheepInfoCategory';
 	templateUrl: './map.page.html',
 	styleUrls: ['./map.page.scss'],
 })
-export class MapPage implements OnInit, AfterViewInit {
+export class MapPage implements AfterViewInit {
 
 	private routeLink = ['/registration/register'];
 	private map;
@@ -23,14 +23,16 @@ export class MapPage implements OnInit, AfterViewInit {
 
 	@Select(SheepInfoState.getCurrentSheepInfoCategory) currentSheepInfoCategory$: Observable<SheepInfoCategory>;
 
+	currentSheepInfoCategorySub: Subscription;
+
 	constructor(
 		private mapService: MapService,
 		private gpsService: GpsService,
 		private ttsService: TextToSpeechService,
 		private router: Router) { }
 
-	ngOnInit(): void {
-		this.currentSheepInfoCategory$.subscribe(res => {
+	ionViewWillEnter(): void {
+		this.currentSheepInfoCategorySub = this.currentSheepInfoCategory$.subscribe(res => {
 			this.currentSheepInfoCategory = res;
 		});
 		// This covers Gløshaugen ++++
@@ -51,8 +53,6 @@ export class MapPage implements OnInit, AfterViewInit {
 		// const endLat = 63.413847;
 		// const endLong = 10.415751;
 
-
-
 		if (this.OFFLINE_MAP) {
 			this.mapService.downloadMapTileArea(startLat, startLong, endLat, endLong);
 		}
@@ -69,6 +69,7 @@ export class MapPage implements OnInit, AfterViewInit {
 		this.ttsService.speak(`Registrer ${this.currentSheepInfoCategory.name}`);
 		this.router.navigate(this.routeLink);
 	}
+
 	initMap(): void {
 		// Coordinates for the middle of Gløshaugen
 		const lat = 63.418604;
@@ -108,5 +109,9 @@ export class MapPage implements OnInit, AfterViewInit {
 				attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
 			}).addTo(this.map);
 		}
+	}
+
+	ionViewWillLeave(): void {
+		this.currentSheepInfoCategorySub.unsubscribe();
 	}
 }
