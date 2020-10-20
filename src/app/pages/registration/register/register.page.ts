@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { SheepInfo } from 'src/app/shared/classes/SheepInfo';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { RegistrationService } from '../services/registration.service';
@@ -9,23 +9,32 @@ import { TextToSpeechService } from '../services/text-to-speech.service';
 import { Platform } from '@ionic/angular';
 import { Category } from 'src/app/shared/enums/Category';
 import { TimeTakingService } from '../services/time-taking.service';
+import { AppInfoState } from 'src/app/shared/store/appInfo.state';
+import { SheepInfoCategory } from 'src/app/shared/classes/SheepInfoCategory';
 
 @Component({
 	selector: 'app-register',
 	templateUrl: './register.page.html',
 	styleUrls: ['./register.page.scss'],
 })
-export class RegisterPage implements OnInit {
+export class RegisterPage {
 
 	currentSheepInfo: SheepInfo;
 	currentSheepInfoCategory: any;
 	category = Category;
+	currentCategory: Category;
 
 	sheepInfoCountInCurrentCategory: number;
 	totalTMID = 'totalTMID';
 
 	@Select(SheepInfoState.getCurrentSheepInfo) currentSheepInfo$: Observable<SheepInfo>;
 	@Select(SheepInfoState.getCurrentSheepInfoCategory) currentSheepInfoCategory$: Observable<any>;
+	@Select(AppInfoState.getCurrentSheepInfoCategory) currentCategory$: Observable<Category>;
+
+	currentSheepInfoSub: Subscription;
+	currentSheepInfoCategorySub: Subscription;
+	currentCategorySub: Subscription;
+	sheepInfoCountInCurrentCategorySub: Subscription;
 
 	constructor(
 		private store: Store,
@@ -40,30 +49,32 @@ export class RegisterPage implements OnInit {
 		});
 	}
 
-	ngOnInit() {
-		this.currentSheepInfo$.subscribe(res => {
+	ionViewWillEnter() {
+		this.currentSheepInfoSub = this.currentSheepInfo$.subscribe((res: SheepInfo) => {
 			if (res) {
 				this.currentSheepInfo = res;
 			}
 		});
 
-		this.registrationService.getSheepInfoCountInCurrentCategory().subscribe(res => {
+		this.sheepInfoCountInCurrentCategorySub = this.registrationService.getSheepInfoCountInCurrentCategory().subscribe((res: number) => {
 			if (res) {
 				this.sheepInfoCountInCurrentCategory = res;
 			}
 		});
 
-		this.currentSheepInfoCategory$.subscribe(res => {
+		this.currentSheepInfoCategorySub = this.currentSheepInfoCategory$.subscribe((res: SheepInfoCategory) => {
 			if (res) {
-				if (this.currentSheepInfoCategory && this.currentSheepInfoCategory.category !== res.category) {
-					this.timeTakingService.stopStopWatch(this.currentSheepInfoCategory.category);
-					this.timeTakingService.startNewStopWatch(res.category);
-				} else if (!this.currentSheepInfoCategory) {
-					this.timeTakingService.startNewStopWatch(res.category);
-				}
-
 				this.currentSheepInfoCategory = res;
 			}
+		});
+
+		this.currentCategorySub = this.currentCategory$.subscribe((res: Category) => {
+			if (this.currentCategory) {
+				this.timeTakingService.stopStopWatch(this.currentCategory);
+			}
+
+			this.currentCategory = res;
+			this.timeTakingService.startNewStopWatch(this.currentCategory);
 		});
 	}
 
@@ -94,8 +105,6 @@ export class RegisterPage implements OnInit {
 
 	onNextCategory(): void {
 		if (!this.registrationService.nextCategory()) {
-			this.timeTakingService.stopStopWatch(this.totalTMID);
-			this.timeTakingService.stopStopWatch(this.currentSheepInfoCategory.category);
 			this.router.navigate(['/registration/summary']);
 		}
 		this.tts.speak(`Registrer ${this.currentSheepInfoCategory.name}, ${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
@@ -115,5 +124,15 @@ export class RegisterPage implements OnInit {
 	onCancel(): void {
 		this.timeTakingService.clearTimeTakings();
 		this.registrationService.cancel();
+	}
+
+	ionViewWillLeave(): void {
+		this.timeTakingService.stopStopWatch(this.totalTMID);
+		this.timeTakingService.stopStopWatch(this.currentCategory);
+
+		this.currentSheepInfoSub.unsubscribe();
+		this.sheepInfoCountInCurrentCategorySub.unsubscribe();
+		this.currentSheepInfoCategorySub.unsubscribe();
+		this.currentCategorySub.unsubscribe();
 	}
 }
