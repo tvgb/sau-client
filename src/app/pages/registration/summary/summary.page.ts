@@ -77,9 +77,8 @@ export class SummaryPage implements OnInit {
 					text: 'Ja',
 					handler: () => {
 						this.store.dispatch(new StateResetAll());
-						this.router.navigate(['/map']);
+						this.router.navigate(['/registration/time-measurements']);
 						this.registrationService.complete();
-						console.log('Returning to map page, clearing state');
 					}
 				}
 			]

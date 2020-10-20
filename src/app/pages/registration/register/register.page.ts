@@ -55,10 +55,12 @@ export class RegisterPage implements OnInit {
 
 		this.currentSheepInfoCategory$.subscribe(res => {
 			if (res) {
-				// if (if res.category !== this.currentSheepInfoCategory.category) {
-					// this.timeTakingService.stopStopWatch(this.currentSheepInfoCategory.category);
-					// this.timeTakingService.startNewStopWatch(res.category);
-				// }
+				if (this.currentSheepInfoCategory && this.currentSheepInfoCategory.category !== res.category) {
+					this.timeTakingService.stopStopWatch(this.currentSheepInfoCategory.category);
+					this.timeTakingService.startNewStopWatch(res.category);
+				} else if (!this.currentSheepInfoCategory) {
+					this.timeTakingService.startNewStopWatch(res.category);
+				}
 
 				this.currentSheepInfoCategory = res;
 			}
@@ -93,6 +95,7 @@ export class RegisterPage implements OnInit {
 	onNextCategory(): void {
 		if (!this.registrationService.nextCategory()) {
 			this.timeTakingService.stopStopWatch(this.totalTMID);
+			this.timeTakingService.stopStopWatch(this.currentSheepInfoCategory.category);
 			this.router.navigate(['/registration/summary']);
 		}
 		this.tts.speak(`Registrer ${this.currentSheepInfoCategory.name}, ${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
@@ -110,6 +113,7 @@ export class RegisterPage implements OnInit {
 	}
 
 	onCancel(): void {
+		this.timeTakingService.clearTimeTakings();
 		this.registrationService.cancel();
 	}
 }

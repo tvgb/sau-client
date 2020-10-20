@@ -1,0 +1,25 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-title>timeMeasurements</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<div class="tm-container">
+		<table *ngIf="timeMeasurements">
+			<tr>
+				<th>Oppgave</th>
+				<th>Tid</th>
+			</tr>
+			<tr *ngFor="let tm of timeMeasurements">
+				<td> {{ tm.name }} </td>
+				<td> {{ tm.time | number:'1.1-1'}} ms </td>
+			</tr>
+		</table>
+	
+		<ion-button class="map-button" (click)="backToMap()">
+			Tilbake til kart
+		</ion-button>
+	</div>
+	
+</ion-content>
