@@ -1,10 +1,9 @@
 <ion-content class="register-content">
-	<div class="register-container">
+	<div class="register-container" *ngIf="currentSheepInfoCategory && currentSheepInfo && sheepInfoCountInCurrentCategory">
 		<div class="register-top-part">
 			<h1 class="register-heading"> {{ currentSheepInfoCategory.name }} </h1>
 
 			<div class="count-overview-container">
-				
 
 				<!-- COUNT OVERVIEW FOR TOTAL AMOUNT -->
 				<app-count-overview
