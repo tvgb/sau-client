@@ -1,19 +1,23 @@
 <ion-header>
 	<ion-toolbar>
-		<ion-title>timeMeasurements</ion-title>
+		<ion-title>Tidsmålinger</ion-title>
 	</ion-toolbar>
 </ion-header>
 
 <ion-content>
 	<div class="tm-container">
-		<table *ngIf="timeMeasurements">
+		<table *ngIf="timeMeasurements && total">
 			<tr>
 				<th>Oppgave</th>
 				<th>Tid</th>
 			</tr>
+			<tr>
+				<td> Totalt </td>
+				<td> {{ total.time | number:'1.0-0' }} ms </td>
+			</tr>
 			<tr *ngFor="let tm of timeMeasurements">
 				<td> {{ tm.name }} </td>
-				<td> {{ tm.time | number:'1.1-1'}} ms </td>
+				<td> {{ tm.time | number:'1.0-0'}} ms </td>
 			</tr>
 		</table>
 	

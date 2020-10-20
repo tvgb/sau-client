@@ -1,23 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, NavController } from '@ionic/angular';
 import { Select, Store } from '@ngxs/store';
 import { StateResetAll } from 'ngxs-reset-plugin';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { SheepInfoCategory } from 'src/app/shared/classes/SheepInfoCategory';
 import { Category } from 'src/app/shared/enums/Category';
 import { SheepInfoModel } from 'src/app/shared/interfaces/SheepInfoModel';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { RegistrationService } from '../services/registration.service';
 import { TextToSpeechService } from '../services/text-to-speech.service';
-import { TimeTakingService } from '../services/time-taking.service';
 
 @Component({
   selector: 'app-summary',
   templateUrl: './summary.page.html',
   styleUrls: ['./summary.page.scss'],
 })
-export class SummaryPage implements OnInit {
+export class SummaryPage {
 
 	currentSheepInfo: SheepInfoModel;
 	currentSheepInfoCategory: SheepInfoCategory;
@@ -26,31 +25,29 @@ export class SummaryPage implements OnInit {
 	@Select(SheepInfoState.getSheepInfo) sheepInfo$: Observable<SheepInfoModel>;
 	@Select(SheepInfoState.getCurrentSheepInfoCategory) currentSheepInfoCategory$: Observable<any>;
 
+	sheepInfoSub: Subscription;
+	currentSheepInfoCategorySub: Subscription;
+
   	constructor(
 		private navController: NavController,
 		private tts: TextToSpeechService,
 		private store: Store,
 		private alertController: AlertController,
 		private router: Router,
-		private registrationService: RegistrationService,
-		private timeTakingService: TimeTakingService) { }
+		private registrationService: RegistrationService) { }
 
-	ngOnInit() {
+	ionViewWillEnter(): void {
 		this.tts.speak('Oppsummering');
 
-		this.sheepInfo$.subscribe(res => {
+		this.sheepInfoSub = this.sheepInfo$.subscribe(res => {
 			this.currentSheepInfo = res;
 		});
 
-		this.currentSheepInfoCategory$.subscribe(res => {
+		this.currentSheepInfoCategorySub = this.currentSheepInfoCategory$.subscribe(res => {
 			if (res) {
 				this.currentSheepInfoCategory = res;
 			}
 		});
-	}
-
-	ionViewDidEnter() {
-		console.log(this.timeTakingService.getTimeMeasurements());
 	}
 
 	navigateBack() {
@@ -77,12 +74,19 @@ export class SummaryPage implements OnInit {
 					text: 'Ja',
 					handler: () => {
 						this.store.dispatch(new StateResetAll());
-						this.router.navigate(['/registration/time-measurements']);
 						this.registrationService.complete();
+
+
+						this.router.navigate(['/registration/time-measurements']);
 					}
 				}
 			]
 		});
 		await alert.present();
+	}
+
+	ionViewWillLeave(): void {
+		this.sheepInfoSub.unsubscribe();
+		this.currentSheepInfoCategorySub.unsubscribe();
 	}
 }
