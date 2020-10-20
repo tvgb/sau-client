@@ -17,7 +17,6 @@ export class TimeMeasurementsPage implements OnInit {
 		this.timeMeasurements = [...this.timeTakingService.getTimeMeasurements()];
 	}
 
-
 	backToMap() {
 		this.timeTakingService.clearTimeTakings();
 		this.router.navigate(['/map']);
