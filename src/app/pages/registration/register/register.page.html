@@ -1,10 +1,9 @@
 <ion-content class="register-content">
-	<div class="register-container">
+	<div class="register-container" *ngIf="currentSheepInfoCategory && currentSheepInfo && sheepInfoCountInCurrentCategory">
 		<div class="register-top-part">
 			<h1 class="register-heading"> {{ currentSheepInfoCategory.name }} </h1>
 
 			<div class="count-overview-container">
-				
 
 				<!-- COUNT OVERVIEW FOR TOTAL AMOUNT -->
 				<app-count-overview
@@ -31,7 +30,7 @@
 				<app-count-overview
 					*ngIf="currentSheepInfoCategory.category === category.SheepTypeCategory"
 					[category]="category.SheepTypeCategory"
-					[infoTypes]="['Søy', 'Lam']"
+					[infoTypes]="['Søye', 'Lam']"
 					[counts]="[
 						currentSheepInfoCategory.ewe.count,
 						currentSheepInfoCategory.lamb.count
@@ -55,16 +54,15 @@
 			</div>
 		</div>
 		
-        <app-button-counter 
-        (increment)="onIncrement()"
-        (decrement)="onDecrement()"
-        (sheepInfoLeft)="onSheepInfoLeft()"
-        (sheepInfoRight)="onSheepInfoRight()"
-        [sheepInfosCount]="sheepInfoCountInCurrentCategory" 
-        [selectedSheepInfo]="currentSheepInfo.name"
-        class="counter">
-        </app-button-counter>
-        
+		<app-counter
+			(increment)="onIncrement()"
+			(decrement)="onDecrement()"
+			(sheepInfoLeft)="onSheepInfoLeft()"
+			(sheepInfoRight)="onSheepInfoRight()"
+			[sheepInfosCount]="sheepInfoCountInCurrentCategory" 
+			[selectedSheepInfo]="currentSheepInfo.name"
+			class="counter">
+            </app-counter>
 		<app-navigation
 			(nextCategory)="onNextCategory()"
 			(prevCategory)="onPrevCategory()"

@@ -10,6 +10,7 @@ import { SheepInfoModel } from 'src/app/shared/interfaces/SheepInfoModel';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { RegistrationService } from '../services/registration.service';
 import { TextToSpeechService } from '../services/text-to-speech.service';
+import { TimeTakingService } from '../services/time-taking.service';
 
 @Component({
   selector: 'app-summary',
@@ -31,7 +32,8 @@ export class SummaryPage implements OnInit {
 		private store: Store,
 		private alertController: AlertController,
 		private router: Router,
-		private registrationService: RegistrationService) { }
+		private registrationService: RegistrationService,
+		private timeTakingService: TimeTakingService) { }
 
 	ngOnInit() {
 		this.tts.speak('Oppsummering');
@@ -45,6 +47,10 @@ export class SummaryPage implements OnInit {
 				this.currentSheepInfoCategory = res;
 			}
 		});
+	}
+
+	ionViewDidEnter() {
+		console.log(this.timeTakingService.getTimeMeasurements());
 	}
 
 	navigateBack() {
@@ -71,9 +77,8 @@ export class SummaryPage implements OnInit {
 					text: 'Ja',
 					handler: () => {
 						this.store.dispatch(new StateResetAll());
-						this.router.navigate(['/map']);
+						this.router.navigate(['/registration/time-measurements']);
 						this.registrationService.complete();
-						console.log('Returning to map page, clearing state');
 					}
 				}
 			]
