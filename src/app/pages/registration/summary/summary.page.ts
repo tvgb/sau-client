@@ -42,7 +42,7 @@ export class SummaryPage {
 		this.tts.speak('Oppsummering');
 
 
-		this.sheepInfo$.subscribe(res => {
+		this.sheepInfoSub = this.sheepInfo$.subscribe(res => {
 			this.currentSheepInfo = res;
 		});
 
@@ -51,14 +51,6 @@ export class SummaryPage {
 				this.currentSheepInfoCategory = res;
 			}
 		});
-		console.log(this.checkTotalSheep());
-	}
-
-
-
-
-	ionViewDidEnter() {
-		console.log(this.timeTakingService.getTimeMeasurements());
 	}
 
 	navigateBack() {
@@ -84,7 +76,7 @@ export class SummaryPage {
 			return false;
 		}
 		else if (missingLambs < 0) {
-			this.missingLambText =  `Registrerte slips tilsier at det er ${missingLambs} lam for mye.`;
+			this.missingLambText =  `Registrerte slips tilsier at det er ${missingLambs * -1} lam for mye.`;
 			return false;
 		}
 		return true;
