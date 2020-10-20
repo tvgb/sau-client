@@ -4,7 +4,7 @@
 
 .register-container {
 	height: 100%;
-
+    width: auto;
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
@@ -16,7 +16,8 @@
 }
 
 .counter {
-	height: 50%;
+    height: 55%;
+
 }
 
 .register-heading {

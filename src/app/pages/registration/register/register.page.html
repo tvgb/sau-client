@@ -30,7 +30,7 @@
 				<app-count-overview
 					*ngIf="currentSheepInfoCategory.category === category.SheepTypeCategory"
 					[category]="category.SheepTypeCategory"
-					[infoTypes]="['Søy', 'Lam']"
+					[infoTypes]="['Søye', 'Lam']"
 					[counts]="[
 						currentSheepInfoCategory.ewe.count,
 						currentSheepInfoCategory.lamb.count
@@ -54,7 +54,7 @@
 			</div>
 		</div>
 		
-		<app-swipe-and-tap-counter
+		<app-counter
 			(increment)="onIncrement()"
 			(decrement)="onDecrement()"
 			(sheepInfoLeft)="onSheepInfoLeft()"
@@ -62,7 +62,7 @@
 			[sheepInfosCount]="sheepInfoCountInCurrentCategory" 
 			[selectedSheepInfo]="currentSheepInfo.name"
 			class="counter">
-		</app-swipe-and-tap-counter>
+            </app-counter>
 		<app-navigation
 			(nextCategory)="onNextCategory()"
 			(prevCategory)="onPrevCategory()"
