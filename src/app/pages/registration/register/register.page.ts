@@ -8,6 +8,7 @@ import { RegistrationService } from '../services/registration.service';
 import { TextToSpeechService } from '../services/text-to-speech.service';
 import { Platform } from '@ionic/angular';
 import { Category } from 'src/app/shared/enums/Category';
+import { TimeTakingService } from '../services/time-taking.service';
 
 @Component({
 	selector: 'app-register',
@@ -21,6 +22,7 @@ export class RegisterPage implements OnInit {
 	category = Category;
 
 	sheepInfoCountInCurrentCategory: number;
+	totalTMID = 'totalTMID';
 
 	@Select(SheepInfoState.getCurrentSheepInfo) currentSheepInfo$: Observable<SheepInfo>;
 	@Select(SheepInfoState.getCurrentSheepInfoCategory) currentSheepInfoCategory$: Observable<any>;
@@ -30,9 +32,9 @@ export class RegisterPage implements OnInit {
 		private registrationService: RegistrationService,
 		private tts: TextToSpeechService,
 		private router: Router,
-		private platform: Platform)
+		private platform: Platform,
+		private timeTakingService: TimeTakingService) {
 
-	{
 		this.platform.backButton.subscribeWithPriority(10, () => {
 			this.onPrevCategory();
 		});
@@ -53,9 +55,19 @@ export class RegisterPage implements OnInit {
 
 		this.currentSheepInfoCategory$.subscribe(res => {
 			if (res) {
+				// if (if res.category !== this.currentSheepInfoCategory.category) {
+					// this.timeTakingService.stopStopWatch(this.currentSheepInfoCategory.category);
+					// this.timeTakingService.startNewStopWatch(res.category);
+				// }
+
 				this.currentSheepInfoCategory = res;
 			}
 		});
+	}
+
+	ionViewDidEnter() {
+		this.timeTakingService.startNewStopWatch(this.totalTMID);
+		this.timeTakingService.startNewStopWatch(this.currentSheepInfoCategory.category);
 	}
 
 	onIncrement(): void {
@@ -80,8 +92,8 @@ export class RegisterPage implements OnInit {
 
 	onNextCategory(): void {
 		if (!this.registrationService.nextCategory()) {
+			this.timeTakingService.stopStopWatch(this.totalTMID);
 			this.router.navigate(['/registration/summary']);
-
 		}
 		this.tts.speak(`Registrer ${this.currentSheepInfoCategory.name}, ${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
 	}
