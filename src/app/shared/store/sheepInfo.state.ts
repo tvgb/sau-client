@@ -59,7 +59,7 @@ import { SheepInfoCategory } from '../classes/SheepInfoCategory';
 
 			ewe: {
 				sheepInfoType: SheepInfoType.EweInfo,
-				name: 'Søy',
+				name: 'Søye',
 				speakText: 'søye',
 				count: 0
 			},

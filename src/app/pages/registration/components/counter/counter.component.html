@@ -4,7 +4,7 @@
 	</div>
 	<div
 		*ngIf="sheepInfosCount > 1"
-		(click)="onSwipeLeft($event)"
+		(click)="onSwipeRight($event)"
 		class="left">
 		<ion-icon size="large" name="chevron-back-outline"></ion-icon>
 	</div>
@@ -18,7 +18,7 @@
 	</div>
 	<div
 		*ngIf="sheepInfosCount > 1"
-		(click)="onSwipeRight($event)"
+		(click)="onSwipeLeft($event)"
 		class="right">
 		<ion-icon size="large" name="chevron-forward-outline"></ion-icon>
 	</div>
