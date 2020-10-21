@@ -21,6 +21,8 @@ export class SummaryPage {
 	currentSheepInfo: SheepInfoModel;
 	currentSheepInfoCategory: SheepInfoCategory;
 	category = Category;
+	private totalSheep = 0;
+	missingLambText = '';
 
 	@Select(SheepInfoState.getSheepInfo) sheepInfo$: Observable<SheepInfoModel>;
 	@Select(SheepInfoState.getCurrentSheepInfoCategory) currentSheepInfoCategory$: Observable<any>;
@@ -39,6 +41,7 @@ export class SummaryPage {
 	ionViewWillEnter(): void {
 		this.tts.speak('Oppsummering');
 
+
 		this.sheepInfoSub = this.sheepInfo$.subscribe(res => {
 			this.currentSheepInfo = res;
 		});
@@ -53,6 +56,30 @@ export class SummaryPage {
 	navigateBack() {
 		this.tts.speak(`Registrer ${this.currentSheepInfoCategory.name}`);
 		this.navController.back();
+	}
+
+	checkTotalSheep(): boolean {
+		this.totalSheep = this.currentSheepInfo.sheepType.ewe.count + this.currentSheepInfo.sheepType.lamb.count;
+		if (this.totalSheep === this.currentSheepInfo.totalSheep.totalSheep.count) {
+			return true;
+		}
+		return false;
+	}
+
+	checkCollarNumber(): boolean {
+		// const one = 1;
+		const totalLambs = this.currentSheepInfo.collarColour.greenCollar.count +
+		this.currentSheepInfo.collarColour.yellowCollar.count * 2 + this.currentSheepInfo.collarColour.redCollar.count * 3;
+		const missingLambs = totalLambs - this.currentSheepInfo.sheepType.lamb.count;
+		if (missingLambs > 0) {
+			this.missingLambText = `Registrerte slips tilsier at det mangler ${missingLambs} lam.`;
+			return false;
+		}
+		else if (missingLambs < 0) {
+			this.missingLambText =  `Registrerte slips tilsier at det er ${missingLambs * -1} lam for mye.`;
+			return false;
+		}
+		return true;
 	}
 
 	completeRegistration() {

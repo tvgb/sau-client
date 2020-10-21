@@ -43,11 +43,17 @@
 					currentSheepInfo.collarColour.missingCollar.count
 				]">
 			</app-count-overview>
-		</div>
-	<div *ngIf="currentSheepInfo.collarColour.missingCollar.count > 0" id="warning-container">
-		<ion-icon id="warning-icon" src="/assets/warning.svg"></ion-icon>
-		<h4>Registrerte slips tilsier at det mangler {{currentSheepInfo.collarColour.missingCollar.count}} lam</h4>
-	</div>
+        </div>
+    <div>
+        <div *ngIf="!checkTotalSheep()" class="warning-container">
+            <ion-icon class="warning-icon" src="/assets/warning.svg"></ion-icon>
+            <div class="warning-text">Antall registrerte søyer og lam samsvarer ikke med totalt antall registrerte sauer</div>
+        </div>
+        <div *ngIf="!checkCollarNumber()" class="warning-container">
+            <ion-icon class="warning-icon" src="/assets/warning.svg"></ion-icon>
+            <div class="warning-text">{{missingLambText}}</div>
+        </div>
+    </div>
 </div>
 </ion-content>
 <ion-footer>

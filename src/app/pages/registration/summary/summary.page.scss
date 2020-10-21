@@ -4,7 +4,7 @@
 
 #summary-heading {
 	text-align: center;
-	margin-top: 50px;
+	margin-top: 30px;
 	font-size: xx-large;
 }
 
@@ -42,18 +42,23 @@
     margin-bottom: 5px;
 }
 
-#warning-container {
+.warning-container {
     margin-top: 40px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    align-items: center;
 }
 
-#warning-icon {
+.warning-icon {
     fill: #B02525;
-    font-size: 82px;
-    padding-right: 10px;
+    font-size: 30px;
+    margin-left: 10px;
     
+}
+
+.warning-text {
+    width: 80%;
 }
 
 #back-button {
