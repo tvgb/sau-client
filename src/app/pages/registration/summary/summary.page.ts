@@ -67,9 +67,9 @@ export class SummaryPage {
 	}
 
 	checkCollarNumber(): boolean {
-		const one = 1;
-		const totalLambs = one * this.currentSheepInfo.collarColour.greenCollar.count +
-		one * this.currentSheepInfo.collarColour.yellowCollar.count * 2 + one * this.currentSheepInfo.collarColour.redCollar.count * 3;
+		// const one = 1;
+		const totalLambs = this.currentSheepInfo.collarColour.greenCollar.count +
+		this.currentSheepInfo.collarColour.yellowCollar.count * 2 + this.currentSheepInfo.collarColour.redCollar.count * 3;
 		const missingLambs = totalLambs - this.currentSheepInfo.sheepType.lamb.count;
 		if (missingLambs > 0) {
 			this.missingLambText = `Registrerte slips tilsier at det mangler ${missingLambs} lam.`;
