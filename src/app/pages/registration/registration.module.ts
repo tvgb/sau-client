@@ -6,9 +6,10 @@ import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { CountOverviewComponent } from './components/count-overview/count-overview.component';
 import { ButtonCounterComponent } from './components/button-counter/button-counter.component';
+import { SwipeAndTapCounterComponent } from './components/swipe-and-tap-counter/swipe-and-tap-counter.component';
 
 @NgModule({
-	declarations: [NavigationComponent, CounterComponent, CountOverviewComponent, ButtonCounterComponent],
+	declarations: [NavigationComponent, CounterComponent, CountOverviewComponent, ButtonCounterComponent, SwipeAndTapCounterComponent],
 	imports: [
 		CommonModule,
 		RouterModule,
@@ -18,7 +19,8 @@ import { ButtonCounterComponent } from './components/button-counter/button-count
 		NavigationComponent,
 		CounterComponent,
 		CountOverviewComponent,
-		ButtonCounterComponent
+		ButtonCounterComponent,
+		SwipeAndTapCounterComponent
 	]
 })
 export class RegistrationModule { }
