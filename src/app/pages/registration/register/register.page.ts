@@ -69,7 +69,7 @@ export class RegisterPage {
 		});
 
 		this.currentCategorySub = this.currentCategory$.subscribe((res: Category) => {
-			if (this.currentCategory) {
+			if (this.currentCategory && this.currentCategory !== res) {
 				this.timeTakingService.stopStopWatch(this.currentCategory);
 			}
 
