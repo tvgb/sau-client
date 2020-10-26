@@ -19,7 +19,9 @@ export class TimeTakingService {
 		const t0 = this.idTimeMap.get(id);
 		const t1 = performance.now();
 
-		console.log('STOP:', id, ', t0:', t0, ', t1:', t1, ', diff:', t1 - t0);
+		if (!t0) {
+			return;
+		}
 
 		const timeMeasurement: TimeMeasurement = {
 			time: t1 - t0,
@@ -30,8 +32,6 @@ export class TimeTakingService {
 	}
 
 	getTimeMeasurements(): TimeMeasurement[] {
-
-		console.log(this.timeMeasurements);
 
 		const timeMeasurements = [...this.timeMeasurements];
 		const accumulatedTimeMeasurements: TimeMeasurement[] = [];
