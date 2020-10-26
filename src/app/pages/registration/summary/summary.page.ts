@@ -71,6 +71,17 @@ export class SummaryPage {
 		const totalLambs = this.currentSheepInfo.collarColour.greenCollar.count +
 		this.currentSheepInfo.collarColour.yellowCollar.count * 2 + this.currentSheepInfo.collarColour.redCollar.count * 3;
 		const missingLambs = totalLambs - this.currentSheepInfo.sheepType.lamb.count;
+
+		const registeredCollars =
+			this.currentSheepInfo.collarColour.blueCollar.count +
+			this.currentSheepInfo.collarColour.greenCollar.count +
+			this.currentSheepInfo.collarColour.yellowCollar.count +
+			this.currentSheepInfo.collarColour.redCollar.count +
+			this.currentSheepInfo.collarColour.missingCollar.count;
+
+		if (registeredCollars === 0) {
+			return true;
+		}
 		if (missingLambs > 0) {
 			this.missingLambText = `Registrerte slips tilsier at det mangler ${missingLambs} lam.`;
 			return false;
@@ -79,6 +90,7 @@ export class SummaryPage {
 			this.missingLambText =  `Registrerte slips tilsier at det er ${missingLambs * -1} lam for mye.`;
 			return false;
 		}
+
 		return true;
 	}
 

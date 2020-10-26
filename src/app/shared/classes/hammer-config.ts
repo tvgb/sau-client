@@ -10,10 +10,18 @@ import { HammerGestureConfig } from '@angular/platform-browser';
 @Injectable()
 export class IonicGestureConfig extends HammerGestureConfig {
 	buildHammer(element: HTMLElement) {
-		const mc = new ( window as any).Hammer(element);
+		const mc = new (window as any).Hammer(element);
 
 		this.overrides = ( {
-			swipe: { direction: Hammer.DIRECTION_ALL }
+			swipe: {
+				direction: Hammer.DIRECTION_ALL,
+				threshold: 20
+			},
+
+			press: {
+				threshold: 19
+			}
+
 		} as any);
 
 		for (const eventName in this.overrides) {

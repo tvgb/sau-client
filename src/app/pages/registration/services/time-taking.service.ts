@@ -18,6 +18,11 @@ export class TimeTakingService {
 	stopStopWatch(id: string): void {
 		const t0 = this.idTimeMap.get(id);
 		const t1 = performance.now();
+
+		if (!t0) {
+			return;
+		}
+
 		const timeMeasurement: TimeMeasurement = {
 			time: t1 - t0,
 			name: id
@@ -27,6 +32,7 @@ export class TimeTakingService {
 	}
 
 	getTimeMeasurements(): TimeMeasurement[] {
+
 		const timeMeasurements = [...this.timeMeasurements];
 		const accumulatedTimeMeasurements: TimeMeasurement[] = [];
 
