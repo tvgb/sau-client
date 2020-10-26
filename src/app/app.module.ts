@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HammerModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -13,24 +13,34 @@ import { NgxsModule } from '@ngxs/store';
 
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { SheepInfoState } from './shared/store/sheepInfo.state';
+import {  TextToSpeech } from '@ionic-native/text-to-speech/ngx';
+import { IonicGestureConfig } from './shared/classes/hammer-config';
+import { Vibration } from '@ionic-native/vibration/ngx';
+import { AppInfoState } from './shared/store/appInfo.state';
+import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
 
 @NgModule({
 	declarations: [AppComponent],
-	entryComponents: [],
 	imports: [
 		BrowserModule,
 		IonicModule.forRoot(),
 		AppRoutingModule,
 		HttpClientModule,
 		NgxsModule.forRoot([
-			SheepInfoState
-		], { developmentMode: true })
+			SheepInfoState,
+			AppInfoState
+		], { developmentMode: true }),
+		HammerModule,
+		NgxsResetPluginModule.forRoot()
 	],
 	providers: [
 		StatusBar,
 		SplashScreen,
 		Geolocation,
-		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+		TextToSpeech,
+		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+		{ provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig },
+		Vibration
 	],
 	bootstrap: [AppComponent]
 })

@@ -1,329 +1,177 @@
-import { Action, Select, Selector, State, StateContext } from '@ngxs/store';
+import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { Injectable } from '@angular/core';
 import { SheepInfoModel } from '../interfaces/SheepInfoModel';
-import { throwError } from 'rxjs';
-import { SheepColour } from '../enums/SheepColour';
-import { CollarColour } from '../enums/CollarColour';
-import { DecrementCollarColourCount,
-		DecrementSheepColourCount,
-		DecrementSheepTypeCount,
-		DecrementTotalSheepCount,
-		IncrementCollarColourCount,
-		IncrementSheepColourCount,
-		IncrementSheepTypeCount,
-		IncrementTotalSheepCount } from './sheepInfo.actions';
-import { SheepType } from '../enums/SheepType';
+import { DecrementSheepInfoCount, IncrementSheepInfoCount } from './sheepInfo.actions';
+import { AppInfoState } from './appInfo.state';
+import { AppInfoModel } from '../interfaces/AppInfoModel';
+import { SheepInfo } from '../classes/SheepInfo';
+import { Category } from '../enums/Category';
+import { SheepInfoType } from '../enums/SheepInfoType';
+import { SheepInfoCategory } from '../classes/SheepInfoCategory';
+
 
 @State<SheepInfoModel>({
 	name: 'sheepInfo',
 	defaults: {
-		totalSheepCount: 0,
 
-		blackSheepCount: 0,
-		greyWhiteSheepCount: 0,
-		brownSheepCount: 0,
-		whiteBlackHeadSheepCount: 0,
+		totalSheep: {
+			category: Category.TotalSheepCategory,
+			name: 'Sau totalt',
+			speakText: '',
 
-		lambCount: 0,
-		eweCount: 0,
+			totalSheep: {
+				sheepInfoType: SheepInfoType.TotalSheepInfo,
+				name: 'Sau totalt',
+				speakText: '',
+				count: 0
+			}
+		},
 
-		blueCollarCount: 0,
-		greenCollarCount: 0,
-		yellowCollarCount: 0,
-		redCollarCount: 0,
-		missingCollarCount: 0,
+		sheepColour: {
+			category: Category.SheepColourCategory,
+			name: 'Farge',
+			speakText: 'sau',
+
+			whiteSheep: {
+				sheepInfoType: SheepInfoType.WhiteSheepInfo,
+				name: 'Hvit',
+				speakText: 'hvit',
+				count: 0
+			},
+			blackSheep: {
+				sheepInfoType: SheepInfoType.BlackSheepInfo,
+				name: 'Svart',
+				speakText: 'svart',
+				count: 0
+			},
+			brownSheep: {
+				sheepInfoType: SheepInfoType.BrownSheepInfo,
+				name: 'Brun',
+				speakText: 'brun',
+				count: 0
+			}
+		},
+
+		sheepType: {
+			category: Category.SheepTypeCategory,
+			name: 'Type',
+			speakText: '',
+
+			ewe: {
+				sheepInfoType: SheepInfoType.EweInfo,
+				name: 'Søye',
+				speakText: 'søye',
+				count: 0
+			},
+			lamb: {
+				sheepInfoType: SheepInfoType.LambInfo,
+				name: 'Lam',
+				speakText: 'lam',
+				count: 0
+			},
+		},
+
+		collarColour: {
+			category: Category.CollarColourCategory,
+			name: 'Slips',
+			speakText: 'slips',
+
+			blueCollar: {
+				sheepInfoType: SheepInfoType.BlueCollarInfo,
+				name: 'Blå',
+				speakText: 'blå',
+				count: 0
+			},
+			greenCollar: {
+				sheepInfoType: SheepInfoType.GreenCollarInfo,
+				name: 'Grønn',
+				speakText: 'grønn',
+				count: 0
+			},
+			yellowCollar: {
+				sheepInfoType: SheepInfoType.YellowCollarInfo,
+				name: 'Gul',
+				speakText: 'gul',
+				count: 0
+			},
+			redCollar: {
+				sheepInfoType: SheepInfoType.RedCollarInfo,
+				name: 'Rød',
+				speakText: 'rød',
+				count: 0
+			},
+			missingCollar: {
+				sheepInfoType: SheepInfoType.MissingCollarInfo,
+				name: 'Mangler',
+				speakText: 'mangler',
+				count: 0
+			}
+		}
 	}
 })
 
 @Injectable()
 export class SheepInfoState {
 
-	@Selector()
-	static getTotalSheepCount(state: SheepInfoModel) {
-		return state.totalSheepCount;
-	}
+	constructor() {}
 
 	@Selector()
-	static getSheepColourCount(state: SheepInfoModel) {
-		return {
-			blackSheepCount: state.blackSheepCount,
-			greyWhiteSheepCount: state.greyWhiteSheepCount,
-			brownSheepCount: state.brownSheepCount,
-			whiteBlackHeadSheepCount: state.whiteBlackHeadSheepCount
-		};
+	static getSheepInfo(state: SheepInfoModel) {
+		return state;
 	}
 
-	@Action(IncrementTotalSheepCount)
-	incrementTotalSheepCount(ctx: StateContext<SheepInfoModel>) {
+	@Selector([AppInfoState])
+	static getCurrentSheepInfo(state: SheepInfoModel, appInfoState: AppInfoModel): SheepInfo {
+		const currentCategory = appInfoState.currentCategory;
+		const currentSheepInfoType = appInfoState.currentSheepInfoType;
+
+		return state[currentCategory][currentSheepInfoType];
+	}
+
+	@Selector([AppInfoState])
+	static getCurrentSheepInfoCategory(state: SheepInfoModel, appInfoState: AppInfoModel): SheepInfoCategory {
+		const currentCategory = appInfoState.currentCategory;
+
+		return state[currentCategory];
+	}
+
+	@Action(IncrementSheepInfoCount)
+	incrementSheepInfoCount(ctx: StateContext<SheepInfoModel>, action: IncrementSheepInfoCount) {
 		const state = ctx.getState();
 
-		ctx.setState({
+		const currentCategory = state[action.payload.category];
+		const currentSheepInfo = currentCategory[action.payload.sheepInfoType];
+
+		ctx.patchState({
 			...state,
-			totalSheepCount: state.totalSheepCount + 1
+			[action.payload.category]: {
+				...currentCategory,
+				[action.payload.sheepInfoType]: {
+					...currentSheepInfo,
+					count: currentSheepInfo.count + 1
+				}
+			}
 		});
 	}
 
-	@Action(DecrementTotalSheepCount)
-	decrementTotalSheepCount(ctx: StateContext<SheepInfoModel>) {
+	@Action(DecrementSheepInfoCount)
+	decrementSheepInfoCategoryCount(ctx: StateContext<SheepInfoModel>, action: DecrementSheepInfoCount) {
 		const state = ctx.getState();
 
-		if (state.totalSheepCount > 0) {
-			ctx.setState({
-				...state,
-				totalSheepCount: state.totalSheepCount - 1
-			});
+		const currentCategory = state[action.payload.category];
+		const currentSheepInfo = currentCategory[action.payload.sheepInfoType];
 
-		} else {
-			throwError(new Error('Cannot decrement. Count already at 0'));
-		}
-	}
+		if (currentSheepInfo.count <= 0) { return; }
 
-	@Action(IncrementSheepColourCount)
-	incrementSheepColourCount(ctx: StateContext<SheepInfoModel>, action: IncrementSheepColourCount) {
-		const state = ctx.getState();
-
-		switch (action.sheepColour) {
-
-			case SheepColour.Black:
-				ctx.setState({
-					...state,
-					blackSheepCount: state.blackSheepCount + 1
-				});
-				break;
-
-			case SheepColour.Brown:
-				ctx.setState({
-					...state,
-					brownSheepCount: state.brownSheepCount + 1
-				});
-				break;
-
-			case SheepColour.GreyWhite:
-				ctx.setState({
-					...state,
-					greyWhiteSheepCount: state.greyWhiteSheepCount + 1
-				});
-				break;
-
-			case SheepColour.WhiteBlackHead:
-				ctx.setState({
-					...state,
-					whiteBlackHeadSheepCount: state.whiteBlackHeadSheepCount + 1
-				});
-				break;
-		}
-	}
-
-	@Action(DecrementSheepColourCount)
-	decrementSheepColourCount(ctx: StateContext<SheepInfoModel>, action: DecrementSheepColourCount) {
-		const state = ctx.getState();
-
-		switch (action.sheepColour) {
-
-			case SheepColour.Black:
-				if (state.blackSheepCount > 0) {
-					ctx.setState({
-						...state,
-						blackSheepCount: state.blackSheepCount - 1
-					});
-				} else {
-					throwError(new Error('Cannot decrement. Count already at 0'));
+		ctx.patchState({
+			...state,
+			[action.payload.category]: {
+				...currentCategory,
+				[action.payload.sheepInfoType]: {
+					...currentSheepInfo,
+					count: currentSheepInfo.count - 1
 				}
-
-				break;
-
-			case SheepColour.Brown:
-				if (state.brownSheepCount > 0) {
-					ctx.setState({
-						...state,
-						brownSheepCount: state.brownSheepCount - 1
-					});
-				} else {
-					throwError(new Error('Cannot decrement. Count already at 0'));
-				}
-				break;
-
-			case SheepColour.GreyWhite:
-				if (state.greyWhiteSheepCount > 0) {
-					ctx.setState({
-						...state,
-						greyWhiteSheepCount: state.greyWhiteSheepCount - 1
-					});
-				} else {
-					throwError(new Error('Cannot decrement. Count already at 0'));
-				}
-				break;
-
-			case SheepColour.WhiteBlackHead:
-				if (state.whiteBlackHeadSheepCount > 0) {
-					ctx.setState({
-						...state,
-						whiteBlackHeadSheepCount: state.whiteBlackHeadSheepCount - 1
-					});
-				} else {
-					throwError(new Error('Cannot decrement. Count already at 0'));
-				}
-				break;
-		}
-	}
-
-	@Action(IncrementSheepTypeCount)
-	incrementSheepTypeCount(ctx: StateContext<SheepInfoModel>, action: IncrementSheepTypeCount) {
-		const state = ctx.getState();
-
-		switch (action.sheepType) {
-			case(SheepType.Ewe):
-				ctx.setState({
-					...state,
-					eweCount: state.eweCount + 1,
-				});
-				break;
-
-			case(SheepType.Lamb):
-				ctx.setState({
-					...state,
-					lambCount: state.lambCount + 1,
-				});
-				break;
-		}
-	}
-
-	@Action(DecrementSheepTypeCount)
-	decrementSheepTypeCount(ctx: StateContext<SheepInfoModel>, action: DecrementSheepTypeCount) {
-		const state = ctx.getState();
-
-		switch (action.sheepType) {
-			case(SheepType.Ewe):
-				if (state.eweCount > 0) {
-					ctx.setState({
-						...state,
-						eweCount: state.eweCount - 1
-					});
-
-				} else {
-					throwError(new Error('Cannot decrement. Count already at 0'));
-				}
-				break;
-
-			case(SheepType.Lamb): {
-				if (state.lambCount > 0) {
-					ctx.setState({
-						...state,
-						lambCount: state.lambCount - 1
-					});
-
-				} else {
-					throwError(new Error('Cannot decrement. Count already at 0'));
-				}
-				break;
 			}
-		}
-	}
-
-	@Action(IncrementCollarColourCount)
-	incrementCollarColourCount(ctx: StateContext<SheepInfoModel>, action: IncrementCollarColourCount) {
-		const state = ctx.getState();
-
-		switch (action.collarColour) {
-
-			case CollarColour.Blue:
-				ctx.setState({
-					...state,
-					blueCollarCount: state.blueCollarCount + 1
-				});
-				break;
-
-			case CollarColour.Green:
-				ctx.setState({
-					...state,
-					greenCollarCount: state.greenCollarCount + 1
-				});
-				break;
-
-			case CollarColour.Yellow:
-				ctx.setState({
-					...state,
-					yellowCollarCount: state.yellowCollarCount + 1
-				});
-				break;
-
-			case CollarColour.Red:
-				ctx.setState({
-					...state,
-					redCollarCount: state.redCollarCount + 1
-				});
-				break;
-
-			case CollarColour.Missing:
-				ctx.setState({
-					...state,
-					missingCollarCount: state.missingCollarCount + 1
-				});
-				break;
-		}
-	}
-
-	@Action(DecrementCollarColourCount)
-	decrementCollarColourCount(ctx: StateContext<SheepInfoModel>, action: DecrementCollarColourCount) {
-		const state = ctx.getState();
-
-		switch (action.collarColour) {
-
-			case CollarColour.Blue:
-				if (state.blueCollarCount > 0) {
-					ctx.setState({
-						...state,
-						blueCollarCount: state.blueCollarCount - 1
-					});
-				} else {
-					throwError(new Error('Cannot decrement. Count already at 0'));
-				}
-
-				break;
-
-			case CollarColour.Green:
-				if (state.greenCollarCount > 0) {
-					ctx.setState({
-						...state,
-						greenCollarCount: state.greenCollarCount - 1
-					});
-				} else {
-					throwError(new Error('Cannot decrement. Count already at 0'));
-				}
-				break;
-
-			case CollarColour.Yellow:
-				if (state.yellowCollarCount > 0) {
-					ctx.setState({
-						...state,
-						yellowCollarCount: state.yellowCollarCount - 1
-					});
-				} else {
-					throwError(new Error('Cannot decrement. Count already at 0'));
-				}
-				break;
-
-			case CollarColour.Red:
-				if (state.redCollarCount > 0) {
-					ctx.setState({
-						...state,
-						redCollarCount: state.redCollarCount - 1
-					});
-				} else {
-					throwError(new Error('Cannot decrement. Count already at 0'));
-				}
-				break;
-
-			case CollarColour.Missing:
-				if (state.missingCollarCount > 0) {
-					ctx.setState({
-						...state,
-						missingCollarCount: state.missingCollarCount - 1
-					});
-				} else {
-					throwError(new Error('Cannot decrement. Count already at 0'));
-				}
-				break;
-		}
+		});
 	}
 }

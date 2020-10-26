@@ -1,0 +1,35 @@
+.tm-header {
+    --background: #1C262F;
+}
+
+.tm-content {
+    --background: #1C262F;
+}
+table {
+	margin-top: 20px;
+	width: 100%;
+}
+
+tr {
+	height: 30px;
+}
+
+th, td {
+	width: 50%;
+	padding: 0px 30px;
+	text-align: left;
+}
+
+.tm-container {
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+
+	justify-content: space-between;
+	align-items: center;
+}
+
+.map-button {
+	margin-bottom: 30px;
+}

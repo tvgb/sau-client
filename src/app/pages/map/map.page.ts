@@ -1,21 +1,40 @@
-import { Component, OnInit, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { GpsService } from './services/gps.service';
+import { Router } from '@angular/router';
+import { Select } from '@ngxs/store';
+import { Observable, Subscription } from 'rxjs';
+import { TextToSpeechService } from '../registration/services/text-to-speech.service';
+import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
+import { SheepInfoCategory } from 'src/app/shared/classes/SheepInfoCategory';
 
 @Component({
 	selector: 'app-map',
 	templateUrl: './map.page.html',
 	styleUrls: ['./map.page.scss'],
 })
-export class MapPage implements OnInit, AfterViewInit {
+export class MapPage implements AfterViewInit {
 
+	private routeLink = ['/registration/register'];
 	private map;
-	private readonly OFFLINE_MAP = true;
-	constructor(private mapService: MapService, private gpsService: GpsService) { }
+	private readonly OFFLINE_MAP = false;
+	private currentSheepInfoCategory: SheepInfoCategory;
 
-	ngOnInit(): void {
+	@Select(SheepInfoState.getCurrentSheepInfoCategory) currentSheepInfoCategory$: Observable<SheepInfoCategory>;
 
+	currentSheepInfoCategorySub: Subscription;
+
+	constructor(
+		private mapService: MapService,
+		private gpsService: GpsService,
+		private ttsService: TextToSpeechService,
+		private router: Router) { }
+
+	ionViewWillEnter(): void {
+		this.currentSheepInfoCategorySub = this.currentSheepInfoCategory$.subscribe(res => {
+			this.currentSheepInfoCategory = res;
+		});
 		// This covers Gløshaugen ++++
 		// const startLat = 63.433167;
 		// const startLong =  10.358562;
@@ -34,8 +53,6 @@ export class MapPage implements OnInit, AfterViewInit {
 		// const endLat = 63.413847;
 		// const endLong = 10.415751;
 
-
-
 		if (this.OFFLINE_MAP) {
 			this.mapService.downloadMapTileArea(startLat, startLong, endLat, endLong);
 		}
@@ -45,6 +62,12 @@ export class MapPage implements OnInit, AfterViewInit {
 		setTimeout(_ => {
 			this.initMap();
 		});
+	}
+
+	navigateToRegistration() {
+		console.log('navigate method');
+		this.ttsService.speak(`Registrer ${this.currentSheepInfoCategory.name}`);
+		this.router.navigate(this.routeLink);
 	}
 
 	initMap(): void {
@@ -86,5 +109,9 @@ export class MapPage implements OnInit, AfterViewInit {
 				attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
 			}).addTo(this.map);
 		}
+	}
+
+	ionViewWillLeave(): void {
+		this.currentSheepInfoCategorySub.unsubscribe();
 	}
 }

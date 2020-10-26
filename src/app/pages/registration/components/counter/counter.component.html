@@ -1,23 +1,26 @@
 <div class="counter-container"> 
-	<div class="plus" (click)="increment.next()">
+	<div class="plus" >
 		<ion-icon size="large" name="add-outline"></ion-icon>
 	</div>
-	<div 
-		*ngIf="categories.length > 0"
-		(click)="categoryLeft.next()"
+	<div
+		*ngIf="sheepInfosCount > 1"
 		class="left">
-		<ion-icon size="large" name="chevron-back-circle-outline"></ion-icon>
+		<ion-icon size="large" name="chevron-back-outline"></ion-icon>
 	</div>
-	<div class="middle">
-		{{ selectedCategory }}
+	<div
+		(swipeleft)="onSwipeLeft($event)"
+		(swiperight)="onSwipeRight($event)"
+		(swipeup)="onSwipeUp($event)"
+		(swipedown)="onSwipeDown($event)" 
+		class="middle">
+		{{ selectedSheepInfo }}
 	</div>
-	<div 
-		*ngIf="categories.length > 0"
-		(click)="categoryRight.next()"
+	<div
+		*ngIf="sheepInfosCount > 1"
 		class="right">
-		<ion-icon size="large" name="chevron-forward-circle-outline"></ion-icon>	
+		<ion-icon size="large" name="chevron-forward-outline"></ion-icon>
 	</div>
-	<div class="minus" (click)="decrement.next()">
+	<div class="minus">
 		<ion-icon size="large" name="remove-outline"></ion-icon>
 	</div>
 </div>

@@ -1,0 +1,74 @@
+<ion-content class="register-content">
+	<div class="register-container" *ngIf="currentSheepInfoCategory && currentSheepInfo && sheepInfoCountInCurrentCategory">
+		<div class="register-top-part">
+			<h1 class="register-heading"> {{ currentSheepInfoCategory.name }} </h1>
+
+			<div class="count-overview-container">
+
+				<!-- COUNT OVERVIEW FOR TOTAL AMOUNT -->
+				<app-count-overview
+					*ngIf="currentSheepInfoCategory.category === category.TotalSheepCategory"
+					[category]="category.TotalSheepCategory"
+					[infoTypes]="['Antall']"
+					[counts]="[currentSheepInfoCategory.totalSheep.count]">
+				</app-count-overview>
+
+				<!-- COUNT OVERVIEW FOR SHEEP COLOUR -->
+				<app-count-overview
+					*ngIf="currentSheepInfoCategory.category === category.SheepColourCategory"
+					[category]="category.SheepColourCategory"
+					[infoTypes]="['Hvit', 'Svart', 'Brun']"
+					[colours]="['FFFFFF', '000000', '422916']"
+					[counts]="[
+						currentSheepInfoCategory.whiteSheep.count,
+						currentSheepInfoCategory.blackSheep.count,
+						currentSheepInfoCategory.brownSheep.count
+					]">
+				</app-count-overview>
+
+				<!-- COUNT OVERVIEW FOR SHEEP TYPE -->
+				<app-count-overview
+					*ngIf="currentSheepInfoCategory.category === category.SheepTypeCategory"
+					[category]="category.SheepTypeCategory"
+					[infoTypes]="['Søye', 'Lam']"
+					[counts]="[
+						currentSheepInfoCategory.ewe.count,
+						currentSheepInfoCategory.lamb.count
+					]">
+				</app-count-overview>
+
+				<!-- COUNT OVERVIEW FOR COLLAR COLOUR -->
+				<app-count-overview
+					*ngIf="currentSheepInfoCategory.category === category.CollarColourCategory"
+					[category]="category.CollarColourCategory"
+					[infoTypes]="['Blå', 'Grønn', 'Gul', 'Rød', 'Mangler']"
+					[colours]="['005BE4', '198C0F', 'E2E700', 'BD0000', '595959']"
+					[counts]="[
+						currentSheepInfoCategory.blueCollar.count,
+						currentSheepInfoCategory.greenCollar.count,
+						currentSheepInfoCategory.yellowCollar.count,
+						currentSheepInfoCategory.redCollar.count,
+						currentSheepInfoCategory.missingCollar.count
+					]">
+				</app-count-overview>
+			</div>
+		</div>
+		
+		<app-counter
+			(increment)="onIncrement()"
+			(decrement)="onDecrement()"
+			(sheepInfoLeft)="onSheepInfoLeft()"
+			(sheepInfoRight)="onSheepInfoRight()"
+			[sheepInfosCount]="sheepInfoCountInCurrentCategory" 
+			[selectedSheepInfo]="currentSheepInfo.name"
+			class="counter">
+            </app-counter>
+		<app-navigation
+			(nextCategory)="onNextCategory()"
+			(prevCategory)="onPrevCategory()"
+			(cancelRegistration)="onCancel()"
+			(completeRegistration)="onComplete()"
+			class="navigation">
+		</app-navigation>
+	</div>
+</ion-content>

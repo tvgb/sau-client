@@ -3,9 +3,16 @@
 
 /** Ionic CSS Variables **/
 :root {
+    .alertConfirm {
+        --background: #1C262F;
+
+    }
+    .alertConfirm .alert-message {
+            --color: #ffffff;
+    }
 	// Font familiy for the entire project
   	--ion-font-family: 'Montserrat';	
-
+    --ion-text-color: #ffffff;
     --ion-color-primary: #7BB662;
     --ion-color-primary-rgb: 123,182,98;
     --ion-color-primary-contrast: #ffffff;
@@ -15,14 +22,14 @@
   
     --ion-color-secondary: #1C262F;
     --ion-color-secondary-rgb: 28,38,47;
-    --ion-color-secondary-contrast: #808080;
+    --ion-color-secondary-contrast: #ffffff;
     --ion-color-secondary-contrast-rgb: 255,255,255;
     --ion-color-secondary-shade: #192129;
     --ion-color-secondary-tint: #333c44;
   
-    --ion-color-tertiary: #5260ff;
+    --ion-color-tertiary: #1C262F;
     --ion-color-tertiary-rgb: 82,96,255;
-    --ion-color-tertiary-contrast: #ffffff;
+    --ion-color-tertiary-contrast: #808080;
     --ion-color-tertiary-contrast-rgb: 255,255,255;
     --ion-color-tertiary-shade: #4854e0;
     --ion-color-tertiary-tint: #6370ff;
@@ -77,7 +84,7 @@
    */
 
   body {
-    --ion-text-color: #ffffff; 
+    // --ion-text-color: #ffffff;
     --ion-color-primary: #7BB662;
     --ion-color-primary-rgb: 123,182,98;
     --ion-color-primary-contrast: #ffffff;
@@ -87,14 +94,14 @@
 
     --ion-color-secondary: #1C262F;
     --ion-color-secondary-rgb: 28,38,47;
-    --ion-color-secondary-contrast: #808080;
+    --ion-color-secondary-contrast: #ffffff;
     --ion-color-secondary-contrast-rgb: 255,255,255;
     --ion-color-secondary-shade: #192129;
     --ion-color-secondary-tint: #333c44;
 
-    --ion-color-tertiary: #6a64ff;
+    --ion-color-tertiary: #1C262F;
     --ion-color-tertiary-rgb: 106,100,255;
-    --ion-color-tertiary-contrast: #ffffff;
+    --ion-color-tertiary-contrast: #808080;
     --ion-color-tertiary-contrast-rgb: 255,255,255;
     --ion-color-tertiary-shade: #5d58e0;
     --ion-color-tertiary-tint: #7974ff;
@@ -191,7 +198,6 @@
     --ion-background-color: #1C262F;
     --ion-background-color-rgb: 18,18,18;
 
-    --ion-text-color: #ffffff;
     --ion-text-color-rgb: 255,255,255;
 
     --ion-color-step-50: #1e1e1e;
@@ -222,4 +228,5 @@
 
     --ion-card-background: #1e1e1e;
   }
+
 }

@@ -1,11 +1,20 @@
 <div class="navigation-container">
-	<div class="mode">
-		ENKEL
+	<div (click)="complete()" class="complete">
+		<ion-button fill="solid" expand="full" color="secondary" class="button ion-no-margin">
+			FULLFØR
+		</ion-button>
 	</div>
-	<div class="cancel">
-		AVBRYT
+	<div (click)="cancel()" class="cancel">
+		<ion-button fill="solid" expand="full" color="tertiary" class="button ion-no-margin">
+			AVBRYT
+		</ion-button>
 	</div>
-	<div [routerLink]="[nextRoute]" class="next">
-		NEXT
+	<div (tap)="nextCategoryClick()" (press)="prevCategoryClick()" class="next">
+		<ion-button fill="solid" expand="full" color="primary" class="next-button button ion-no-margin">
+			<div  class="next-button-text-wrapper">
+				<ion-text>NESTE</ion-text>
+				<ion-text class="go-back-text">(Hold inne for å gå tilbake)</ion-text>
+			</div>
+		</ion-button>
 	</div>
 </div>

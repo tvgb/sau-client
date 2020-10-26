@@ -1,0 +1,36 @@
+.register-content {
+	--background: #1C262F;
+}
+
+.register-container {
+	height: 100%;
+    width: auto;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.register-top-part {
+	display: flex;
+	flex-direction: column;
+}
+
+.counter {
+    height: 55%;
+
+}
+
+.register-heading {
+	text-align: center;
+	margin-top: 30px;
+	font-weight: 300;
+	font-size: xx-large;
+	text-transform: uppercase;
+}
+
+.count-overview-container {
+	margin-top: 10px;
+	width: 100%;
+}
+
+
