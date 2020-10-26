@@ -10,7 +10,7 @@
     margin: 10px;
 }
 
-.plus, .minus, .left, .right {
+.plus, .minus, .next, .prev {
     justify-self: stretch;
     align-self: stretch;
 
@@ -49,7 +49,7 @@
 	text-transform: uppercase;
 }
 
-.left {
+.next {
     grid-column: 1 / 2;
     grid-row: 2 / 3;
 
@@ -57,7 +57,7 @@
     border-bottom: 0;
 }
 
-.right {
+.prev {
     grid-column: 3 / 4;
     grid-row: 2 / 3;
     

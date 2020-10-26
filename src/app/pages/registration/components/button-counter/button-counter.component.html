@@ -6,8 +6,8 @@
     </div>
     <div 
         *ngIf="sheepInfosCount > 1"
-        (tap)="onTapLeft($event)"
-        class="left">
+        (tap)="onTapRight($event)"
+        class="next">
         <ion-icon size="large" name="chevron-back-outline"></ion-icon>
     </div>
     <div class="middle">
@@ -15,8 +15,8 @@
     </div>
     <div 
         *ngIf="sheepInfosCount > 1"
-        (tap)="onTapRight($event)"
-        class="right">
+        (tap)="onTapLeft($event)"
+        class="prev">
         <ion-icon size="large" name="chevron-forward-outline"></ion-icon>
     </div>
     <div 
