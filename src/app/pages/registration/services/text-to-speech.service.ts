@@ -13,8 +13,6 @@ export class TextToSpeechService {
 	constructor(private tts: TextToSpeech) { }
 
 	speak(speakText) {
-		
-		this.tts.speak('');
 
 		this.tts.speak({
 			text: speakText,
