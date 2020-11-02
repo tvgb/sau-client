@@ -8,11 +8,14 @@ import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 export class TextToSpeechService {
 
 	private readonly LANGUAGE = 'nb-NO';
-	private speed = 1.0;
+	private speed = 1.6;
 
 	constructor(private tts: TextToSpeech) { }
 
 	speak(speakText) {
+		
+		this.tts.speak('');
+
 		this.tts.speak({
 			text: speakText,
 			locale: this.LANGUAGE,
