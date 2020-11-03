@@ -23,6 +23,10 @@ export class TextToSpeechService {
 			text: speakText,
 			locale: this.LANGUAGE,
 			rate: this.speed,
+		}).then(() => {
+			console.log('SUCCESS!');
+		}).catch((error: any) => {
+			console.log(error);
 		});
 		// });
 	}
