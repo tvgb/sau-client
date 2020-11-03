@@ -15,13 +15,29 @@ export class TextToSpeechService {
 	constructor() { }
 
 	speak(speakText) {
-		TTS.stop();
 
-		TTS.speak({
-			text: speakText,
-			locale: this.LANGUAGE,
-			cancel: true
-		});
+		if (this.isSpeaking) {
+			TTS.stop().then(() => {
+				this.isSpeaking = true;
+				TTS.speak({
+					text: speakText,
+					locale: this.LANGUAGE,
+					cancel: true
+				}).then(() => {
+					this.isSpeaking = false;
+				});
+			});
+		} else {
+			this.isSpeaking = true;
+			TTS.speak({
+				text: speakText,
+				locale: this.LANGUAGE,
+				cancel: true
+			}).then(() => {
+				this.isSpeaking = false;
+			});
+		}
+
 
 		// if (this.isSpeaking) {
 		// 	this.tts.stop().then(() => {
