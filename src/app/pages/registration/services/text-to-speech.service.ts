@@ -15,10 +15,11 @@ export class TextToSpeechService {
 	constructor() { }
 
 	speak(speakText) {
+		TTS.stop();
+
 		TTS.speak({
 			text: speakText,
 			locale: this.LANGUAGE,
-			rate: this.speed,
 			cancel: true
 		});
 
