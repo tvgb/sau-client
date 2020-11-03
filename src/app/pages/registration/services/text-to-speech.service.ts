@@ -15,7 +15,7 @@ export class TextToSpeechService {
 	speak(speakText) {
 
 		this.tts.speak({
-			text: '',
+			text: '""',
 			locale: this.LANGUAGE,
 			rate: this.speed
 		}).then(() => {
