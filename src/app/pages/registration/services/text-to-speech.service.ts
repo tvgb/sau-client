@@ -14,20 +14,26 @@ export class TextToSpeechService {
 
 	speak(speakText) {
 
+		this.tts.stop().then(() => {
+			this.tts.speak({
+				text: speakText,
+				locale: this.LANGUAGE,
+				rate: this.speed,
+			}).then(() => {
+				console.log('SUCCESS!');
+			}).catch((error: any) => {
+				console.log('Error while speaking:', error);
+			});
+		}).catch((error: any) => {
+			console.log('Error while stopping:', error);
+		});
+
 		// this.tts.speak({
 		// 	text: '',
 		// 	locale: this.LANGUAGE,
 		// 	rate: this.speed
 		// }).then(() => {
-		this.tts.speak({
-			text: speakText,
-			locale: this.LANGUAGE,
-			rate: this.speed,
-		}).then(() => {
-			console.log('SUCCESS!');
-		}).catch((error: any) => {
-			console.log(error);
-		});
+
 		// });
 	}
 
