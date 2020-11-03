@@ -9,7 +9,7 @@ declare var TTS: any;
 export class TextToSpeechService {
 
 	private readonly LANGUAGE = 'nb-NO';
-	private speed = 1.6;
+	private speed = 1.5;
 	private isSpeaking = false;
 
 	constructor() { }
@@ -19,6 +19,7 @@ export class TextToSpeechService {
 			text: speakText,
 			locale: this.LANGUAGE,
 			rate: this.speed,
+			cancel: true
 		});
 
 		// if (this.isSpeaking) {
