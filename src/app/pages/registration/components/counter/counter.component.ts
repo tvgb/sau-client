@@ -8,6 +8,8 @@ import { Vibration } from '@ionic-native/vibration/ngx';
 })
 export class CounterComponent implements OnInit {
 
+	private vibrationEnabled = false;
+
 	@Input() sheepInfosCount: number;
 	@Input() selectedSheepInfo: string;
 
@@ -25,25 +27,31 @@ export class CounterComponent implements OnInit {
 	onSwipeLeft(e): void {
 		if (this.sheepInfosCount > 1) {
 			this.sheepInfoLeft.emit(e);
-			this.vibration.vibrate(200);
+			this.vibrate();
 		}
 	}
 
 	onSwipeRight(e): void {
 		if (this.sheepInfosCount > 1) {
 			this.sheepInfoRight.emit(e);
-			this.vibration.vibrate(200);
+			this.vibrate();
 		}
 	}
 
 	onSwipeUp(e): void {
 		this.increment.emit(e);
-		this.vibration.vibrate(200);
+		this.vibrate();
 	}
 
 	onSwipeDown(e): void {
 		this.decrement.emit(e);
-		this.vibration.vibrate(200);
+		this.vibrate();
+	}
+
+	private vibrate(): void {
+		if (this.vibrationEnabled) {
+			this.vibration.vibrate(200);
+		}
 	}
 
 	// checkRequiredFields(input: string[]) {
