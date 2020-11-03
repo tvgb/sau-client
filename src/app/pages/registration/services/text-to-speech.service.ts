@@ -9,31 +9,21 @@ export class TextToSpeechService {
 
 	private readonly LANGUAGE = 'nb-NO';
 	private speed = 1.6;
-	private isSpeaking = false;
 
 	constructor(private tts: TextToSpeech) { }
 
 	speak(speakText) {
 
-		if (this.isSpeaking) {
-			this.tts.speak({
-				text: '',
-				locale: this.LANGUAGE
-			}).then((something) => {
-				console.log(something);
-			});
-			console.log('SPEAK EMPTY STRING');
-		}
-
-		this.isSpeaking = true;
 		this.tts.speak({
-			text: speakText,
-			locale: this.LANGUAGE,
-			rate: this.speed,
+			text: '',
+			locale: this.LANGUAGE
 		}).then(() => {
-			this.isSpeaking = false;
+			this.tts.speak({
+				text: speakText,
+				locale: this.LANGUAGE,
+				rate: this.speed,
+			});
 		});
-		console.log(`SPEAK: ${speakText}`);
 	}
 
 	speakNextRoute(route: string): void {
