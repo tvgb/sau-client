@@ -30,7 +30,6 @@
 		"@ionic-native/vibration": "^5.29.0",
 		"@ionic/angular": "^5.4.1",
 		"@ngxs/store": "^3.7.0",
-		"cordova-plugin-avaudiosession": "^1.1.2",
 		"cordova-plugin-geolocation": "^4.0.2",
 		"cordova-plugin-tts": "^0.2.3",
 		"cordova-plugin-vibration": "^3.1.1",
