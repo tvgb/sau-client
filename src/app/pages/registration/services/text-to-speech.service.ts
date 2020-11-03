@@ -9,24 +9,43 @@ export class TextToSpeechService {
 
 	private readonly LANGUAGE = 'nb-NO';
 	private speed = 1.6;
+	private isSpeaking = false;
 
 	constructor(private tts: TextToSpeech) { }
 
 	speak(speakText) {
 
-		this.tts.stop().then(() => {
+		if (this.isSpeaking) {
+			this.tts.stop().then(() => {
+				this.isSpeaking = true;
+				this.tts.speak({
+					text: speakText,
+					locale: this.LANGUAGE,
+					rate: this.speed,
+				}).then(() => {
+					this.isSpeaking = false;
+					console.log('SUCCESS!');
+				}).catch((error: any) => {
+					console.log('Error while speaking:', error);
+				});
+			}).catch((error: any) => {
+				console.log('Error while stopping:', error);
+			});
+
+		} else {
+			this.isSpeaking = true;
 			this.tts.speak({
 				text: speakText,
 				locale: this.LANGUAGE,
 				rate: this.speed,
 			}).then(() => {
+				this.isSpeaking = false;
 				console.log('SUCCESS!');
 			}).catch((error: any) => {
 				console.log('Error while speaking:', error);
 			});
-		}).catch((error: any) => {
-			console.log('Error while stopping:', error);
-		});
+		}
+
 
 		// this.tts.speak({
 		// 	text: '',
