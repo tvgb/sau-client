@@ -14,17 +14,17 @@ export class TextToSpeechService {
 
 	speak(speakText) {
 
+		// this.tts.speak({
+		// 	text: '',
+		// 	locale: this.LANGUAGE,
+		// 	rate: this.speed
+		// }).then(() => {
 		this.tts.speak({
-			text: '""',
+			text: speakText,
 			locale: this.LANGUAGE,
-			rate: this.speed
-		}).then(() => {
-			this.tts.speak({
-				text: speakText,
-				locale: this.LANGUAGE,
-				rate: this.speed,
-			});
+			rate: this.speed,
 		});
+		// });
 	}
 
 	speakNextRoute(route: string): void {
