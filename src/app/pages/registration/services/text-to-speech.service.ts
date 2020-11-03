@@ -15,17 +15,20 @@ export class TextToSpeechService {
 	speak(speakText) {
 
 		this.tts.stop();
+		console.log('STOPPED');
 
 		this.tts.speak({
 			text: '',
 			locale: this.LANGUAGE
 		});
+		console.log('SPEAK EMPTY STRING');
 
 		this.tts.speak({
 			text: speakText,
 			locale: this.LANGUAGE,
 			rate: this.speed,
 		});
+		console.log(`SPEAK: ${speakText}`);
 	}
 
 	speakNextRoute(route: string): void {
