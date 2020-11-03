@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
-import { AVAudioSession } from '';
 
 @Injectable({
   	providedIn: 'root'
