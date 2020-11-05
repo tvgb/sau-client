@@ -36,9 +36,6 @@ export class MapPage implements AfterViewInit {
 		private router: Router) { }
 
 	ionViewWillEnter(): void {
-		TtsPlugin.getContacts('some filter').then((res) => {
-			console.log(res);
-		});
 
 		this.currentSheepInfoCategorySub = this.currentSheepInfoCategory$.subscribe(res => {
 			this.currentSheepInfoCategory = res;
@@ -73,9 +70,16 @@ export class MapPage implements AfterViewInit {
 	}
 
 	navigateToRegistration() {
-		console.log('navigate method');
-		this.ttsService.speak(`Registrer ${this.currentSheepInfoCategory.name}`);
-		this.router.navigate(this.routeLink);
+		// console.log('navigate method');
+		// this.ttsService.speak(`Registrer ${this.currentSheepInfoCategory.name}`);
+		// this.router.navigate(this.routeLink);
+
+
+		console.log('GETTING COTACTS!');
+		TtsPlugin.getContacts('some filter').then((res) => {
+			console.log(res);
+		});
+
 	}
 
 	initMap(): void {
