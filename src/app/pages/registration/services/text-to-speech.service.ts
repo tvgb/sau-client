@@ -16,13 +16,10 @@ export class TextToSpeechService {
 	private speed = 1.0;
 	private isSpeaking = false;
 
-	constructor() {
-		Haptics.impact({ style: HapticsImpactStyle.Light });
-	}
+	constructor() { }
 
 	speak(speakText) {
-
-		Haptics.vibrate();
+		Haptics.impact({ style: HapticsImpactStyle.Heavy });
 		TtsPlugin.speak({speakText});
 
 		// this.tts.speak({
