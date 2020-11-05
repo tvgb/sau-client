@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Plugins } from '@capacitor/core';
+import { HapticsImpactStyle, Plugins } from '@capacitor/core';
 import 'tts-plugin';
 
-const { TtsPlugin } = Plugins;
+const { TtsPlugin, Haptics } = Plugins;
 
 // declare var TTS: any;
 
@@ -16,10 +16,13 @@ export class TextToSpeechService {
 	private speed = 1.0;
 	private isSpeaking = false;
 
-	constructor() { }
+	constructor() {
+		Haptics.impact({ style: HapticsImpactStyle.Light });
+	}
 
 	speak(speakText) {
 
+		Haptics.vibrate();
 		TtsPlugin.speak({speakText});
 
 		// this.tts.speak({
@@ -73,3 +76,35 @@ export class TextToSpeechService {
 	// 	});
 	// }
 }
+
+export class HapticsExample {
+	hapticsImpact(style = HapticsImpactStyle.Heavy) {
+	  Haptics.impact({
+		style
+	  });
+	}
+
+	hapticsImpactMedium(style) {
+	  this.hapticsImpact(HapticsImpactStyle.Medium);
+	}
+
+	hapticsImpactLight(style) {
+	  this.hapticsImpact(HapticsImpactStyle.Light);
+	}
+
+	hapticsVibrate() {
+	  Haptics.vibrate();
+	}
+
+	hapticsSelectionStart() {
+	  Haptics.selectionStart();
+	}
+
+	hapticsSelectionChanged() {
+	  Haptics.selectionChanged();
+	}
+
+	hapticsSelectionEnd() {
+	  Haptics.selectionEnd();
+	}
+  }

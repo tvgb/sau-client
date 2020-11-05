@@ -8,10 +8,6 @@ import { Observable, Subscription } from 'rxjs';
 import { TextToSpeechService } from '../registration/services/text-to-speech.service';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { SheepInfoCategory } from 'src/app/shared/classes/SheepInfoCategory';
-import { Plugins } from '@capacitor/core';
-import 'tts-plugin';
-
-const { TtsPlugin } = Plugins;
 
 @Component({
 	selector: 'app-map',

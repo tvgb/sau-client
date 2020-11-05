@@ -19,18 +19,19 @@ export class NavigationComponent implements OnInit {
 
 	completeRoute = '/registration/summary';
 	cancelRoute = '/map';
+	vibrateEnabled = false;
 
 	constructor(private vibration: Vibration, private router: Router, private store: Store, private alertController: AlertController) { }
 
 	ngOnInit(): void {}
 
 	nextCategoryClick() {
-		this.vibration.vibrate(200);
+		this.vibrate();
 		this.nextCategory.emit();
 	}
 
 	prevCategoryClick() {
-		this.vibration.vibrate(200);
+		this.vibrate();
 		this.prevCategory.emit();
 	}
 
@@ -41,6 +42,12 @@ export class NavigationComponent implements OnInit {
 	complete(): void {
 		this.router.navigate([this.completeRoute]);
 		this.completeRegistration.emit();
+	}
+
+	private vibrate(): void {
+		if (this.vibrateEnabled) {
+			this.vibration.vibrate(200);
+		}
 	}
 
 	async presentConfirmAlert() {
