@@ -14,12 +14,10 @@ export class TextToSpeechService {
 
 	private readonly LANGUAGE = 'nb-NO';
 	private speed = 1.0;
-	private isSpeaking = false;
 
 	constructor() { }
 
 	speak(speakText) {
-		Haptics.impact({ style: HapticsImpactStyle.Heavy });
 		TtsPlugin.speak({speakText});
 
 		// this.tts.speak({
@@ -73,35 +71,3 @@ export class TextToSpeechService {
 	// 	});
 	// }
 }
-
-export class HapticsExample {
-	hapticsImpact(style = HapticsImpactStyle.Heavy) {
-	  Haptics.impact({
-		style
-	  });
-	}
-
-	hapticsImpactMedium(style) {
-	  this.hapticsImpact(HapticsImpactStyle.Medium);
-	}
-
-	hapticsImpactLight(style) {
-	  this.hapticsImpact(HapticsImpactStyle.Light);
-	}
-
-	hapticsVibrate() {
-	  Haptics.vibrate();
-	}
-
-	hapticsSelectionStart() {
-	  Haptics.selectionStart();
-	}
-
-	hapticsSelectionChanged() {
-	  Haptics.selectionChanged();
-	}
-
-	hapticsSelectionEnd() {
-	  Haptics.selectionEnd();
-	}
-  }

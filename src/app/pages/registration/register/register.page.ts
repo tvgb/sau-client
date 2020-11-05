@@ -106,15 +106,17 @@ export class RegisterPage {
 	onNextCategory(): void {
 		if (!this.registrationService.nextCategory()) {
 			this.router.navigate(['/registration/summary']);
+		} else {
+			this.tts.speak(`Registrer ${this.currentSheepInfoCategory.name}, ${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
 		}
-		this.tts.speak(`Registrer ${this.currentSheepInfoCategory.name}, ${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
 	}
 
 	onPrevCategory(): void {
 		if (!this.registrationService.prevCategroy()) {
 			this.router.navigate(['/map']);
+		} else {
+			this.tts.speak(`Registrer ${this.currentSheepInfoCategory.name}, ${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
 		}
-		this.tts.speak(`Registrer ${this.currentSheepInfoCategory.name}, ${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
 	}
 
 	onComplete(): void {
