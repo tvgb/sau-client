@@ -9,7 +9,7 @@ export class TextToSpeechService {
 
 	private readonly LANGUAGE = 'nb-NO';
 
-	  constructor(private tts: TextToSpeech) { }
+	constructor(private tts: TextToSpeech) { }
 
 	speak(speakText) {
 		this.tts.speak({

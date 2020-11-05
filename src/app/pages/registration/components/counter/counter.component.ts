@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Vibration } from '@ionic-native/vibration/ngx';
+import { VibrationService } from '../../services/vibration.service';
 
 @Component({
 	selector: 'app-counter',
@@ -16,7 +16,7 @@ export class CounterComponent implements OnInit {
 	@Output() sheepInfoRight = new EventEmitter();
 	@Output() sheepInfoLeft = new EventEmitter();
 
-	constructor(private vibration: Vibration) { }
+	constructor(private vibration: VibrationService) { }
 
 	ngOnInit() {
 
@@ -25,25 +25,25 @@ export class CounterComponent implements OnInit {
 	onSwipeLeft(e): void {
 		if (this.sheepInfosCount > 1) {
 			this.sheepInfoLeft.emit(e);
-			this.vibration.vibrate(200);
+			this.vibration.vibrate();
 		}
 	}
 
 	onSwipeRight(e): void {
 		if (this.sheepInfosCount > 1) {
 			this.sheepInfoRight.emit(e);
-			this.vibration.vibrate(200);
+			this.vibration.vibrate();
 		}
 	}
 
 	onSwipeUp(e): void {
 		this.increment.emit(e);
-		this.vibration.vibrate(200);
+		this.vibration.vibrate();
 	}
 
 	onSwipeDown(e): void {
 		this.decrement.emit(e);
-		this.vibration.vibrate(200);
+		this.vibration.vibrate();
 	}
 
 	// checkRequiredFields(input: string[]) {

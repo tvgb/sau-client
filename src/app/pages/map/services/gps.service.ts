@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Geolocation} from '@ionic-native/geolocation/ngx';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
 
 @Injectable({
