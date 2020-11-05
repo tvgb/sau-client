@@ -70,16 +70,10 @@ export class MapPage implements AfterViewInit {
 	}
 
 	navigateToRegistration() {
-		// console.log('navigate method');
+		console.log('navigate method');
 		// this.ttsService.speak(`Registrer ${this.currentSheepInfoCategory.name}`);
-		// this.router.navigate(this.routeLink);
-
-
-		console.log('GETTING COTACTS!');
-		TtsPlugin.getContacts('some filter').then((res) => {
-			console.log(res);
-		});
-
+		TtsPlugin.speak({speakText: `Registrer ${this.currentSheepInfoCategory.name}`});
+		this.router.navigate(this.routeLink);
 	}
 
 	initMap(): void {
