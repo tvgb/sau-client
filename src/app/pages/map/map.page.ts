@@ -71,8 +71,7 @@ export class MapPage implements AfterViewInit {
 
 	navigateToRegistration() {
 		console.log('navigate method');
-		// this.ttsService.speak(`Registrer ${this.currentSheepInfoCategory.name}`);
-		TtsPlugin.speak({speakText: `Registrer ${this.currentSheepInfoCategory.name}`});
+		this.ttsService.speak(`Registrer ${this.currentSheepInfoCategory.name}`);
 		this.router.navigate(this.routeLink);
 	}
 
