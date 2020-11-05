@@ -17,23 +17,24 @@ export class TextToSpeechService {
 	speak(speakText) {
 
 		if (this.isSpeaking) {
-			TTS.stop().then(() => {
+			( window as any).TTS.stop().then(function() {
+				console.log('hello');
 				this.isSpeaking = true;
-				TTS.speak({
+				( window as any).TTS.speak({
 					text: speakText,
 					locale: this.LANGUAGE,
 					cancel: true
-				}).then(() => {
+				}).then(function() {
 					this.isSpeaking = false;
 				});
 			});
 		} else {
 			this.isSpeaking = true;
-			TTS.speak({
+			( window as any).TTS.speak({
 				text: speakText,
 				locale: this.LANGUAGE,
 				cancel: true
-			}).then(() => {
+			}).then( function() {
 				this.isSpeaking = false;
 			});
 		}
