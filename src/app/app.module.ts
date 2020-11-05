@@ -15,7 +15,6 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { SheepInfoState } from './shared/store/sheepInfo.state';
 import {  TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 import { IonicGestureConfig } from './shared/classes/hammer-config';
-import { Vibration } from '@ionic-native/vibration/ngx';
 import { AppInfoState } from './shared/store/appInfo.state';
 import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
 
@@ -39,8 +38,7 @@ import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
 		Geolocation,
 		TextToSpeech,
 		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-		{ provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig },
-		Vibration
+		{ provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig }
 	],
 	bootstrap: [AppComponent]
 })
