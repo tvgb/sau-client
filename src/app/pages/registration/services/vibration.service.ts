@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HapticsImpactStyle, Plugins } from '@capacitor/core';
+import { Platform } from '@ionic/angular';
+
 import 'tts-plugin';
 
 const { Haptics } = Plugins;
@@ -11,9 +13,14 @@ export class VibrationService {
 
 	private options = { style: HapticsImpactStyle.Heavy };
 
-	constructor() { }
+	constructor(private platform: Platform) { }
 
 	vibrate(): void {
-		Haptics.impact(this.options);
+
+		if (this.platform.is('mobileweb') || this.platform.is('desktop')) {
+			console.log('Bzz bzz, vibrating');
+		} else {
+			Haptics.impact(this.options);
+		}
 	}
 }
