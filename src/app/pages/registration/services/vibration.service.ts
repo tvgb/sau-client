@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { HapticsImpactStyle, Plugins } from '@capacitor/core';
 import { Platform } from '@ionic/angular';
 
-import 'tts-plugin';
-
 const { Haptics } = Plugins;
 
 @Injectable({

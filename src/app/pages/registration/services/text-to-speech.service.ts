@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HapticsImpactStyle, Plugins } from '@capacitor/core';
-import 'tts-plugin';
+import { Plugins } from '@capacitor/core';
+import 'capacitor-tts-plugin';
 
-const { TtsPlugin, Haptics } = Plugins;
-
-// declare var TTS: any;
+const { CapacitorTtsPlugin } = Plugins;
 
 @Injectable({
   	providedIn: 'root'
@@ -17,16 +15,14 @@ export class TextToSpeechService {
 
 	constructor() { }
 
-	speak(speakText) {
-		TtsPlugin.speak({speakText});
+	speak(text: string): void {
 
-		// this.tts.speak({
-		// 	text: '',
-		// 	locale: this.LANGUAGE,
-		// 	rate: this.speed
-		// }).then(() => {
+		const options = {
+			text,
+			locale: this.LANGUAGE
+		};
 
-		// });
+		CapacitorTtsPlugin.speak(options);
 	}
 
 	// speakNextRoute(route: string): void {
