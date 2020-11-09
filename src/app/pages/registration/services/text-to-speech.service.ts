@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Plugins } from '@capacitor/core';
 import 'capacitor-tts-plugin';
+import { Options } from 'capacitor-tts-plugin';
 
 const { CapacitorTtsPlugin } = Plugins;
 
@@ -16,8 +17,7 @@ export class TextToSpeechService {
 	constructor() { }
 
 	speak(text: string): void {
-
-		const options = {
+		const options: Options = {
 			text,
 			locale: this.LANGUAGE
 		};
