@@ -32,6 +32,7 @@ export class MapPage implements AfterViewInit {
 		private router: Router) { }
 
 	ionViewWillEnter(): void {
+
 		this.currentSheepInfoCategorySub = this.currentSheepInfoCategory$.subscribe(res => {
 			this.currentSheepInfoCategory = res;
 		});

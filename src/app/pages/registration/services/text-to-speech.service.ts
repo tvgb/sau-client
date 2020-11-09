@@ -1,5 +1,8 @@
 import { Injectable } from '@angular/core';
-import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
+import { Plugins } from '@capacitor/core';
+import 'capacitor-tts-plugin';
+
+const { CapacitorTtsPlugin } = Plugins;
 
 @Injectable({
   	providedIn: 'root'
@@ -8,55 +11,61 @@ import { TextToSpeech } from '@ionic-native/text-to-speech/ngx';
 export class TextToSpeechService {
 
 	private readonly LANGUAGE = 'nb-NO';
+	private speed = 1.0;
 
-	constructor(private tts: TextToSpeech) { }
+	constructor() { }
 
-	speak(speakText) {
-		this.tts.speak({
-			text: speakText,
-			locale: this.LANGUAGE,
-		});
-	}
+	speak(text: string): void {
 
-	speakNextRoute(route: string): void {
-		this.tts.speak({
-			text: route,
+		const options = {
+			text,
 			locale: this.LANGUAGE
+		};
+
+		CapacitorTtsPlugin.speak(options).catch(error => {
+			console.log(`Error when speaking: ${error}`);
 		});
 	}
 
-  	speakTotalCount(totalCount) {
-		this.tts.speak({
-		text: `${totalCount} sau` ,
-			locale: this.LANGUAGE,
-		});
-	}
+	// speakNextRoute(route: string): void {
+	// 	this.tts.speak({
+	// 		text: route,
+	// 		locale: this.LANGUAGE
+	// 	});
+	// }
 
-  	speakColor(colorCount, type) {
-		this.tts.speak({
-		text: `${colorCount} ${type} sau `,
-			locale: this.LANGUAGE,
-		});
-	}
+  	// speakTotalCount(totalCount) {
+	// 	this.tts.speak({
+	// 	text: `${totalCount} sau`,
+	// 		locale: this.LANGUAGE,
+	// 	});
+	// }
 
-	speakType(typeCount, type) {
-		this.tts.speak({
-			text: `${typeCount} ${type}`,
-			locale: this.LANGUAGE,
-		});
-	}
+  	// speakColor(colorCount, type) {
+	// 	this.tts.speak({
+	// 	text: `${colorCount} ${type} sau `,
+	// 		locale: this.LANGUAGE,
+	// 	});
+	// }
 
-	speakCollar(collarCount, type) {
-		this.tts.speak({
-		text: `${collarCount} ${type} slips`,
-			locale: this.LANGUAGE,
-		});
-	}
+	// speakType(typeCount, type) {
+	// 	this.tts.speak({
+	// 		text: `${typeCount} ${type}`,
+	// 		locale: this.LANGUAGE,
+	// 	});
+	// }
 
-	speakRegistration(category) {
-		this.tts.speak({
-			text: `Registrer ${category}`,
-			locale: this.LANGUAGE,
-		});
-	}
+	// speakCollar(collarCount, type) {
+	// 	this.tts.speak({
+	// 	text: `${collarCount} ${type} slips`,
+	// 		locale: this.LANGUAGE,
+	// 	});
+	// }
+
+	// speakRegistration(category) {
+	// 	this.tts.speak({
+	// 		text: `Registrer ${category}`,
+	// 		locale: this.LANGUAGE,
+	// 	});
+	// }
 }
