@@ -11,7 +11,9 @@ import { Category } from 'src/app/shared/enums/Category';
 import { TimeTakingService } from '../services/time-taking.service';
 import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 import { SheepInfoCategory } from 'src/app/shared/classes/SheepInfoCategory';
+import { Plugins, StatusBarStyle} from '@capacitor/core';
 
+const {StatusBar} = Plugins;
 @Component({
 	selector: 'app-register',
 	templateUrl: './register.page.html',
@@ -49,7 +51,20 @@ export class RegisterPage {
 		});
 	}
 
+	changeStatusBarTextColor(): void {
+		StatusBar.getInfo().then(info => {
+			console.log('REGISTER PAGE KIMIA SE HER' + JSON.stringify(info.style.toString()));
+			if (info.style.toString() === 'LIGHT') {
+				console.log('REGISTER PAGE KIMIA 2');
+				StatusBar.setStyle({
+					style: StatusBarStyle.Light
+				});
+			}
+		});
+	}
+
 	ionViewWillEnter() {
+		this.changeStatusBarTextColor();
 		this.currentSheepInfoSub = this.currentSheepInfo$.subscribe((res: SheepInfo) => {
 			if (res) {
 				this.currentSheepInfo = res;
