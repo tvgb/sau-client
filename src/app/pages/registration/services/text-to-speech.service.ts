@@ -13,7 +13,7 @@ export class TextToSpeechService {
 	private readonly LANGUAGE = 'nb-NO';
 	private speed = 1.0;
 
-	constructor() { }
+	constructor() {	}
 
 	speak(text: string): void {
 
