@@ -78,7 +78,9 @@ export class MapPage implements AfterViewInit {
 
 		this.map = L.map('map', {
 			center: [ lat, lng ],
-			zoom: 16
+			zoom: 16,
+			zoomControl: false,
+			attributionControl: false
 		});
 
 		this.gpsService.updateTrack(this.map);

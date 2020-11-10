@@ -17,8 +17,10 @@ export class VibrationService {
 
 		if (this.platform.is('mobileweb') || this.platform.is('desktop')) {
 			console.log('Bzz bzz, vibrating');
-		} else {
+		} else if (this.platform.is('ios')) {
 			Haptics.impact(this.options);
+		} else {
+			Haptics.vibrate();
 		}
 	}
 }
