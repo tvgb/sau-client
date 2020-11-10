@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Vibration } from '@ionic-native/vibration/ngx';
+import { VibrationService } from '../../services/vibration.service';
 
 @Component({
 	selector: 'app-swipe-and-tap-counter',
@@ -16,31 +16,31 @@ export class SwipeAndTapCounterComponent implements OnInit {
 	@Output() sheepInfoRight = new EventEmitter();
 	@Output() sheepInfoLeft = new EventEmitter();
 
-	constructor(private vibration: Vibration) { }
+	constructor(private vibration: VibrationService) { }
 
 	ngOnInit() {}
 
 	onSwipeLeft(e): void {
 		if (this.sheepInfosCount > 1) {
-			this.vibration.vibrate(200);
+			this.vibration.vibrate();
 			this.sheepInfoLeft.emit();
 		}
 	}
 
 	onSwipeRight(e): void {
 		if (this.sheepInfosCount > 1) {
-			this.vibration.vibrate(200);
+			this.vibration.vibrate();
 			this.sheepInfoRight.emit();
 		}
 	}
 
 	onPlussTap(e): void {
 		this.increment.emit(e);
-		this.vibration.vibrate(200);
+		this.vibration.vibrate();
 	}
 
 	onMinusTap(e): void {
 		this.decrement.emit(e);
-		this.vibration.vibrate(200);
+		this.vibration.vibrate();
 	}
 }

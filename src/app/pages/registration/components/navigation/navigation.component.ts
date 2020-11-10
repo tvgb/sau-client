@@ -1,9 +1,9 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { Vibration } from '@ionic-native/vibration/ngx';
 import { StateResetAll } from 'ngxs-reset-plugin';
-import {AlertController} from '@ionic/angular';
+import { AlertController } from '@ionic/angular';
 import { Store } from '@ngxs/store';
+import { VibrationService } from '../../services/vibration.service';
 
 @Component({
 	selector: 'app-navigation',
@@ -20,17 +20,21 @@ export class NavigationComponent implements OnInit {
 	completeRoute = '/registration/summary';
 	cancelRoute = '/map';
 
-	constructor(private vibration: Vibration, private router: Router, private store: Store, private alertController: AlertController) { }
+	constructor(
+		private vibration: VibrationService,
+		private router: Router,
+		private store: Store,
+		private alertController: AlertController) { }
 
 	ngOnInit(): void {}
 
 	nextCategoryClick() {
-		this.vibration.vibrate(200);
+		this.vibration.vibrate();
 		this.nextCategory.emit();
 	}
 
 	prevCategoryClick() {
-		this.vibration.vibrate(200);
+		this.vibration.vibrate();
 		this.prevCategory.emit();
 	}
 

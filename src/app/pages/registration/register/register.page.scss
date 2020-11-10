@@ -1,5 +1,6 @@
 .register-content {
 	--background: #1C262F;
+	--padding-top: env(safe-area-inset-top);
 }
 
 .register-container {
@@ -17,12 +18,11 @@
 
 .counter {
     height: 55%;
-
 }
 
 .register-heading {
 	text-align: center;
-	margin-top: 30px;
+	margin-top: 20px;
 	font-weight: 300;
 	font-size: xx-large;
 	text-transform: uppercase;

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertController, NavController } from '@ionic/angular';
 import { Select, Store } from '@ngxs/store';
