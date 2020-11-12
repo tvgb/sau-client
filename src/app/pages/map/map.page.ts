@@ -8,14 +8,17 @@ import { Observable, Subscription } from 'rxjs';
 import { TextToSpeechService } from '../registration/services/text-to-speech.service';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { SheepInfoCategory } from 'src/app/shared/classes/SheepInfoCategory';
+import { Plugins, StatusBarStyle} from '@capacitor/core';
+
+const { StatusBar } = Plugins;
 
 @Component({
 	selector: 'app-map',
 	templateUrl: './map.page.html',
 	styleUrls: ['./map.page.scss'],
 })
-export class MapPage implements AfterViewInit {
 
+export class MapPage implements AfterViewInit {
 	private routeLink = ['/registration/register'];
 	private map;
 	private readonly OFFLINE_MAP = false;
@@ -31,8 +34,18 @@ export class MapPage implements AfterViewInit {
 		private ttsService: TextToSpeechService,
 		private router: Router) { }
 
-	ionViewWillEnter(): void {
 
+	changeStatusBar(): void {
+		StatusBar.setOverlaysWebView({
+			overlay: true
+		});
+		StatusBar.setStyle({
+			style: StatusBarStyle.Light
+		});
+	}
+
+	ionViewWillEnter(): void {
+		this.changeStatusBar();
 		this.currentSheepInfoCategorySub = this.currentSheepInfoCategory$.subscribe(res => {
 			this.currentSheepInfoCategory = res;
 		});

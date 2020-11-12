@@ -11,7 +11,9 @@ import { Category } from 'src/app/shared/enums/Category';
 import { TimeTakingService } from '../services/time-taking.service';
 import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 import { SheepInfoCategory } from 'src/app/shared/classes/SheepInfoCategory';
+import { Plugins, StatusBarStyle} from '@capacitor/core';
 
+const {StatusBar} = Plugins;
 @Component({
 	selector: 'app-register',
 	templateUrl: './register.page.html',
@@ -49,7 +51,20 @@ export class RegisterPage {
 		});
 	}
 
+	changeStatusBarTextColor(): void {
+		StatusBar.setOverlaysWebView({
+			overlay: false
+		});
+		StatusBar.setStyle({
+			style: StatusBarStyle.Dark
+		});
+		StatusBar.setBackgroundColor({
+			color: '#1C262F'
+		});
+	}
+
 	ionViewWillEnter() {
+		this.changeStatusBarTextColor();
 		this.currentSheepInfoSub = this.currentSheepInfo$.subscribe((res: SheepInfo) => {
 			if (res) {
 				this.currentSheepInfo = res;
