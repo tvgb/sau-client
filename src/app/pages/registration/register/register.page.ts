@@ -52,14 +52,14 @@ export class RegisterPage {
 	}
 
 	changeStatusBarTextColor(): void {
-		StatusBar.getInfo().then(info => {
-			console.log('REGISTER PAGE KIMIA SE HER' + JSON.stringify(info.style.toString()));
-			if (info.style.toString() === 'LIGHT') {
-				console.log('REGISTER PAGE KIMIA 2');
-				StatusBar.setStyle({
-					style: StatusBarStyle.Light
-				});
-			}
+		StatusBar.setOverlaysWebView({
+			overlay: false
+		});
+		StatusBar.setStyle({
+			style: StatusBarStyle.Dark
+		});
+		StatusBar.setBackgroundColor({
+			color: '#1C262F'
 		});
 	}
 

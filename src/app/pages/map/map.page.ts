@@ -39,14 +39,8 @@ export class MapPage implements AfterViewInit {
 		StatusBar.setOverlaysWebView({
 			overlay: true
 		});
-		StatusBar.getInfo().then(info => {
-			console.log('KIMIA SE HER' + JSON.stringify(info.style.toString()));
-			if (info.style.toString() === 'DARK') {
-				console.log('KIMIA 2');
-				StatusBar.setStyle({
-					style: StatusBarStyle.Light
-				});
-			}
+		StatusBar.setStyle({
+			style: StatusBarStyle.Light
 		});
 	}
 
