@@ -12,6 +12,7 @@ import { TimeTakingService } from '../services/time-taking.service';
 import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 import { SheepInfoCategory } from 'src/app/shared/classes/SheepInfoCategory';
 import { Plugins, StatusBarStyle} from '@capacitor/core';
+import { StateResetAll } from 'ngxs-reset-plugin';
 
 const {StatusBar} = Plugins;
 @Component({
@@ -128,6 +129,7 @@ export class RegisterPage {
 
 	onPrevCategory(): void {
 		if (!this.registrationService.prevCategroy()) {
+			this.onCancel();
 			this.router.navigate(['/map']);
 		} else {
 			this.tts.speak(`Registrer ${this.currentSheepInfoCategory.name}, ${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
@@ -141,6 +143,7 @@ export class RegisterPage {
 	onCancel(): void {
 		this.timeTakingService.clearTimeTakings();
 		this.registrationService.cancel();
+		this.store.dispatch(new StateResetAll());
 	}
 
 	ionViewWillLeave(): void {
