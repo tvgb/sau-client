@@ -1,54 +1,54 @@
 <ion-content class="register-content">
-	<div class="register-container" *ngIf="currentSheepInfoCategory && currentSheepInfo && sheepInfoCountInCurrentCategory">
+	<div class="register-container" *ngIf="currentMainCategory && currentSubCategory && subCategoryCountInCurrentMainCategory">
 		<div class="register-top-part">
-			<h1 class="register-heading"> {{ currentSheepInfoCategory.name }} </h1>
+			<h1 class="register-heading"> {{ currentMainCategory.name }} </h1>
 
 			<div class="count-overview-container">
 
 				<!-- COUNT OVERVIEW FOR TOTAL AMOUNT -->
 				<app-count-overview
-					*ngIf="currentSheepInfoCategory.category === category.TotalSheepCategory"
-					[category]="category.TotalSheepCategory"
-					[infoTypes]="['Antall']"
-					[counts]="[currentSheepInfoCategory.totalSheep.count]">
+					*ngIf="currentMainCategory.id === mainCategoryId.TotalSheep"
+					[mainCategoryId]="mainCategoryId.TotalSheep"
+					[subCategories]="['Antall']"
+					[counts]="[currentMainCategory.totalSheep.count]">
 				</app-count-overview>
 
 				<!-- COUNT OVERVIEW FOR SHEEP COLOUR -->
 				<app-count-overview
-					*ngIf="currentSheepInfoCategory.category === category.SheepColourCategory"
-					[category]="category.SheepColourCategory"
-					[infoTypes]="['Hvit', 'Svart', 'Brun']"
+					*ngIf="currentMainCategory.id === mainCategoryId.SheepColour"
+					[mainCategoryId]="mainCategoryId.SheepColour"
+					[subCategories]="['Hvit', 'Svart', 'Brun']"
 					[colours]="['FFFFFF', '000000', '422916']"
 					[counts]="[
-						currentSheepInfoCategory.whiteSheep.count,
-						currentSheepInfoCategory.blackSheep.count,
-						currentSheepInfoCategory.brownSheep.count
+						currentMainCategory.whiteSheep.count,
+						currentMainCategory.blackSheep.count,
+						currentMainCategory.brownSheep.count
 					]">
 				</app-count-overview>
 
 				<!-- COUNT OVERVIEW FOR SHEEP TYPE -->
 				<app-count-overview
-					*ngIf="currentSheepInfoCategory.category === category.SheepTypeCategory"
-					[category]="category.SheepTypeCategory"
-					[infoTypes]="['Søye', 'Lam']"
+					*ngIf="currentMainCategory.id === mainCategoryId.SheepType"
+					[mainCategoryId]="mainCategoryId.SheepType"
+					[subCategories]="['Søye', 'Lam']"
 					[counts]="[
-						currentSheepInfoCategory.ewe.count,
-						currentSheepInfoCategory.lamb.count
+						currentMainCategory.ewe.count,
+						currentMainCategory.lamb.count
 					]">
 				</app-count-overview>
 
 				<!-- COUNT OVERVIEW FOR COLLAR COLOUR -->
 				<app-count-overview
-					*ngIf="currentSheepInfoCategory.category === category.CollarColourCategory"
-					[category]="category.CollarColourCategory"
-					[infoTypes]="['Blå', 'Grønn', 'Gul', 'Rød', 'Mangler']"
+					*ngIf="currentMainCategory.id === mainCategoryId.CollarColour"
+					[mainCategoryId]="mainCategoryId.CollarColour"
+					[subCategories]="['Blå', 'Grønn', 'Gul', 'Rød', 'Mangler']"
 					[colours]="['005BE4', '198C0F', 'E2E700', 'BD0000', '595959']"
 					[counts]="[
-						currentSheepInfoCategory.blueCollar.count,
-						currentSheepInfoCategory.greenCollar.count,
-						currentSheepInfoCategory.yellowCollar.count,
-						currentSheepInfoCategory.redCollar.count,
-						currentSheepInfoCategory.missingCollar.count
+						currentMainCategory.blueCollar.count,
+						currentMainCategory.greenCollar.count,
+						currentMainCategory.yellowCollar.count,
+						currentMainCategory.redCollar.count,
+						currentMainCategory.missingCollar.count
 					]">
 				</app-count-overview>
 			</div>
@@ -57,15 +57,15 @@
 		<app-counter
 			(increment)="onIncrement()"
 			(decrement)="onDecrement()"
-			(sheepInfoLeft)="onSheepInfoLeft()"
-			(sheepInfoRight)="onSheepInfoRight()"
-			[sheepInfosCount]="sheepInfoCountInCurrentCategory" 
-			[selectedSheepInfo]="currentSheepInfo.name"
+			(subCategoryLeft)="onSubCategoryLeft()"
+			(subCategoryRight)="onSubCategoryRight()"
+			[subCategoryCount]="subCategoryCountInCurrentMainCategory" 
+			[currentSubCategoryName]="currentSubCategory.name"
 			class="counter">
 		</app-counter>
 		<app-navigation
-			(nextCategory)="onNextCategory()"
-			(prevCategory)="onPrevCategory()"
+			(nextMainCategory)="onNextMainCategory()"
+			(prevMainCategory)="onPrevMainCategory()"
 			(cancelRegistration)="onCancel()"
 			(completeRegistration)="onComplete()"
 			class="navigation">

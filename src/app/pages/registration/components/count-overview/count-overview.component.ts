@@ -1,28 +1,26 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Category } from 'src/app/shared/enums/Category';
+import { MainCategoryId } from 'src/app/shared/enums/MainCategoryId';
 
 @Component({
 	selector: 'app-count-overview',
 	templateUrl: './count-overview.component.html',
 	styleUrls: ['./count-overview.component.scss'],
 })
-export class CountOverviewComponent implements OnInit {
+export class CountOverviewComponent {
 
-	@Input() category: Category;
+	@Input() mainCategoryId: MainCategoryId;
 	@Input() colours: string[];
-	@Input() infoTypes: string[];
+	@Input() subCategories: string[];
 	@Input() counts: number[];
 
 	constructor() { }
-
-	ngOnInit() {}
 
 	getTextStyle(text: string): string {
 		if (text.toLowerCase() === 'mangler') {
 			return 'font-size: 12px';
 		}
 
-		if (this.category === Category.TotalSheepCategory || this.category === Category.SheepTypeCategory) {
+		if (this.mainCategoryId === MainCategoryId.TotalSheep || this.mainCategoryId === MainCategoryId.SheepType) {
 			return 'font-size: 20px';
 		}
 	}

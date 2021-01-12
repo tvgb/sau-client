@@ -1,12 +1,12 @@
-import { Category } from '../enums/Category';
-import { SheepInfoType } from '../enums/SheepInfoType';
+import { MainCategoryId } from '../enums/MainCategoryId';
+import { SubCategoryId } from '../enums/SubCategoryId';
 
-export class SetCurrentSheepInfoCategory {
-	static readonly type = '[Registration Page] SetCurrentSheepInfoCategory';
-	constructor(public sheepInfoCategory: Category) {}
+export class SetCurrentMainCategoryId {
+	static readonly type = '[Registration Page] SetCurrentMainCategoryId';
+	constructor(public mainCategoryId: MainCategoryId) {}
 }
 
-export class SetCurrentSheepInfoType {
-	static readonly type = '[Registration Page] SetCurrentSheepInfoType';
-	constructor(public sheepInfoType: SheepInfoType) {}
+export class SetCurrentSubCategoryId {
+	static readonly type = '[Registration Page] SetCurrentSubCategoryId';
+	constructor(public subCategoryId: SubCategoryId) {}
 }

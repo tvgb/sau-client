@@ -1,9 +1,8 @@
-import { CollarColourCategory, SheepColourCategory, SheepTypeCategory, TotalSheepCategory } from '../classes/SheepInfoCategory';
+import { CollarColour, SheepColour, SheepType, TotalSheep } from '../classes/Category';
 
 export interface SheepInfoModel {
-
-	totalSheep: TotalSheepCategory;
-	sheepColour: SheepColourCategory;
-	sheepType: SheepTypeCategory;
-	collarColour: CollarColourCategory;
+	totalSheep: TotalSheep;
+	sheepColour: SheepColour;
+	sheepType: SheepType;
+	collarColour: CollarColour;
 }

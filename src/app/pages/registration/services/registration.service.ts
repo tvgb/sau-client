@@ -1,124 +1,127 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Category } from 'src/app/shared/enums/Category';
-import { SheepInfoType } from 'src/app/shared/enums/SheepInfoType';
-import { SetCurrentSheepInfoCategory, SetCurrentSheepInfoType } from 'src/app/shared/store/appInfo.actions';
-import { DecrementSheepInfoCount, IncrementSheepInfoCount } from 'src/app/shared/store/sheepInfo.actions';
+import { SubCategory } from 'src/app/shared/classes/Category';
+import { MainCategoryId } from 'src/app/shared/enums/MainCategoryId';
+import { SubCategoryId } from 'src/app/shared/enums/SubCategoryId';
+import { SetCurrentMainCategoryId, SetCurrentSubCategoryId } from 'src/app/shared/store/appInfo.actions';
+import { DecrementSubCategoryCount, IncrementSubCategoryCount } from 'src/app/shared/store/sheepInfo.actions';
 
 @Injectable({
   	providedIn: 'root'
 })
 export class RegistrationService {
 
-	categories: Category[] = [
-		Category.TotalSheepCategory,
-		Category.SheepColourCategory,
-		Category.SheepTypeCategory,
-		Category.CollarColourCategory
+	mainCategoryIds: MainCategoryId[] = [
+		MainCategoryId.TotalSheep,
+		MainCategoryId.SheepColour,
+		MainCategoryId.SheepType,
+		MainCategoryId.CollarColour
 	];
 
-	sheepInfo: SheepInfoType[][] = [
+	subCategoryIds: SubCategoryId[][] = [
 		[
-			SheepInfoType.TotalSheepInfo
+			SubCategoryId.TotalSheep
 		],
 		[
-			SheepInfoType.WhiteSheepInfo,
-			SheepInfoType.BlackSheepInfo,
-			SheepInfoType.BrownSheepInfo
+			SubCategoryId.WhiteSheep,
+			SubCategoryId.BlackSheep,
+			SubCategoryId.BrownSheep
 		],
 		[
-			SheepInfoType.EweInfo,
-			SheepInfoType.LambInfo
+			SubCategoryId.Ewe,
+			SubCategoryId.Lamb
 		],
 		[
-			SheepInfoType.BlueCollarInfo,
-			SheepInfoType.GreenCollarInfo,
-			SheepInfoType.YellowCollarInfo,
-			SheepInfoType.RedCollarInfo,
-			SheepInfoType.MissingCollarInfo
+			SubCategoryId.BlueCollar,
+			SubCategoryId.GreenCollar,
+			SubCategoryId.YellowCollar,
+			SubCategoryId.RedCollar,
+			SubCategoryId.MissingCollar
 		]
 	];
 
-	currentCategoryIndex = 0;
-	currentSheepInfoIndex = 0;
-	currentCategory: Category;
-	currentSheepInfo: SheepInfoType;
+	currentMainCategoryIndex = 0;
+	currentSubCategoryIndex = 0;
+	currentMainCategoryId: MainCategoryId;
+	currentSubCategoryId: SubCategoryId;
 
-	sheepInfoCountInCurrentCategory: BehaviorSubject<number>;
+	subCategoryCountInCurrentMainCategory: BehaviorSubject<number>;
 
 	constructor(private store: Store) {
-		this.currentCategory = this.categories[this.currentCategoryIndex];
-		this.currentSheepInfo = this.sheepInfo[this.currentCategoryIndex][this.currentSheepInfoIndex];
-		this.sheepInfoCountInCurrentCategory = new BehaviorSubject<number>(this.sheepInfo[this.currentCategoryIndex].length);
+		this.currentMainCategoryId = this.mainCategoryIds[this.currentMainCategoryIndex];
+		this.currentSubCategoryId = this.subCategoryIds[this.currentMainCategoryIndex][this.currentSubCategoryIndex];
+		this.subCategoryCountInCurrentMainCategory = new BehaviorSubject<number>(this.subCategoryIds[this.currentMainCategoryIndex].length);
 	}
 
 	increment(): void {
-		this.store.dispatch(new IncrementSheepInfoCount({ category: this.currentCategory, sheepInfoType: this.currentSheepInfo }));
+		this.store.dispatch(
+			new IncrementSubCategoryCount({ mainCategoryId: this.currentMainCategoryId, subCategoryId: this.currentSubCategoryId }));
 	}
 
 	decrement(): void {
-		this.store.dispatch(new DecrementSheepInfoCount({ category: this.currentCategory, sheepInfoType: this.currentSheepInfo }));
+		this.store.dispatch(
+			new DecrementSubCategoryCount({ mainCategoryId: this.currentMainCategoryId, subCategoryId: this.currentSubCategoryId }));
 	}
 
-	nextCategory(): boolean {
-		if (this.currentCategoryIndex + 1 >= this.categories.length) {
+	nextMainCategory(): boolean {
+		if (this.currentMainCategoryIndex + 1 >= this.mainCategoryIds.length) {
 			return false;
 		} else {
-			this.currentCategoryIndex++;
-			this.currentSheepInfoIndex = 0;
+			this.currentMainCategoryIndex++;
+			this.currentSubCategoryIndex = 0;
 
-			this.currentSheepInfo = this.sheepInfo[this.currentCategoryIndex][this.currentSheepInfoIndex];
-			this.currentCategory = this.categories[this.currentCategoryIndex];
+			this.currentSubCategoryId = this.subCategoryIds[this.currentMainCategoryIndex][this.currentSubCategoryIndex];
+			this.currentMainCategoryId = this.mainCategoryIds[this.currentMainCategoryIndex];
 		}
 
-		this.sheepInfoCountInCurrentCategory.next(this.sheepInfo[this.currentCategoryIndex].length);
-		this.store.dispatch(new SetCurrentSheepInfoCategory(this.currentCategory));
-		this.store.dispatch(new SetCurrentSheepInfoType(this.currentSheepInfo));
+		this.subCategoryCountInCurrentMainCategory.next(this.subCategoryIds[this.currentMainCategoryIndex].length);
+		this.store.dispatch(new SetCurrentMainCategoryId(this.currentMainCategoryId));
+		this.store.dispatch(new SetCurrentSubCategoryId(this.currentSubCategoryId));
 		return true;
 	}
 
-	prevCategroy(): boolean {
-		if (this.currentCategoryIndex - 1 < 0) {
+	prevMainCategroy(): boolean {
+		if (this.currentMainCategoryIndex - 1 < 0) {
 			return false;
 		} else {
-			this.currentCategoryIndex--;
-			this.currentSheepInfoIndex = 0;
+			this.currentMainCategoryIndex--;
+			this.currentSubCategoryIndex = 0;
 
-			this.currentSheepInfo = this.sheepInfo[this.currentCategoryIndex][this.currentSheepInfoIndex];
-			this.currentCategory = this.categories[this.currentCategoryIndex];
+			this.currentSubCategoryId = this.subCategoryIds[this.currentMainCategoryIndex][this.currentSubCategoryIndex];
+			this.currentMainCategoryId = this.mainCategoryIds[this.currentMainCategoryIndex];
 		}
 
-		this.sheepInfoCountInCurrentCategory.next(this.sheepInfo[this.currentCategoryIndex].length);
-		this.store.dispatch(new SetCurrentSheepInfoCategory(this.currentCategory));
-		this.store.dispatch(new SetCurrentSheepInfoType(this.currentSheepInfo));
+		this.subCategoryCountInCurrentMainCategory.next(this.subCategoryIds[this.currentMainCategoryIndex].length);
+		this.store.dispatch(new SetCurrentMainCategoryId(this.currentMainCategoryId));
+		this.store.dispatch(new SetCurrentSubCategoryId(this.currentSubCategoryId));
 		return true;
 	}
 
-	nextSheepInfo(): void {
-		if (this.currentSheepInfoIndex + 1 >= this.sheepInfo[this.currentCategoryIndex].length) {
-			this.currentSheepInfoIndex = 0;
+	nextSubCategory(): void {
+		if (this.currentSubCategoryIndex + 1 >= this.subCategoryIds[this.currentMainCategoryIndex].length) {
+			this.currentSubCategoryIndex = 0;
 		} else {
-			this.currentSheepInfoIndex++;
+			this.currentSubCategoryIndex++;
 		}
 
-		this.currentSheepInfo = this.sheepInfo[this.currentCategoryIndex][this.currentSheepInfoIndex];
-		this.store.dispatch(new SetCurrentSheepInfoType(this.currentSheepInfo));
+		this.currentSubCategoryId = this.subCategoryIds[this.currentMainCategoryIndex][this.currentSubCategoryIndex];
+		this.store.dispatch(new SetCurrentSubCategoryId(this.currentSubCategoryId));
 	}
 
-	prevSheepInfo(): void {
-		if (this.currentSheepInfoIndex <= 0) {
-			this.currentSheepInfoIndex = this.sheepInfo[this.currentCategoryIndex].length - 1;
+	prevSubCategory(): void {
+		if (this.currentSubCategoryIndex <= 0) {
+			this.currentSubCategoryIndex = this.subCategoryIds[this.currentMainCategoryIndex].length - 1;
 		} else {
-			this.currentSheepInfoIndex--;
+			this.currentSubCategoryIndex--;
 		}
 
-		this.currentSheepInfo = this.sheepInfo[this.currentCategoryIndex][this.currentSheepInfoIndex];
-		this.store.dispatch(new SetCurrentSheepInfoType(this.currentSheepInfo));
+		this.currentSubCategoryId = this.subCategoryIds[this.currentMainCategoryIndex][this.currentSubCategoryIndex];
+		this.store.dispatch(new SetCurrentSubCategoryId(this.currentSubCategoryId));
 	}
 
-	getSheepInfoCountInCurrentCategory(): Observable<number> {
-		return this.sheepInfoCountInCurrentCategory.asObservable();
+	getSubCategoryCountInCurrentMainCategory(): Observable<number> {
+		return this.subCategoryCountInCurrentMainCategory.asObservable();
 	}
 
 	complete(): void {
@@ -130,12 +133,12 @@ export class RegistrationService {
 	}
 
 	private resetState(): void {
-		this.currentCategoryIndex = 0;
-		this.currentSheepInfoIndex = 0;
-		this.currentCategory = this.categories[this.currentCategoryIndex];
-		this.currentSheepInfo = this.sheepInfo[this.currentCategoryIndex][this.currentSheepInfoIndex];
-		this.sheepInfoCountInCurrentCategory.next(this.sheepInfo[this.currentCategoryIndex].length);
-		this.store.dispatch(new SetCurrentSheepInfoType(this.currentSheepInfo));
-		this.store.dispatch(new SetCurrentSheepInfoCategory(this.currentCategory));
+		this.currentMainCategoryIndex = 0;
+		this.currentSubCategoryIndex = 0;
+		this.currentMainCategoryId = this.mainCategoryIds[this.currentMainCategoryIndex];
+		this.currentSubCategoryId = this.subCategoryIds[this.currentMainCategoryIndex][this.currentSubCategoryIndex];
+		this.subCategoryCountInCurrentMainCategory.next(this.subCategoryIds[this.currentMainCategoryIndex].length);
+		this.store.dispatch(new SetCurrentSubCategoryId(this.currentSubCategoryId));
+		this.store.dispatch(new SetCurrentMainCategoryId(this.currentMainCategoryId));
 	}
 }

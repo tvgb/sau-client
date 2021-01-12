@@ -1,11 +1,11 @@
-<ion-content id="summary-content" *ngIf="currentSheepInfo && currentSheepInfoCategory">
+<ion-content id="summary-content" *ngIf="currentSheepInfo && currentMainCategory">
 	<h1 id="summary-heading"> OPPSUMMERING </h1>
 	<div id="summary-registertext"><ion-text >Avansert registrering av sau fullført</ion-text></div>
 	<div class="summary-column">
 	   <h2 class="summary-column-heading">SAU</h2>
 	   <div class="summary-element">
 		   <app-count-overview
-				[infoTypes]="['Totalt', 'Søyer', 'Lam']"
+				[subCategories]="['Totalt', 'Søyer', 'Lam']"
 				[counts]="[
 					currentSheepInfo.totalSheep.totalSheep.count,
 					currentSheepInfo.sheepType.ewe.count,
@@ -18,7 +18,8 @@
 		<h2 class="summary-column-heading">FARGE</h2>
 		<div class="summary-element">
 			<app-count-overview
-				[infoTypes]="['Hvit', 'Svart', 'Brun']"
+				[mainCategoryId]="mainCategoryIds.SheepColour"
+				[subCategories]="['Hvit', 'Svart', 'Brun']"
 				[colours]="['FFFFFF', '000000', '422916']"
 				[counts]="[
 					currentSheepInfo.sheepColour.whiteSheep.count,
@@ -32,8 +33,8 @@
 		<h2 class="summary-column-heading">SLIPS</h2>
 		<div class="summary-element">
 			<app-count-overview
-				[category]="category.CollarColourCategory"
-				[infoTypes]="['Blå', 'Grønn', 'Gul', 'Rød', 'Mangler']"
+				[mainCategoryId]="mainCategoryIds.CollarColour"
+				[subCategories]="['Blå', 'Grønn', 'Gul', 'Rød', 'Mangler']"
 				[colours]="['005BE4', '198C0F', 'E2E700', 'BD0000', '595959']"
 				[counts]="[
 					currentSheepInfo.collarColour.blueCollar.count,

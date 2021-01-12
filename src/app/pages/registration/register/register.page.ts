@@ -1,16 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
-import { SheepInfo } from 'src/app/shared/classes/SheepInfo';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { RegistrationService } from '../services/registration.service';
 import { TextToSpeechService } from '../services/text-to-speech.service';
 import { Platform } from '@ionic/angular';
-import { Category } from 'src/app/shared/enums/Category';
-import { TimeTakingService } from '../services/time-taking.service';
+import { MainCategoryId } from 'src/app/shared/enums/MainCategoryId';
 import { AppInfoState } from 'src/app/shared/store/appInfo.state';
-import { SheepInfoCategory } from 'src/app/shared/classes/SheepInfoCategory';
+import { MainCategory, SubCategory } from 'src/app/shared/classes/Category';
 import { Plugins, StatusBarStyle} from '@capacitor/core';
 import { StateResetAll } from 'ngxs-reset-plugin';
 
@@ -22,33 +20,32 @@ const {StatusBar} = Plugins;
 })
 export class RegisterPage {
 
-	currentSheepInfo: SheepInfo;
-	currentSheepInfoCategory: any;
-	category = Category;
-	currentCategory: Category;
+	currentSubCategory: SubCategory;
+	currentMainCategory: any;
+	mainCategoryId = MainCategoryId;
+	currentMainCategoryId: MainCategoryId;
 
-	sheepInfoCountInCurrentCategory: number;
+	subCategoryCountInCurrentMainCategory: number;
 	totalTMID = 'totalTMID';
 
-	@Select(SheepInfoState.getCurrentSheepInfo) currentSheepInfo$: Observable<SheepInfo>;
-	@Select(SheepInfoState.getCurrentSheepInfoCategory) currentSheepInfoCategory$: Observable<any>;
-	@Select(AppInfoState.getCurrentSheepInfoCategory) currentCategory$: Observable<Category>;
+	@Select(SheepInfoState.getCurrentSubCategory) currentSubCategory$: Observable<SubCategory>;
+	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
+	@Select(AppInfoState.getCurrentMainCategoryId) currentCategory$: Observable<MainCategoryId>;
 
-	currentSheepInfoSub: Subscription;
-	currentSheepInfoCategorySub: Subscription;
-	currentCategorySub: Subscription;
-	sheepInfoCountInCurrentCategorySub: Subscription;
+	currentSubCategorySub: Subscription;
+	currentMainCategorySub: Subscription;
+	currentMainCategoryIdSub: Subscription;
+	subCategoryCountInCurrentMainCategorySub: Subscription;
 
 	constructor(
 		private store: Store,
 		private registrationService: RegistrationService,
 		private tts: TextToSpeechService,
 		private router: Router,
-		private platform: Platform,
-		private timeTakingService: TimeTakingService) {
+		private platform: Platform) {
 
 		this.platform.backButton.subscribeWithPriority(10, () => {
-			this.onPrevCategory();
+			this.onPrevMainCategory();
 		});
 	}
 
@@ -66,73 +63,66 @@ export class RegisterPage {
 
 	ionViewWillEnter() {
 		this.changeStatusBarTextColor();
-		this.currentSheepInfoSub = this.currentSheepInfo$.subscribe((res: SheepInfo) => {
+		this.currentSubCategorySub = this.currentSubCategory$.subscribe((res: SubCategory) => {
 			if (res) {
-				this.currentSheepInfo = res;
+				this.currentSubCategory = res;
 			}
 		});
 
-		this.sheepInfoCountInCurrentCategorySub = this.registrationService.getSheepInfoCountInCurrentCategory().subscribe((res: number) => {
+		this.subCategoryCountInCurrentMainCategorySub = this.registrationService.getSubCategoryCountInCurrentMainCategory().subscribe(
+			(res: number) => {
+				if (res) {
+					this.subCategoryCountInCurrentMainCategory = res;
+				}
+		});
+
+		this.currentMainCategorySub = this.currentMainCategory$.subscribe((res: MainCategory) => {
 			if (res) {
-				this.sheepInfoCountInCurrentCategory = res;
+				this.currentMainCategory = res;
 			}
 		});
 
-		this.currentSheepInfoCategorySub = this.currentSheepInfoCategory$.subscribe((res: SheepInfoCategory) => {
+		this.currentMainCategoryIdSub = this.currentCategory$.subscribe((res: MainCategoryId) => {
 			if (res) {
-				this.currentSheepInfoCategory = res;
+				this.currentMainCategoryId = res;
 			}
 		});
-
-		this.currentCategorySub = this.currentCategory$.subscribe((res: Category) => {
-			if (this.currentCategory && this.currentCategory !== res) {
-				this.timeTakingService.stopStopWatch(this.currentCategory);
-			}
-
-			this.currentCategory = res;
-			this.timeTakingService.startNewStopWatch(this.currentCategory);
-		});
-	}
-
-	ionViewDidEnter() {
-		this.timeTakingService.startNewStopWatch(this.totalTMID);
-		this.timeTakingService.startNewStopWatch(this.currentSheepInfoCategory.category);
 	}
 
 	onIncrement(): void {
 		this.registrationService.increment();
-		this.tts.speak(`${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
+		this.tts.speak(`${this.currentSubCategory.count} ${this.currentSubCategory.name} ${this.currentMainCategory.speakText}`);
 	}
 
 	onDecrement(): void {
 		this.registrationService.decrement();
-		this.tts.speak(`${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
+		this.tts.speak(`${this.currentSubCategory.count} ${this.currentSubCategory.name} ${this.currentMainCategory.speakText}`);
 	}
 
-	onSheepInfoRight(): void {
-		this.registrationService.prevSheepInfo();
-		this.tts.speak(`${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
+	onSubCategoryRight(): void {
+		this.registrationService.prevSubCategory();
+		this.tts.speak(`${this.currentSubCategory.count} ${this.currentSubCategory.name} ${this.currentMainCategory.speakText}`);
 	}
 
-	onSheepInfoLeft(): void {
-		this.registrationService.nextSheepInfo();
-		this.tts.speak(`${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
+	onSubCategoryLeft(): void {
+		this.registrationService.nextSubCategory();
+		this.tts.speak(`${this.currentSubCategory.count} ${this.currentSubCategory.name} ${this.currentMainCategory.speakText}`);
 	}
 
-	onNextCategory(): void {
-		if (!this.registrationService.nextCategory()) {
+	onNextMainCategory(): void {
+		if (!this.registrationService.nextMainCategory()) {
 			this.router.navigate(['/registration/summary']);
 		} else {
-			this.tts.speak(`Registrer ${this.currentSheepInfoCategory.name}, ${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
+			this.tts.speak(`Registrer ${this.currentMainCategory.name}, ${this.currentSubCategory.count} ${this.currentSubCategory.name} ${this.currentMainCategory.speakText}`);
 		}
 	}
 
-	onPrevCategory(): void {
-		if (!this.registrationService.prevCategroy()) {
+	onPrevMainCategory(): void {
+		if (!this.registrationService.prevMainCategroy()) {
 			this.onCancel();
 			this.router.navigate(['/map']);
 		} else {
-			this.tts.speak(`Registrer ${this.currentSheepInfoCategory.name}, ${this.currentSheepInfo.count} ${this.currentSheepInfo.name} ${this.currentSheepInfoCategory.speakText}`);
+			this.tts.speak(`Registrer ${this.currentMainCategory.name}, ${this.currentSubCategory.count} ${this.currentSubCategory.name} ${this.currentMainCategory.speakText}`);
 		}
 	}
 
@@ -141,18 +131,14 @@ export class RegisterPage {
 	}
 
 	onCancel(): void {
-		this.timeTakingService.clearTimeTakings();
 		this.registrationService.cancel();
 		this.store.dispatch(new StateResetAll());
 	}
 
 	ionViewWillLeave(): void {
-		this.timeTakingService.stopStopWatch(this.totalTMID);
-		this.timeTakingService.stopStopWatch(this.currentCategory);
-
-		this.currentSheepInfoSub.unsubscribe();
-		this.sheepInfoCountInCurrentCategorySub.unsubscribe();
-		this.currentSheepInfoCategorySub.unsubscribe();
-		this.currentCategorySub.unsubscribe();
+		this.currentSubCategorySub.unsubscribe();
+		this.subCategoryCountInCurrentMainCategorySub.unsubscribe();
+		this.currentMainCategorySub.unsubscribe();
+		this.currentMainCategoryIdSub.unsubscribe();
 	}
 }

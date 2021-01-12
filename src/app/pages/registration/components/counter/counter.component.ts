@@ -8,13 +8,13 @@ import { VibrationService } from '../../services/vibration.service';
 })
 export class CounterComponent implements OnInit {
 
-	@Input() sheepInfosCount: number;
-	@Input() selectedSheepInfo: string;
+	@Input() subCategoryCount: number;
+	@Input() currentSubCategoryName: string;
 
 	@Output() increment = new EventEmitter();
 	@Output() decrement = new EventEmitter();
-	@Output() sheepInfoRight = new EventEmitter();
-	@Output() sheepInfoLeft = new EventEmitter();
+	@Output() subCategoryRight = new EventEmitter();
+	@Output() subCategoryLeft = new EventEmitter();
 
 	constructor(private vibration: VibrationService) { }
 
@@ -23,15 +23,15 @@ export class CounterComponent implements OnInit {
 	}
 
 	onSwipeLeft(e): void {
-		if (this.sheepInfosCount > 1) {
-			this.sheepInfoLeft.emit(e);
+		if (this.subCategoryCount > 1) {
+			this.subCategoryLeft.emit(e);
 			this.vibration.vibrate();
 		}
 	}
 
 	onSwipeRight(e): void {
-		if (this.sheepInfosCount > 1) {
-			this.sheepInfoRight.emit(e);
+		if (this.subCategoryCount > 1) {
+			this.subCategoryRight.emit(e);
 			this.vibration.vibrate();
 		}
 	}

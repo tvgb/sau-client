@@ -1,13 +1,12 @@
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { Injectable } from '@angular/core';
 import { SheepInfoModel } from '../interfaces/SheepInfoModel';
-import { DecrementSheepInfoCount, IncrementSheepInfoCount } from './sheepInfo.actions';
+import { DecrementSubCategoryCount, IncrementSubCategoryCount } from './sheepInfo.actions';
 import { AppInfoState } from './appInfo.state';
 import { AppInfoModel } from '../interfaces/AppInfoModel';
-import { SheepInfo } from '../classes/SheepInfo';
-import { Category } from '../enums/Category';
-import { SheepInfoType } from '../enums/SheepInfoType';
-import { SheepInfoCategory } from '../classes/SheepInfoCategory';
+import { MainCategoryId } from '../enums/MainCategoryId';
+import { SubCategoryId } from '../enums/SubCategoryId';
+import { MainCategory, SubCategory } from '../classes/Category';
 
 
 @State<SheepInfoModel>({
@@ -15,12 +14,12 @@ import { SheepInfoCategory } from '../classes/SheepInfoCategory';
 	defaults: {
 
 		totalSheep: {
-			category: Category.TotalSheepCategory,
+			id: MainCategoryId.TotalSheep,
 			name: 'Sau totalt',
 			speakText: '',
 
 			totalSheep: {
-				sheepInfoType: SheepInfoType.TotalSheepInfo,
+				id: SubCategoryId.TotalSheep,
 				name: 'Sau totalt',
 				speakText: '',
 				count: 0
@@ -28,24 +27,24 @@ import { SheepInfoCategory } from '../classes/SheepInfoCategory';
 		},
 
 		sheepColour: {
-			category: Category.SheepColourCategory,
+			id: MainCategoryId.SheepColour,
 			name: 'Farge',
 			speakText: 'sau',
 
 			whiteSheep: {
-				sheepInfoType: SheepInfoType.WhiteSheepInfo,
+				id: SubCategoryId.WhiteSheep,
 				name: 'Hvit',
 				speakText: 'hvit',
 				count: 0
 			},
 			blackSheep: {
-				sheepInfoType: SheepInfoType.BlackSheepInfo,
+				id: SubCategoryId.BlackSheep,
 				name: 'Svart',
 				speakText: 'svart',
 				count: 0
 			},
 			brownSheep: {
-				sheepInfoType: SheepInfoType.BrownSheepInfo,
+				id: SubCategoryId.BrownSheep,
 				name: 'Brun',
 				speakText: 'brun',
 				count: 0
@@ -53,18 +52,18 @@ import { SheepInfoCategory } from '../classes/SheepInfoCategory';
 		},
 
 		sheepType: {
-			category: Category.SheepTypeCategory,
+			id: MainCategoryId.SheepType,
 			name: 'Type',
 			speakText: '',
 
 			ewe: {
-				sheepInfoType: SheepInfoType.EweInfo,
+				id: SubCategoryId.Ewe,
 				name: 'Søye',
 				speakText: 'søye',
 				count: 0
 			},
 			lamb: {
-				sheepInfoType: SheepInfoType.LambInfo,
+				id: SubCategoryId.Lamb,
 				name: 'Lam',
 				speakText: 'lam',
 				count: 0
@@ -72,36 +71,36 @@ import { SheepInfoCategory } from '../classes/SheepInfoCategory';
 		},
 
 		collarColour: {
-			category: Category.CollarColourCategory,
+			id: MainCategoryId.CollarColour,
 			name: 'Slips',
 			speakText: 'slips',
 
 			blueCollar: {
-				sheepInfoType: SheepInfoType.BlueCollarInfo,
+				id: SubCategoryId.BlueCollar,
 				name: 'Blå',
 				speakText: 'blå',
 				count: 0
 			},
 			greenCollar: {
-				sheepInfoType: SheepInfoType.GreenCollarInfo,
+				id: SubCategoryId.GreenCollar,
 				name: 'Grønn',
 				speakText: 'grønn',
 				count: 0
 			},
 			yellowCollar: {
-				sheepInfoType: SheepInfoType.YellowCollarInfo,
+				id: SubCategoryId.YellowCollar,
 				name: 'Gul',
 				speakText: 'gul',
 				count: 0
 			},
 			redCollar: {
-				sheepInfoType: SheepInfoType.RedCollarInfo,
+				id: SubCategoryId.RedCollar,
 				name: 'Rød',
 				speakText: 'rød',
 				count: 0
 			},
 			missingCollar: {
-				sheepInfoType: SheepInfoType.MissingCollarInfo,
+				id: SubCategoryId.MissingCollar,
 				name: 'Mangler',
 				speakText: 'mangler',
 				count: 0
@@ -121,55 +120,55 @@ export class SheepInfoState {
 	}
 
 	@Selector([AppInfoState])
-	static getCurrentSheepInfo(state: SheepInfoModel, appInfoState: AppInfoModel): SheepInfo {
-		const currentCategory = appInfoState.currentCategory;
-		const currentSheepInfoType = appInfoState.currentSheepInfoType;
+	static getCurrentSubCategory(state: SheepInfoModel, appInfoState: AppInfoModel): SubCategory {
+		const currentMainCategoryId = appInfoState.currentMainCategoryId;
+		const currrentSubCategoryId = appInfoState.currentSubCategoryId;
 
-		return state[currentCategory][currentSheepInfoType];
+		return state[currentMainCategoryId][currrentSubCategoryId];
 	}
 
 	@Selector([AppInfoState])
-	static getCurrentSheepInfoCategory(state: SheepInfoModel, appInfoState: AppInfoModel): SheepInfoCategory {
-		const currentCategory = appInfoState.currentCategory;
+	static getCurrentMainCategory(state: SheepInfoModel, appInfoState: AppInfoModel): MainCategory {
+		const currentMainCategoryId = appInfoState.currentMainCategoryId;
 
-		return state[currentCategory];
+		return state[currentMainCategoryId];
 	}
 
-	@Action(IncrementSheepInfoCount)
-	incrementSheepInfoCount(ctx: StateContext<SheepInfoModel>, action: IncrementSheepInfoCount) {
+	@Action(IncrementSubCategoryCount)
+	incrementSubCategoryCount(ctx: StateContext<SheepInfoModel>, action: IncrementSubCategoryCount) {
 		const state = ctx.getState();
 
-		const currentCategory = state[action.payload.category];
-		const currentSheepInfo = currentCategory[action.payload.sheepInfoType];
+		const currentMainCategoryId = state[action.payload.mainCategoryId];
+		const currentSubCategoryId = currentMainCategoryId[action.payload.subCategoryId];
 
 		ctx.patchState({
 			...state,
-			[action.payload.category]: {
-				...currentCategory,
-				[action.payload.sheepInfoType]: {
-					...currentSheepInfo,
-					count: currentSheepInfo.count + 1
+			[action.payload.mainCategoryId]: {
+				...currentMainCategoryId,
+				[action.payload.subCategoryId]: {
+					...currentSubCategoryId,
+					count: currentSubCategoryId.count + 1
 				}
 			}
 		});
 	}
 
-	@Action(DecrementSheepInfoCount)
-	decrementSheepInfoCategoryCount(ctx: StateContext<SheepInfoModel>, action: DecrementSheepInfoCount) {
+	@Action(DecrementSubCategoryCount)
+	decrementSubCategoryCount(ctx: StateContext<SheepInfoModel>, action: DecrementSubCategoryCount) {
 		const state = ctx.getState();
 
-		const currentCategory = state[action.payload.category];
-		const currentSheepInfo = currentCategory[action.payload.sheepInfoType];
+		const currentMainCategoryId = state[action.payload.mainCategoryId];
+		const currentSubCategoryId = currentMainCategoryId[action.payload.subCategoryId];
 
-		if (currentSheepInfo.count <= 0) { return; }
+		if (currentSubCategoryId.count <= 0) { return; }
 
 		ctx.patchState({
 			...state,
-			[action.payload.category]: {
-				...currentCategory,
-				[action.payload.sheepInfoType]: {
-					...currentSheepInfo,
-					count: currentSheepInfo.count - 1
+			[action.payload.mainCategoryId]: {
+				...currentMainCategoryId,
+				[action.payload.subCategoryId]: {
+					...currentSubCategoryId,
+					count: currentSubCategoryId.count - 1
 				}
 			}
 		});

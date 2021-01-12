@@ -7,7 +7,7 @@ import { Select } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { TextToSpeechService } from '../registration/services/text-to-speech.service';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
-import { SheepInfoCategory } from 'src/app/shared/classes/SheepInfoCategory';
+import { MainCategory } from 'src/app/shared/classes/Category';
 import { Plugins, StatusBarStyle} from '@capacitor/core';
 
 const { StatusBar } = Plugins;
@@ -22,11 +22,11 @@ export class MapPage implements AfterViewInit {
 	private routeLink = ['/registration/register'];
 	private map;
 	private readonly OFFLINE_MAP = false;
-	private currentSheepInfoCategory: SheepInfoCategory;
+	private currentMainCategory: MainCategory;
 
-	@Select(SheepInfoState.getCurrentSheepInfoCategory) currentSheepInfoCategory$: Observable<SheepInfoCategory>;
+	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
 
-	currentSheepInfoCategorySub: Subscription;
+	currentMainCategorySub: Subscription;
 
 	constructor(
 		private mapService: MapService,
@@ -46,8 +46,8 @@ export class MapPage implements AfterViewInit {
 
 	ionViewWillEnter(): void {
 		this.changeStatusBar();
-		this.currentSheepInfoCategorySub = this.currentSheepInfoCategory$.subscribe(res => {
-			this.currentSheepInfoCategory = res;
+		this.currentMainCategorySub = this.currentMainCategory$.subscribe(res => {
+			this.currentMainCategory = res;
 		});
 		// This covers Gløshaugen ++++
 		// const startLat = 63.433167;
@@ -80,7 +80,7 @@ export class MapPage implements AfterViewInit {
 
 	navigateToRegistration() {
 		console.log('navigate method');
-		this.ttsService.speak(`Registrer ${this.currentSheepInfoCategory.name}`);
+		this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);
 		this.router.navigate(this.routeLink);
 	}
 
@@ -128,6 +128,6 @@ export class MapPage implements AfterViewInit {
 	}
 
 	ionViewWillLeave(): void {
-		this.currentSheepInfoCategorySub.unsubscribe();
+		this.currentMainCategorySub.unsubscribe();
 	}
 }
