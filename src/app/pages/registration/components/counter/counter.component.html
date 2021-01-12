@@ -1,4 +1,8 @@
-<div class="counter-container"> 
+<div 
+	#counterContainer
+	class="counter-container" 
+	(tap)="onTap($event)"
+	(press)="onHold($event)"> 
 	<div class="plus" >
 		<ion-icon size="large" name="add-outline"></ion-icon>
 	</div>
@@ -11,7 +15,7 @@
 		(swipeleft)="onSwipeLeft($event)"
 		(swiperight)="onSwipeRight($event)"
 		(swipeup)="onSwipeUp($event)"
-		(swipedown)="onSwipeDown($event)" 
+		(swipedown)="onSwipeDown($event)"
 		class="middle">
 		{{ currentSubCategoryName }}
 	</div>

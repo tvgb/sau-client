@@ -126,8 +126,8 @@ export class RegisterPage {
 		}
 	}
 
-	onComplete(): void {
-
+	onHoldForReadout(): void {
+		this.tts.speak(`${this.currentSubCategory.count} ${this.currentSubCategory.name} ${this.currentMainCategory.speakText}`);
 	}
 
 	onCancel(): void {
