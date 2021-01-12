@@ -12,8 +12,8 @@ import { VibrationService } from '../../services/vibration.service';
 })
 export class NavigationComponent implements OnInit {
 
-	@Output() nextCategory = new EventEmitter();
-	@Output() prevCategory = new EventEmitter();
+	@Output() nextMainCategory = new EventEmitter();
+	@Output() prevMainCategory = new EventEmitter();
 	@Output() cancelRegistration = new EventEmitter();
 	@Output() completeRegistration = new EventEmitter();
 
@@ -28,14 +28,14 @@ export class NavigationComponent implements OnInit {
 
 	ngOnInit(): void {}
 
-	nextCategoryClick() {
+	nextMainCategoryClick() {
 		this.vibration.vibrate();
-		this.nextCategory.emit();
+		this.nextMainCategory.emit();
 	}
 
-	prevCategoryClick() {
+	prevMainCategoryClick() {
 		this.vibration.vibrate();
-		this.prevCategory.emit();
+		this.prevMainCategory.emit();
 	}
 
 	cancel(): void {

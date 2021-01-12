@@ -3,7 +3,7 @@
 		<ion-icon size="large" name="add-outline"></ion-icon>
 	</div>
 	<div
-		*ngIf="sheepInfosCount > 1"
+		*ngIf="subCategoryCount > 1"
 		class="left">
 		<ion-icon size="large" name="chevron-back-outline"></ion-icon>
 	</div>
@@ -13,10 +13,10 @@
 		(swipeup)="onSwipeUp($event)"
 		(swipedown)="onSwipeDown($event)" 
 		class="middle">
-		{{ selectedSheepInfo }}
+		{{ currentSubCategoryName }}
 	</div>
 	<div
-		*ngIf="sheepInfosCount > 1"
+		*ngIf="subCategoryCount > 1"
 		class="right">
 		<ion-icon size="large" name="chevron-forward-outline"></ion-icon>
 	</div>

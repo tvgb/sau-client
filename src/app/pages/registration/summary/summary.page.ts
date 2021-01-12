@@ -4,8 +4,8 @@ import { AlertController, NavController } from '@ionic/angular';
 import { Select, Store } from '@ngxs/store';
 import { StateResetAll } from 'ngxs-reset-plugin';
 import { Observable, Subscription } from 'rxjs';
-import { SheepInfoCategory } from 'src/app/shared/classes/SheepInfoCategory';
-import { Category } from 'src/app/shared/enums/Category';
+import { MainCategory } from 'src/app/shared/classes/Category';
+import { MainCategoryId } from 'src/app/shared/enums/MainCategoryId';
 import { SheepInfoModel } from 'src/app/shared/interfaces/SheepInfoModel';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { RegistrationService } from '../services/registration.service';
@@ -19,16 +19,16 @@ import { TextToSpeechService } from '../services/text-to-speech.service';
 export class SummaryPage {
 
 	currentSheepInfo: SheepInfoModel;
-	currentSheepInfoCategory: SheepInfoCategory;
-	category = Category;
+	currentMainCategory: MainCategory;
+	mainCategoryIds = MainCategoryId;
 	private totalSheep = 0;
 	missingLambText = '';
 
 	@Select(SheepInfoState.getSheepInfo) sheepInfo$: Observable<SheepInfoModel>;
-	@Select(SheepInfoState.getCurrentSheepInfoCategory) currentSheepInfoCategory$: Observable<any>;
+	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
 
 	sheepInfoSub: Subscription;
-	currentSheepInfoCategorySub: Subscription;
+	currentMainCategorySub: Subscription;
 
   	constructor(
 		private navController: NavController,
@@ -46,15 +46,15 @@ export class SummaryPage {
 			this.currentSheepInfo = res;
 		});
 
-		this.currentSheepInfoCategorySub = this.currentSheepInfoCategory$.subscribe(res => {
+		this.currentMainCategorySub = this.currentMainCategory$.subscribe(res => {
 			if (res) {
-				this.currentSheepInfoCategory = res;
+				this.currentMainCategory = res;
 			}
 		});
 	}
 
 	navigateBack() {
-		this.tts.speak(`Registrer ${this.currentSheepInfoCategory.name}`);
+		this.tts.speak(`Registrer ${this.currentMainCategory.name}`);
 		this.navController.back();
 	}
 
@@ -67,7 +67,6 @@ export class SummaryPage {
 	}
 
 	checkCollarNumber(): boolean {
-		// const one = 1;
 		const totalLambs = this.currentSheepInfo.collarColour.greenCollar.count +
 		this.currentSheepInfo.collarColour.yellowCollar.count * 2 + this.currentSheepInfo.collarColour.redCollar.count * 3;
 		const missingLambs = totalLambs - this.currentSheepInfo.sheepType.lamb.count;
@@ -116,7 +115,7 @@ export class SummaryPage {
 						this.registrationService.complete();
 
 
-						this.router.navigate(['/registration/time-measurements']);
+						this.router.navigate(['/map']);
 					}
 				}
 			]
@@ -126,6 +125,6 @@ export class SummaryPage {
 
 	ionViewWillLeave(): void {
 		this.sheepInfoSub.unsubscribe();
-		this.currentSheepInfoCategorySub.unsubscribe();
+		this.currentMainCategorySub.unsubscribe();
 	}
 }
