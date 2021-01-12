@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { MainMenuPageRoutingModule } from './main-menu-routing.module';
+import { OfflineMapsPageRoutingModule } from './offline-maps-routing.module';
 
-import { MainMenuPage } from './main-menu.page';
+import { OfflineMapsPage } from './offline-maps.page';
 
 @NgModule({
 	imports: [
 		CommonModule,
 		FormsModule,
 		IonicModule,
-		MainMenuPageRoutingModule
+		OfflineMapsPageRoutingModule
 	],
-	declarations: [MainMenuPage]
+	declarations: [OfflineMapsPage]
 })
-export class MainMenuPageModule {}
+export class OfflineMapsPageModule {}

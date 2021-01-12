@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { MainMenuPage } from './main-menu.page';
+import { DownloadMapPage } from './download-map.page';
 
 const routes: Routes = [
 	{
 		path: '',
-		component: MainMenuPage
+		component: DownloadMapPage
 	}
 ];
 
@@ -14,4 +14,4 @@ const routes: Routes = [
 	imports: [RouterModule.forChild(routes)],
 	exports: [RouterModule],
 })
-export class MainMenuPageRoutingModule {}
+export class DownloadMapPageRoutingModule {}

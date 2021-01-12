@@ -22,6 +22,14 @@ const routes: Routes = [
 	{
 		path: 'registration/register',
 		loadChildren: () => import('./pages/registration/register/register.module').then( m => m.RegisterPageModule)
+	},
+	{
+		path: 'offline-maps',
+		loadChildren: () => import('./pages/offline-maps/offline-maps.module').then( m => m.OfflineMapsPageModule)
+	},
+	{
+		path: 'download-map',
+		loadChildren: () => import('./pages/download-map/download-map.module').then( m => m.DownloadMapPageModule)
 	}
 ];
 

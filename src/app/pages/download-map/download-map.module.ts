@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { MainMenuPageRoutingModule } from './main-menu-routing.module';
+import { DownloadMapPageRoutingModule } from './download-map-routing.module';
 
-import { MainMenuPage } from './main-menu.page';
+import { DownloadMapPage } from './download-map.page';
 
 @NgModule({
 	imports: [
 		CommonModule,
 		FormsModule,
 		IonicModule,
-		MainMenuPageRoutingModule
+		DownloadMapPageRoutingModule
 	],
-	declarations: [MainMenuPage]
+	declarations: [DownloadMapPage]
 })
-export class MainMenuPageModule {}
+export class DownloadMapPageModule {}
