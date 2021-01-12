@@ -23,6 +23,8 @@ export class MapPage implements AfterViewInit {
 	private map;
 	private readonly OFFLINE_MAP = false;
 	private currentMainCategory: MainCategory;
+	private TIMEOUT = 10000;
+	private stopTracking = false;
 
 	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
 
@@ -84,6 +86,15 @@ export class MapPage implements AfterViewInit {
 		this.router.navigate(this.routeLink);
 	}
 
+	startTrackingInterval() {
+		if (!this.stopTracking) {
+			setTimeout(() => {
+				console.log('INSIDE TIMEOUT!');
+				this.gpsService.updateTrack(this.map);
+				this.startTrackingInterval();
+			}, this.TIMEOUT);
+		}
+	}
 	initMap(): void {
 		// Coordinates for the middle of Gløshaugen
 		const lat = 63.418604;
@@ -96,7 +107,7 @@ export class MapPage implements AfterViewInit {
 			attributionControl: false
 		});
 
-		this.gpsService.updateTrack(this.map);
+		this.startTrackingInterval();
 
 		if (this.OFFLINE_MAP) {
 			L.GridLayer.OfflineMap = L.GridLayer.extend({
