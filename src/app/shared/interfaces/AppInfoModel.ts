@@ -1,7 +1,7 @@
-import { Category } from '../enums/Category';
-import { SheepInfoType } from '../enums/SheepInfoType';
+import { MainCategoryId } from '../enums/MainCategoryId';
+import { SubCategoryId } from '../enums/SubCategoryId';
 
 export interface AppInfoModel {
-	currentCategory: Category;
-	currentSheepInfoType: SheepInfoType;
+	currentMainCategoryId: MainCategoryId;
+	currentSubCategoryId: SubCategoryId;
 }

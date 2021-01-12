@@ -1,41 +1,41 @@
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
-import { Category } from '../enums/Category';
-import { SheepInfoType } from '../enums/SheepInfoType';
+import { MainCategoryId } from '../enums/MainCategoryId';
+import { SubCategoryId } from '../enums/SubCategoryId';
 import { AppInfoModel } from '../interfaces/AppInfoModel';
-import { SetCurrentSheepInfoCategory, SetCurrentSheepInfoType } from './appInfo.actions';
+import { SetCurrentMainCategoryId, SetCurrentSubCategoryId } from './appInfo.actions';
 
 
 @State<AppInfoModel>({
 	name: 'appInfo',
 	defaults: {
-		currentCategory: Category.TotalSheepCategory,
-		currentSheepInfoType: SheepInfoType.TotalSheepInfo
+		currentMainCategoryId: MainCategoryId.TotalSheep,
+		currentSubCategoryId: SubCategoryId.TotalSheep
 	}
 })
 
 @Injectable()
 export class AppInfoState {
 	@Selector()
-	static getCurrentSheepInfoCategory(state: AppInfoModel) {
-		return state.currentCategory;
+	static getCurrentMainCategoryId(state: AppInfoModel) {
+		return state.currentMainCategoryId;
 	}
 
-	@Action(SetCurrentSheepInfoCategory)
-	setCurrentSheepInfoCategory(ctx: StateContext<AppInfoModel>, action: SetCurrentSheepInfoCategory) {
+	@Action(SetCurrentMainCategoryId)
+	setCurrentMainCategoryId(ctx: StateContext<AppInfoModel>, action: SetCurrentMainCategoryId) {
 		const state = ctx.getState();
 		ctx.setState({
 			...state,
-			currentCategory: action.sheepInfoCategory,
+			currentMainCategoryId: action.mainCategoryId,
 		});
 	}
 
-	@Action(SetCurrentSheepInfoType)
-	setCurrentSheepInfoType(ctx: StateContext<AppInfoModel>, action: SetCurrentSheepInfoType) {
+	@Action(SetCurrentSubCategoryId)
+	setCurrentSubCategoryId(ctx: StateContext<AppInfoModel>, action: SetCurrentSubCategoryId) {
 		const state = ctx.getState();
 		ctx.setState({
 			...state,
-			currentSheepInfoType: action.sheepInfoType,
+			currentSubCategoryId: action.subCategoryId,
 		});
 	}
 }
