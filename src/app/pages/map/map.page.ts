@@ -89,7 +89,6 @@ export class MapPage implements AfterViewInit {
 	startTrackingInterval() {
 		if (!this.stopTracking) {
 			setTimeout(() => {
-				console.log('INSIDE TIMEOUT!');
 				this.gpsService.updateTrack(this.map);
 				this.startTrackingInterval();
 			}, this.TIMEOUT);
