@@ -31,10 +31,14 @@ export class GpsService {
 		this.geolocation.getCurrentPosition().then((data) => {
 			this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
 			console.log('Tracked route: ' + JSON.stringify(this.trackedRoute));
+
 			if(this.posistionMarker == null) {
 				this.posistionMarker = this.createDefaultMarker();
+				L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionMarker}).addTo(map);
+
+			} else {
+				this.posistionMarker.setLatLng(data.coords.latitude, data.coords.longitude);
 			}
-			L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionMarker}).addTo(map);
 			L.polyline(this.trackedRoute).addTo(map);
 		}).catch((error) => {
 				console.log('Error getting location', error);
