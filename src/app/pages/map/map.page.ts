@@ -25,6 +25,7 @@ export class MapPage implements AfterViewInit {
 	private currentMainCategory: MainCategory;
 	private TIMEOUT = 10000;
 	private stopTracking = false;
+	private getInitialPosistion = true;
 
 	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
 
@@ -87,11 +88,15 @@ export class MapPage implements AfterViewInit {
 	}
 
 	startTrackingInterval() {
-		if (!this.stopTracking) {
+		if (!this.stopTracking && !this.getInitialPosistion) {
 			setTimeout(() => {
-				this.gpsService.updateTrack(this.map);
+				this.gpsService.updateTrackAndPosition(this.map);
 				this.startTrackingInterval();
 			}, this.TIMEOUT);
+		} else {
+			this.gpsService.updateTrackAndPosition(this.map);
+			this.getInitialPosistion = false;
+			this.startTrackingInterval();
 		}
 	}
 	initMap(): void {

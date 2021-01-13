@@ -10,10 +10,12 @@ import * as L from 'leaflet';
 export class GpsService {
 
 	private trackedRoute = [];
+	private posistionMarker = null;
+
 	constructor(private geolocation: Geolocation) {	}
 
 	createDefaultMarker() {
-		let defaultIcon = new L.Icon({
+		this.posistionMarker = new L.Icon({
 			iconUrl: 'assets/icon/marker-icon.png',
 			shadowUrl: 'assets/icon/marker-shadow.png',
 			iconSize: [25, 41],
@@ -22,15 +24,17 @@ export class GpsService {
 			tooltipAnchor: [16, -28],
 			shadowSize: [41, 41]
 		});
-		return defaultIcon
+		return this.posistionMarker
  	}
 
-	updateTrack(map: L.Map) {
+	updateTrackAndPosition(map: L.Map) {
 		this.geolocation.getCurrentPosition().then((data) => {
 			this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
 			console.log('Tracked route: ' + JSON.stringify(this.trackedRoute));
-			const marker = this.createDefaultMarker();
-			L.marker([data.coords.latitude, data.coords.longitude], {icon: marker}).addTo(map);
+			if(this.posistionMarker == null) {
+				this.posistionMarker = this.createDefaultMarker();
+			}
+			L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionMarker}).addTo(map);
 			L.polyline(this.trackedRoute).addTo(map);
 		}).catch((error) => {
 				console.log('Error getting location', error);
