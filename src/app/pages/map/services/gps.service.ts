@@ -13,13 +13,16 @@ export class GpsService {
 	constructor(private geolocation: Geolocation) {	}
 
 	createDefaultMarker() {
-		const MarkerIcon = L.Icon.Default.extend({
-			options: {
-				iconUrl: './assets/icon/marker-icon.png',
-				shadowUrl: './assets/icon/marker-shadow.png'
-			}
+		let defaultIcon = new L.Icon({
+			iconUrl: 'assets/icon/marker-icon.png',
+			shadowUrl: 'assets/icon/marker-shadow.png',
+			iconSize: [25, 41],
+ 			iconAnchor: [12, 41],
+			popupAnchor: [1, -34],
+			tooltipAnchor: [16, -28],
+			shadowSize: [41, 41]
 		});
-		return new MarkerIcon();
+		return defaultIcon
  	}
 
 	updateTrack(map: L.Map) {
