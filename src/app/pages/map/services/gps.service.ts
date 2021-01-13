@@ -10,12 +10,13 @@ import * as L from 'leaflet';
 export class GpsService {
 
 	private trackedRoute = [];
-	private posistionMarker = null;
+	private posistionIcon = null;
+	private posistionMarker;
 
 	constructor(private geolocation: Geolocation) {	}
 
 	createDefaultMarker() {
-		this.posistionMarker = new L.Icon({
+		this.posistionIcon = new L.Icon({
 			iconUrl: 'assets/icon/marker-icon.png',
 			shadowUrl: 'assets/icon/marker-shadow.png',
 			iconSize: [25, 41],
@@ -24,7 +25,7 @@ export class GpsService {
 			tooltipAnchor: [16, -28],
 			shadowSize: [41, 41]
 		});
-		return this.posistionMarker
+		return this.posistionIcon
  	}
 
 	updateTrackAndPosition(map: L.Map) {
@@ -32,12 +33,12 @@ export class GpsService {
 			this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
 			console.log('Tracked route: ' + JSON.stringify(this.trackedRoute));
 
-			if(this.posistionMarker == null) {
-				this.posistionMarker = this.createDefaultMarker();
-				L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionMarker}).addTo(map);
+			if(this.posistionIcon == null) {
+				this.posistionIcon = this.createDefaultMarker();
+				this.posistionMarker = L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionIcon}).addTo(map);
 
 			} else {
-				this.posistionMarker.setLatLng(data.coords.latitude, data.coords.longitude);
+				this.posistionMarker.setLatLng([data.coords.latitude, data.coords.longitude])
 			}
 			L.polyline(this.trackedRoute).addTo(map);
 		}).catch((error) => {
