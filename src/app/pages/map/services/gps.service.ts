@@ -30,7 +30,7 @@ export class GpsService {
 	updateTrackAndPosition(map: L.Map) {
 		this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
 			this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
-			// console.log('Tracked route: ' + JSON.stringify(this.trackedRoute));
+			console.log('Tracked route: ' + JSON.stringify(this.trackedRoute));
 			if (this.posistionIcon == null) {
 				this.posistionIcon = this.createDefaultMarker();
 				this.posistionMarker = L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionIcon}).addTo(map);
@@ -38,7 +38,7 @@ export class GpsService {
 			} else {
 				this.posistionMarker.setLatLng([data.coords.latitude, data.coords.longitude]);
 			}
-			L.polyline(this.trackedRoute).addTo(map);
+			L.polyline(this.trackedRoute, {smoothFactor: 8}).addTo(map);
 		}).catch((error) => {
 				console.log('Error getting location', error);
 		});

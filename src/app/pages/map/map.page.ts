@@ -3,7 +3,7 @@ import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { GpsService } from './services/gps.service';
 import { Router } from '@angular/router';
-import { Select } from '@ngxs/store';
+import { Select, UpdateState } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { TextToSpeechService } from '../registration/services/text-to-speech.service';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
@@ -87,6 +87,11 @@ export class MapPage implements AfterViewInit {
 	}
 
 	startTrackingInterval() {
+		if (this.getInitialPosistion) {
+			this.gpsService.updateTrackAndPosition(this.map);
+			this.getInitialPosistion = false;
+			this.startTrackingInterval();
+		}
 		if (!this.stopTracking) {
 			setTimeout(() => {
 				this.gpsService.updateTrackAndPosition(this.map);
@@ -106,10 +111,7 @@ export class MapPage implements AfterViewInit {
 			attributionControl: false
 		});
 
-		if (this.getInitialPosistion) {
-			this.gpsService.updateTrackAndPosition(this.map);
-			this.getInitialPosistion = false;
-		}
+		this.startTrackingInterval();
 
 		App.addListener('appStateChange', ({ isActive }) => {
 			console.log('App state changed. Is active?', isActive);
