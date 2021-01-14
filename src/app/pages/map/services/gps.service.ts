@@ -3,7 +3,6 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
 
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -25,20 +24,19 @@ export class GpsService {
 			tooltipAnchor: [16, -28],
 			shadowSize: [41, 41]
 		});
-		return this.posistionIcon
- 	}
+		return this.posistionIcon;
+	 }
 
 	updateTrackAndPosition(map: L.Map) {
-		this.geolocation.getCurrentPosition().then((data) => {
+		this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
 			this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
-			console.log('Tracked route: ' + JSON.stringify(this.trackedRoute));
-
-			if(this.posistionIcon == null) {
+			// console.log('Tracked route: ' + JSON.stringify(this.trackedRoute));
+			if (this.posistionIcon == null) {
 				this.posistionIcon = this.createDefaultMarker();
 				this.posistionMarker = L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionIcon}).addTo(map);
 
 			} else {
-				this.posistionMarker.setLatLng([data.coords.latitude, data.coords.longitude])
+				this.posistionMarker.setLatLng([data.coords.latitude, data.coords.longitude]);
 			}
 			L.polyline(this.trackedRoute).addTo(map);
 		}).catch((error) => {

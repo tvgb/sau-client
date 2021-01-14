@@ -8,9 +8,9 @@ import { Observable, Subscription } from 'rxjs';
 import { TextToSpeechService } from '../registration/services/text-to-speech.service';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
-import { Plugins, StatusBarStyle} from '@capacitor/core';
+import { Plugins, StatusBarStyle, AppState } from '@capacitor/core';
 
-const { StatusBar } = Plugins;
+const { StatusBar, App } = Plugins;
 
 @Component({
 	selector: 'app-map',
@@ -82,36 +82,47 @@ export class MapPage implements AfterViewInit {
 	}
 
 	navigateToRegistration() {
-		console.log('navigate method');
 		this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);
 		this.router.navigate(this.routeLink);
 	}
 
 	startTrackingInterval() {
-		if (!this.stopTracking && !this.getInitialPosistion) {
+		if (!this.stopTracking) {
 			setTimeout(() => {
 				this.gpsService.updateTrackAndPosition(this.map);
 				this.startTrackingInterval();
 			}, this.TIMEOUT);
-		} else {
-			this.gpsService.updateTrackAndPosition(this.map);
-			this.getInitialPosistion = false;
-			this.startTrackingInterval();
 		}
 	}
 	initMap(): void {
 		// Coordinates for the middle of Gløshaugen
-		const lat = 63.418604;
-		const lng = 10.402832;
+		const lat = 60.3913; // 63.418604;
+		const lng = 5.3221; // 10.402832;
 
 		this.map = L.map('map', {
 			center: [ lat, lng ],
-			zoom: 16,
+			zoom: 12,
 			zoomControl: false,
 			attributionControl: false
 		});
 
-		this.startTrackingInterval();
+		if (this.getInitialPosistion) {
+			this.gpsService.updateTrackAndPosition(this.map);
+			this.getInitialPosistion = false;
+		}
+
+		App.addListener('appStateChange', ({ isActive }) => {
+			console.log('App state changed. Is active?', isActive);
+			if (isActive) {
+				this.stopTracking = false;
+				this.startTrackingInterval();
+			} else {
+				this.stopTracking = true;
+				// this.startTrackingInterval();
+			}
+		  });
+
+
 
 		if (this.OFFLINE_MAP) {
 			L.GridLayer.OfflineMap = L.GridLayer.extend({
