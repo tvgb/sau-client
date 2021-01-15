@@ -38,6 +38,9 @@ export class GpsService {
 				this.startTrackingInterval(map);
 			}, this.TIMEOUT);
 		}
+		else {
+			return;
+		}
 	}
 
 	createDefaultMarker() {
@@ -65,16 +68,13 @@ export class GpsService {
 					this.recalibratePosition(map);
 				}, 3000);
 			} else {
-				console.log('LAT: ' + this.calibrationCoords[0].lat + '\nLNG: ' + this.calibrationCoords[1].lat);
 				const latDiff = Math.abs(this.calibrationCoords[0].lat - this.calibrationCoords[1].lat);
 				const lngDiff = Math.abs(this.calibrationCoords[0].lng - this.calibrationCoords[1].lng);
 				console.log('DIFF: ' + latDiff + ' ' + lngDiff);
 
-				if (latDiff < this.CALIBRATION_LIMIT || lngDiff < this.CALIBRATION_LIMIT) {
+				if (latDiff < this.CALIBRATION_LIMIT && lngDiff < this.CALIBRATION_LIMIT) {
 					console.log('CALIBRATION DONE');
-					this.trackedRoute.push({lat: this.calibrationCoords[1].lat, lng: this.calibrationCoords[1].lng });
-					this.posistionMarker.setLatLng([this.calibrationCoords[1].lat, this.calibrationCoords[1].lng]);
-					L.polyline(this.trackedRoute).addTo(map);
+					this.updateTrackAndPosition(map);
 					this.startTrackingInterval(map);
 				} else {
 					this.calibrationCoords = [];
