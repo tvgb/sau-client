@@ -109,8 +109,6 @@ export class MapPage implements AfterViewInit {
 			}
 		  });
 
-
-
 		if (this.OFFLINE_MAP) {
 			L.GridLayer.OfflineMap = L.GridLayer.extend({
 				createTile: (coords, done) => {
@@ -130,7 +128,6 @@ export class MapPage implements AfterViewInit {
 			L.gridLayer.offlineMap = (opts) => {
 				return new L.GridLayer.OfflineMap(opts);
 			};
-
 			this.map.addLayer( L.gridLayer.offlineMap() );
 		} else {
 			L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
