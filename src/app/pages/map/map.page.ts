@@ -85,8 +85,6 @@ export class MapPage implements AfterViewInit {
 		this.router.navigate(this.routeLink);
 	}
 
-
-
 	initMap(): void {
 		// Coordinates for the middle of Gløshaugen
 		const lat = 60.3913; // 63.418604;

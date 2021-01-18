@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
-import { map } from 'rxjs/operators';
 
 
 @Injectable({
@@ -66,7 +65,7 @@ export class GpsService {
 			if (this.calibrationCoords.length < 2) {
 				setTimeout(() => {
 					this.recalibratePosition(map);
-				}, 3000);
+				}, 4000);
 			} else {
 				const latDiff = Math.abs(this.calibrationCoords[0].lat - this.calibrationCoords[1].lat);
 				const lngDiff = Math.abs(this.calibrationCoords[0].lng - this.calibrationCoords[1].lng);
@@ -76,6 +75,7 @@ export class GpsService {
 					console.log('CALIBRATION DONE');
 					this.updateTrackAndPosition(map);
 					this.startTrackingInterval(map);
+					this.calibrationCoords = [];
 				} else {
 					this.calibrationCoords = [];
 					setTimeout(() => {
@@ -90,20 +90,24 @@ export class GpsService {
 	 * Updates position on map with marker and line for tracked route
 	 */
 	updateTrackAndPosition(map: L.Map) {
-		this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
-			this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
-			console.log('Tracked route: ' + JSON.stringify(this.trackedRoute));
-			if (this.posistionIcon == null) {
-				this.posistionIcon = this.createDefaultMarker();
-				this.posistionMarker = L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionIcon}).addTo(map);
-
-			} else {
-				this.posistionMarker.setLatLng([data.coords.latitude, data.coords.longitude]);
-			}
-			// {smoothFactor: 8}
-			L.polyline(this.trackedRoute).addTo(map);
-		}).catch((error) => {
-				console.log('Error getting location', error);
-		});
+		if (this.tracking) {
+			console.log('TRACKING TRUE!');
+			this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
+				this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
+				console.log('Tracked route: ' + JSON.stringify(this.trackedRoute));
+				if (this.posistionIcon == null) {
+					this.posistionIcon = this.createDefaultMarker();
+					this.posistionMarker = L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionIcon}).addTo(map);
+				} else {
+					this.posistionMarker.setLatLng([data.coords.latitude, data.coords.longitude]);
+				}
+				// {smoothFactor: 8}
+				L.polyline(this.trackedRoute).addTo(map);
+			}).catch((error) => {
+					console.log('Error getting location', error);
+			});
+		} else {
+			console.log('TRACKING FALSE!');
+		}
 	}
 }
