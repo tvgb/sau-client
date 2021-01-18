@@ -7,12 +7,37 @@ import * as L from 'leaflet';
   providedIn: 'root'
 })
 export class GpsService {
-
 	private trackedRoute = [];
+	private calibrationCoords = [];
 	private posistionIcon = null;
 	private posistionMarker;
+	private CALIBRATION_THRESHOLD = 0.0001;
+	private TRACKING_INTERVAL = 10000;
+	private RECALIBRATION_INTERVAL = 4000;
+	private tracking = true;
+	private getInitialPosistion = true;
 
 	constructor(private geolocation: Geolocation) {	}
+
+	setTracking(trackingStatus: boolean) {
+		this.tracking = trackingStatus;
+	}
+
+	startTrackingInterval(map: L.Map) {
+		// Gets position immediately first time app opens
+		if (this.getInitialPosistion) {
+			this.updateTrackAndPosition(map);
+			this.getInitialPosistion = false;
+			this.startTrackingInterval(map);
+		} else if (this.tracking) {
+			setTimeout(() => {
+				this.updateTrackAndPosition(map);
+				this.startTrackingInterval(map);
+			}, this.TRACKING_INTERVAL);
+		}else {
+			return;
+		}
+	}
 
 	createDefaultMarker() {
 		this.posistionIcon = new L.Icon({
@@ -27,20 +52,52 @@ export class GpsService {
 		return this.posistionIcon;
 	 }
 
-	updateTrackAndPosition(map: L.Map) {
+	/**
+	 * Recalibrates position when app has been inactive, waits until stable position
+	 */
+	recalibratePosition(map: L.Map) {
 		this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
-			this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
-			console.log('Tracked route: ' + JSON.stringify(this.trackedRoute));
-			if (this.posistionIcon == null) {
-				this.posistionIcon = this.createDefaultMarker();
-				this.posistionMarker = L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionIcon}).addTo(map);
-
+			this.calibrationCoords.push({lat: data.coords.latitude, lng: data.coords.longitude});
+			if (this.calibrationCoords.length < 2) {
+				setTimeout(() => {
+					this.recalibratePosition(map);
+				}, this.RECALIBRATION_INTERVAL);
 			} else {
-				this.posistionMarker.setLatLng([data.coords.latitude, data.coords.longitude]);
+				const latDiff = Math.abs(this.calibrationCoords[0].lat - this.calibrationCoords[1].lat);
+				const lngDiff = Math.abs(this.calibrationCoords[0].lng - this.calibrationCoords[1].lng);
+
+				if (latDiff < this.CALIBRATION_THRESHOLD && lngDiff < this.CALIBRATION_THRESHOLD) {
+					// console.log('CALIBRATION DONE');
+					this.updateTrackAndPosition(map);
+					this.startTrackingInterval(map);
+					this.calibrationCoords = [];
+				} else {
+					this.calibrationCoords = [];
+					setTimeout(() => {
+						this.recalibratePosition(map);
+					}, this.RECALIBRATION_INTERVAL);
+				}
 			}
-			L.polyline(this.trackedRoute, {smoothFactor: 8}).addTo(map);
-		}).catch((error) => {
-				console.log('Error getting location', error);
 		});
+	}
+
+	/**
+	 * Updates position on map with marker and line for tracked route
+	 */
+	updateTrackAndPosition(map: L.Map) {
+		if (this.tracking) {
+			this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
+				this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
+				// console.log('Tracked route: ' + JSON.stringify(this.trackedRoute));
+				if (this.posistionIcon == null) {
+					this.posistionIcon = this.createDefaultMarker();
+					this.posistionMarker = L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionIcon}).addTo(map);
+				} else { this.posistionMarker.setLatLng([data.coords.latitude, data.coords.longitude]); }
+				// {smoothFactor: 8}
+				L.polyline(this.trackedRoute).addTo(map);
+			}).catch((error) => {
+					console.log('Error getting location', error);
+			});
+		}
 	}
 }

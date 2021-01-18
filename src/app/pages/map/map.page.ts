@@ -10,6 +10,7 @@ import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
 import { Plugins, StatusBarStyle, AppState } from '@capacitor/core';
 
+
 const { StatusBar, App } = Plugins;
 
 @Component({
@@ -23,9 +24,7 @@ export class MapPage implements AfterViewInit {
 	private map;
 	private readonly OFFLINE_MAP = false;
 	private currentMainCategory: MainCategory;
-	private TIMEOUT = 10000;
-	private stopTracking = false;
-	private getInitialPosistion = true;
+
 
 	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
 
@@ -86,19 +85,6 @@ export class MapPage implements AfterViewInit {
 		this.router.navigate(this.routeLink);
 	}
 
-	startTrackingInterval() {
-		if (this.getInitialPosistion) {
-			this.gpsService.updateTrackAndPosition(this.map);
-			this.getInitialPosistion = false;
-			this.startTrackingInterval();
-		}
-		if (!this.stopTracking) {
-			setTimeout(() => {
-				this.gpsService.updateTrackAndPosition(this.map);
-				this.startTrackingInterval();
-			}, this.TIMEOUT);
-		}
-	}
 	initMap(): void {
 		// Coordinates for the middle of Gløshaugen
 		const lat = 60.3913; // 63.418604;
@@ -111,20 +97,17 @@ export class MapPage implements AfterViewInit {
 			attributionControl: false
 		});
 
-		this.startTrackingInterval();
+		this.gpsService.startTrackingInterval(this.map);
 
 		App.addListener('appStateChange', ({ isActive }) => {
 			console.log('App state changed. Is active?', isActive);
 			if (isActive) {
-				this.stopTracking = false;
-				this.startTrackingInterval();
+				this.gpsService.setTracking(true);
+				this.gpsService.recalibratePosition(this.map);
 			} else {
-				this.stopTracking = true;
-				// this.startTrackingInterval();
+				this.gpsService.setTracking(false);
 			}
 		  });
-
-
 
 		if (this.OFFLINE_MAP) {
 			L.GridLayer.OfflineMap = L.GridLayer.extend({
@@ -145,7 +128,6 @@ export class MapPage implements AfterViewInit {
 			L.gridLayer.offlineMap = (opts) => {
 				return new L.GridLayer.OfflineMap(opts);
 			};
-
 			this.map.addLayer( L.gridLayer.offlineMap() );
 		} else {
 			L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
