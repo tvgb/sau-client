@@ -3,14 +3,15 @@ import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { GpsService } from './services/gps.service';
 import { Router } from '@angular/router';
-import { Select } from '@ngxs/store';
+import { Select, UpdateState } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { TextToSpeechService } from '../registration/services/text-to-speech.service';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
-import { Plugins, StatusBarStyle} from '@capacitor/core';
+import { Plugins, StatusBarStyle, AppState } from '@capacitor/core';
 
-const { StatusBar } = Plugins;
+
+const { StatusBar, App } = Plugins;
 
 @Component({
 	selector: 'app-map',
@@ -23,6 +24,7 @@ export class MapPage implements AfterViewInit {
 	private map;
 	private readonly OFFLINE_MAP = false;
 	private currentMainCategory: MainCategory;
+
 
 	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
 
@@ -79,24 +81,32 @@ export class MapPage implements AfterViewInit {
 	}
 
 	navigateToRegistration() {
-		console.log('navigate method');
 		this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);
 		this.router.navigate(this.routeLink);
 	}
 
 	initMap(): void {
 		// Coordinates for the middle of Gløshaugen
-		const lat = 63.418604;
-		const lng = 10.402832;
+		const lat = 60.3913; // 63.418604;
+		const lng = 5.3221; // 10.402832;
 
 		this.map = L.map('map', {
 			center: [ lat, lng ],
-			zoom: 16,
+			zoom: 12,
 			zoomControl: false,
 			attributionControl: false
 		});
 
-		this.gpsService.updateTrack(this.map);
+		this.gpsService.startTrackingInterval(this.map);
+
+		App.addListener('appStateChange', ({ isActive }) => {
+			if (isActive) {
+				this.gpsService.setTracking(true);
+				this.gpsService.recalibratePosition(this.map);
+			} else {
+				this.gpsService.setTracking(false);
+			}
+		  });
 
 		if (this.OFFLINE_MAP) {
 			L.GridLayer.OfflineMap = L.GridLayer.extend({
@@ -117,7 +127,6 @@ export class MapPage implements AfterViewInit {
 			L.gridLayer.offlineMap = (opts) => {
 				return new L.GridLayer.OfflineMap(opts);
 			};
-
 			this.map.addLayer( L.gridLayer.offlineMap() );
 		} else {
 			L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
