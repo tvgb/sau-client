@@ -1,15 +1,21 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { EMPTY, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, EMPTY, Observable, of, Subject, throwError, zip } from 'rxjs';
 import { catchError, delay, map, mergeMap, retryWhen } from 'rxjs/operators';
 import { FilesystemDirectory, FilesystemEncoding, Filesystem, FileReadResult, StatResult } from '@capacitor/core';
+import { OfflineMapMetaData } from 'src/app/shared/classes/OfflineMapMetaData';
+import { DownloadProgressionData } from 'src/app/shared/classes/DownloadProgressionData';
 
-@Injectable({providedIn: 'root'})
+@Injectable({
+	providedIn: 'root'
+})
 export class MapService {
-	private readonly ZOOM_LEVELS = [13, 14, 15, 16, 17, 18];
+	private readonly ZOOM_LEVELS = [15];
 	private readonly DOWNLOAD_DELAY = 200;
 	private readonly FILESYSTEM_DIRECTORY = FilesystemDirectory.External;
 	private readonly MAX_HTTP_RETRIES = 5;
+	private downloads: BehaviorSubject<DownloadProgressionData[]> = new BehaviorSubject([] as DownloadProgressionData[]);
+	private mapsUpdated$: Subject<any> = new Subject();
 
 	private readonly BASE_URLS = [
 		'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps',
@@ -21,8 +27,8 @@ export class MapService {
 
 	constructor(private http: HttpClient) {}
 
-	getTile(z: number, x: number, y: number): Promise<FileReadResult> {
-		const img = this.readFile(`/${z}/${x}/${y}/imagefile.png`);
+	getTile(mapName: string, z: number, x: number, y: number): Promise<FileReadResult> {
+		const img = this.readFile(`/${mapName}/${z}/${x}/${y}/imagefile.png`);
 		return img;
 	}
 
@@ -35,14 +41,14 @@ export class MapService {
 		return contents;
 	}
 
-	private async writeFile(data: any, z: number, x: number, y: number): Promise<void> {
+	private async writeFile(mapName: string, data: any, z: number, x: number, y: number): Promise<void> {
 
 		await Filesystem.stat({
 			directory: this.FILESYSTEM_DIRECTORY,
-			path: `/${z}/${x}/${y}/imagefile.png`
+			path: `/${mapName}/${z}/${x}/${y}/imagefile.png`
 		}).catch(() => {
 			return Filesystem.writeFile({
-				path: `/${z}/${x}/${y}/imagefile.png`,
+				path: `/${mapName}/${z}/${x}/${y}/imagefile.png`,
 				data,
 				directory: FilesystemDirectory.External,
 				encoding: FilesystemEncoding.UTF8,
@@ -55,6 +61,23 @@ export class MapService {
 	 * startLat and startLng needs to be north west, while endLat and endLng needs to be south east.
 	 */
 	async downloadMapTileArea(startLat: number, startLng: number, endLat: number, endLng: number) {
+
+		const mapName = await Filesystem.readdir({
+			directory: this.FILESYSTEM_DIRECTORY,
+			path: ''
+		}).then((res) => {
+			return `Kart ${res.files.length + 1}`;
+		});
+
+		const offlineMapMetaData = await this.saveMapMetaData(mapName, [startLat, startLng], [endLat, endLng], false);
+		this.mapsUpdated$.next();
+
+		this.downloads.next([...this.downloads.getValue(), ({
+			totalTiles: this.getTotalTiles(startLat, startLng, endLat, endLng),
+			downloadedTiles: 0,
+			offlineMapMetaData
+		} as DownloadProgressionData)]);
+
 		let currentUrl = 0;
 
 		for (const z of this.ZOOM_LEVELS) {
@@ -67,8 +90,15 @@ export class MapService {
 
 			for (let x = startX; x <= endX; x++) {
 				for (let y = startY; y <= endY; y++) {
-					if (!(await this.TileExists(z, x, y))) {
-						this.downloadTile(z, x, y, this.BASE_URLS[currentUrl]);
+					if (!(await this.TileExists(mapName, z, x, y))) {
+						this.downloadTile(mapName, z, x, y, this.BASE_URLS[currentUrl]);
+						this.downloads.next([...this.downloads.getValue().map((d) => {
+							if (d.offlineMapMetaData.name === mapName) {
+								d.downloadedTiles++;
+							}
+
+							return d;
+						})]);
 					} else {
 						continue;
 					}
@@ -83,10 +113,17 @@ export class MapService {
 			}
 		}
 
+		await this.saveMapMetaData(mapName, [startLat, startLng], [endLat, endLng]);
+		this.mapsUpdated$.next();
+		this.downloads.next([...this.downloads.getValue().filter(d => d.offlineMapMetaData.name !== mapName)]);
 		console.log('Map successfully downloaded!');
 	}
 
-	private downloadTile(z: number, x: number, y: number, baseUrl: string): void {
+	mapsUpdated(): Observable<any> {
+		return this.mapsUpdated$.asObservable();
+	}
+
+	private downloadTile(mapName: string, z: number, x: number, y: number, baseUrl: string): void {
 
 		this.http.get(`${baseUrl}?layers=${this.MAP_LAYER}&zoom=${z}&x=${x}&y=${y}`,
 		{
@@ -110,8 +147,7 @@ export class MapService {
 
 					// Retry incase of error
 					while (retries > 0) {
-						await this.writeFile(reader.result, z, x, y).then(() => {
-							console.log('File written successfully:', retries, z, x, y);
+						await this.writeFile(mapName, reader.result, z, x, y).then(() => {
 							retries = 0;
 						}).catch((e) => {
 							console.log('Failed while writing to file:', retries, z, x, y, e);
@@ -131,14 +167,14 @@ export class MapService {
 	 * @param x x pos of tile
 	 * @param y y pos of tile
 	 */
-	private async TileExists(z: number, x: number, y: number): Promise<boolean> {
+	private async TileExists(mapName: string, z: number, x: number, y: number): Promise<boolean> {
 
 		let stat: StatResult;
 
 		try {
 			stat = await Filesystem.stat({
 				directory: this.FILESYSTEM_DIRECTORY,
-				path: `/${z}/${x}/${y}/imagefile.png`
+				path: `/${mapName}/${z}/${x}/${y}/imagefile.png`
 			});
 		} catch (e) {
 			stat = null;
@@ -153,6 +189,119 @@ export class MapService {
 		const xTile = Math.round((lng + 180.0) / 360.0 * n);
 		const yTile = Math.round((1.0 - Math.asinh(Math.tan(latRad)) / Math.PI) / 2.0 * n);
 		return [xTile, yTile];
+	}
+
+	async getOfflineMapsMetaData(): Promise<OfflineMapMetaData[]> {
+
+		const offlineMapsMetaData: OfflineMapMetaData[] = [];
+
+		await Filesystem.readdir({
+			directory: this.FILESYSTEM_DIRECTORY,
+			path: ''
+		}).then(res => {
+			if (res) {
+				for (const path of res.files) {
+					Filesystem.readFile({
+						directory: this.FILESYSTEM_DIRECTORY,
+						path: `${path}/metaData`
+					}).then(metaData => {
+						if (metaData) {
+							offlineMapsMetaData.push(metaData.data as unknown as OfflineMapMetaData);
+						}
+					});
+				}
+			}
+		});
+
+		return offlineMapsMetaData;
+	}
+
+	async saveMapMetaData(mapName: string, startLatLng: [number, number], endLatLng: [number, number], saveSize: boolean = true)
+		: Promise<OfflineMapMetaData> {
+
+		const mapSize = saveSize ? await this.getMapSize([mapName]) : 0;
+
+		const downloadDate = Date.now();
+
+		const offlineMapMetaData: OfflineMapMetaData = {
+			name: mapName,
+			size: mapSize,
+			downloadDate,
+			startLatLng,
+			endLatLng
+		};
+
+		const data: any = offlineMapMetaData;
+
+		await Filesystem.writeFile({
+			path: `/${mapName}/metaData/`,
+			data,
+			directory: FilesystemDirectory.External,
+			encoding: FilesystemEncoding.UTF8,
+			recursive: true
+		});
+
+		return offlineMapMetaData;
+	}
+
+	getCurrentlyDownloading(): Observable<DownloadProgressionData[]> {
+		return this.downloads.asObservable();
+	}
+
+	/**
+	 * Retrieves size of saved offline map in bytes.
+	 *
+	 * @param mapName Name of map
+	 * @param depth Used for recursive iteration
+	 * @param prevPath Used for recursive iteration
+	 */
+	private async getMapSize(mapName: string[], depth: number = 0, prevPath: string = ''): Promise<number> {
+		const maxDepth = 3;
+		let fileSize = 0;
+
+		for (const path of mapName) {
+			await Filesystem.readdir({
+				directory: this.FILESYSTEM_DIRECTORY,
+				path: `${prevPath}/${path}`
+			}).then( async res => {
+				if (depth >= maxDepth) {
+					await Filesystem.stat({
+						directory: this.FILESYSTEM_DIRECTORY,
+						path: `${prevPath}/${path}/imagefile.png`
+					}).then(stat => {
+						if (stat) {
+							fileSize += stat.size;
+						}
+					});
+
+				} else if (res) {
+					fileSize += await this.getMapSize(res.files, depth + 1, `${prevPath}/${path}`);
+				}
+			});
+		}
+
+		return fileSize;
+	}
+
+	getTotalTiles(startLat: number, startLng: number, endLat: number, endLng: number): number {
+		let totalTileNumber = 0;
+
+		for (const z of this.ZOOM_LEVELS) {
+			const startXY = this.getTileCoordinates(startLat, startLng, z);
+			const endXY = this.getTileCoordinates(endLat, endLng, z);
+			const startX = startXY[0];
+			const startY = startXY[1];
+			const endX = endXY[0];
+			const endY = endXY[1];
+
+			// +1 because iteration for loop in downloadTileMapArea uses "<="
+			const diffX = (endX - startX) + 1;
+			const diffY = (endY - startY) + 1;
+
+			totalTileNumber += diffX * diffY;
+		}
+
+		return totalTileNumber;
 	}
 
 	private delayedRetry(delayMs: number, maxRetry = this.MAX_HTTP_RETRIES) {

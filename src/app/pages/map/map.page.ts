@@ -91,7 +91,7 @@ export class MapPage implements AfterViewInit {
 
 		this.map = L.map('map', {
 			center: [ lat, lng ],
-			zoom: 16,
+			zoom: 10,
 			zoomControl: false,
 			attributionControl: false
 		});
@@ -103,7 +103,9 @@ export class MapPage implements AfterViewInit {
 				createTile: (coords, done) => {
 					const tile = document.createElement('img');
 
-					this.mapService.getTile(coords.z, coords.x, coords.y).then((base64Img) => {
+					const mapName = 'testMap1';
+
+					this.mapService.getTile(mapName, coords.z, coords.x, coords.y).then((base64Img) => {
 						tile.setAttribute(
 							'src', base64Img.data
 						);

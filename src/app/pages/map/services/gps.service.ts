@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
 
 @Injectable({
@@ -11,7 +11,7 @@ export class GpsService {
 
 	constructor(private geolocation: Geolocation) {	}
 
-	 updateTrack(map: L.Map) {
+	updateTrack(map: L.Map) {
 		this.geolocation.watchPosition({enableHighAccuracy: true}).subscribe(data => {
 			if ('coords' in data) {
 				this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
@@ -21,5 +21,9 @@ export class GpsService {
 				console.error('There is a Posisiton Error, no coords in data');
 			}
 		});
-	 }
+	}
+
+	getCurrentPosition(): Promise<Geoposition> {
+		return this.geolocation.getCurrentPosition();
+	}
 }

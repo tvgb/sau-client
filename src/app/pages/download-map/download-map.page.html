@@ -3,6 +3,32 @@
 		<div class="download-map-header">
 			Last ned kartutsnitt
 		</div>
+		<div class="map-container">
+			<div class="overlay">
+				<div class="top-frame frame"></div>
+				<div class="bottom-frame frame">
+					Nedlastingen kan ta opp til 15 MB av den ledige lagringsplassen din.
+				</div>
+				<div class="left-frame frame"></div>
+				<div class="right-frame frame"></div>
+				<div class="border-top border"></div>
+				<div class="border-bottom border"></div>
+				<div class="border-left border"></div>
+				<div class="border-right border"></div>
+				<div #downloadArea class="download-area"></div>
+			</div>
+			<div class="map-frame">
+				<div id="map"></div>
+			</div>
+		</div>
+		<div class="buttons-container">
+			<ion-button class="download-map-button cancel-button" fill="clear" expand="full" (click)="cancelButtonClicked()">
+				AVBRYT
+			</ion-button>
+			<div class="splitter"></div>
+			<ion-button class="download-map-button" fill="clear" expand="full" (click)="downloadMapArea()">
+				LAST NED
+			</ion-button>
+		</div>
 	</div>
-
 </ion-content>
