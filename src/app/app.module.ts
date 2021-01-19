@@ -19,7 +19,7 @@ import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
 import { SharedModule} from './shared/shared.module';
 
 @NgModule({
-	declarations: [AppComponent, SharedModule],
+	declarations: [AppComponent],
 	imports: [
 		SharedModule,
 		BrowserModule,
