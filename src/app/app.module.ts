@@ -16,10 +16,12 @@ import { SheepInfoState } from './shared/store/sheepInfo.state';
 import { IonicGestureConfig } from './shared/classes/hammer-config';
 import { AppInfoState } from './shared/store/appInfo.state';
 import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
+import { SharedModule} from './shared/shared.module';
 
 @NgModule({
-	declarations: [AppComponent],
+	declarations: [AppComponent, SharedModule],
 	imports: [
+		SharedModule,
 		BrowserModule,
 		IonicModule.forRoot(),
 		AppRoutingModule,
@@ -38,6 +40,8 @@ import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
 		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
 		{ provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig }
 	],
-	bootstrap: [AppComponent]
+	bootstrap: [AppComponent],
+
+	exports: [SharedModule]
 })
 export class AppModule {}
