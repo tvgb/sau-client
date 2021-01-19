@@ -100,7 +100,6 @@ export class MapPage implements AfterViewInit {
 		this.gpsService.startTrackingInterval(this.map);
 
 		App.addListener('appStateChange', ({ isActive }) => {
-			console.log('App state changed. Is active?', isActive);
 			if (isActive) {
 				this.gpsService.setTracking(true);
 				this.gpsService.recalibratePosition(this.map);

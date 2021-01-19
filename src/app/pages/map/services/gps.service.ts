@@ -67,7 +67,6 @@ export class GpsService {
 				const lngDiff = Math.abs(this.calibrationCoords[0].lng - this.calibrationCoords[1].lng);
 
 				if (latDiff < this.CALIBRATION_THRESHOLD && lngDiff < this.CALIBRATION_THRESHOLD) {
-					// console.log('CALIBRATION DONE');
 					this.updateTrackAndPosition(map);
 					this.startTrackingInterval(map);
 					this.calibrationCoords = [];
@@ -88,7 +87,6 @@ export class GpsService {
 		if (this.tracking) {
 			this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
 				this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
-				// console.log('Tracked route: ' + JSON.stringify(this.trackedRoute));
 				if (this.posistionIcon == null) {
 					this.posistionIcon = this.createDefaultMarker();
 					this.posistionMarker = L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionIcon}).addTo(map);
