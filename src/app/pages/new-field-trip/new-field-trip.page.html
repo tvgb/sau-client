@@ -3,7 +3,39 @@
    <app-page-header  [pageHeaderText] = "['Ny oppsynstur']" >
    </app-page-header>
    <ion-list class="field-trip-info-list">
-       <ion-label> Ditt navn:</ion-label>
+        <ion-label> Ditt navn:</ion-label>
+        <ion-item>
+            <ion-input placeholder="Ola Nordmann"></ion-input> 
+        </ion-item>
+        <ion-label> Gårdsnummer: </ion-label>
+        <ion-item>
+            <ion-input placeholder="222345"></ion-input> 
+        </ion-item>
+        <ion-label> Bruksnummer:</ion-label>
+        <ion-item>
+            <ion-input placeholder="12"></ion-input> 
+        </ion-item>
+        <ion-label> Kommune: </ion-label>
+        <ion-item>
+            <ion-input placeholder="Trondheim"></ion-input> 
+        </ion-item>
+        <ion-label> Antall deltakere: </ion-label>
+        <ion-item>
+            <ion-input type="number" placeholder="1"></ion-input> 
+        </ion-item>
+        <ion-label> Vær: </ion-label>
+        <ion-item>
+            <ion-select class="field-trip-select" interface="popover" placeholder="Opphold">
+                <ion-select-option value="opphold">Opphold</ion-select-option>
+                <ion-select-option value="regn">Regn</ion-select-option>
+                <ion-select-option value="sno">Snø</ion-select-option>
+            </ion-select> 
+        </ion-item>
+        <ion-label>Beskrivelse:</ion-label>
+        <ion-textarea placeholder="Skriv her..."></ion-textarea>
+        <div class="field-trip-button-container">
+        <ion-button class="field-trip-button" color="primary" fill="solid">START OPPSYNSTUR</ion-button>
+   </div>
    </ion-list>
 </div>
 </ion-content>
