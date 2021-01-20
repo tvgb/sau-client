@@ -1,4 +1,4 @@
-export class RegistrationInfo {
+export class FieldTripInfo {
 	overseerName: string;
 	farmNumber: number;
 	bruksNumber: number;
