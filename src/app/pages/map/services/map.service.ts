@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 	providedIn: 'root'
 })
 export class MapService {
-	private readonly ZOOM_LEVELS = [15];
+	private readonly ZOOM_LEVELS = [9, 11, 13, 15];
 	private readonly DOWNLOAD_DELAY = 200;
 	private readonly FILESYSTEM_DIRECTORY = FilesystemDirectory.External;
 	private readonly MAX_HTTP_RETRIES = 5;
@@ -61,13 +61,16 @@ export class MapService {
 	/**
 	 * startLat and startLng needs to be north west, while endLat and endLng needs to be south east.
 	 */
-	async downloadMapTileArea(startLat: number, startLng: number, endLat: number, endLng: number, mapId: string = null) {
+	async downloadMapTileArea(
+		startLat: number, startLng: number, endLat: number, endLng: number, mapId: string = null, mapName: string = null) {
 
 		if (!mapId) {
 			mapId = uuidv4();
 		}
 
-		const mapName = `Nytt kart - ${new Date().toLocaleDateString()}`;
+		if (!mapName) {
+			mapName = `Nytt kart - ${new Date().toLocaleDateString()}`;
+		}
 
 		const offlineMapMetaData = await this.saveMapMetaData(mapId, mapName, [startLat, startLng], [endLat, endLng], false);
 		this.mapsUpdated$.next();
@@ -133,7 +136,8 @@ export class MapService {
 			offlineMapMetaData.startLatLng[1],
 			offlineMapMetaData.endLatLng[0],
 			offlineMapMetaData.endLatLng[1],
-			offlineMapMetaData.id);
+			offlineMapMetaData.id,
+			offlineMapMetaData.name);
 	}
 
 	mapsUpdated(): Observable<any> {

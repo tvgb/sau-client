@@ -119,7 +119,6 @@ export class OfflineMapsPage {
 		}
 
 		this.hideOptionsMenu();
-		console.log(this.newMapName);
 		this.mapService.changeMapName(this.selectedMapId, this.newMapName).then(() => {
 			this.setOfflineMaps();
 		});

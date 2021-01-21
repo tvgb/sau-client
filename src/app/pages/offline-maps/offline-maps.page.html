@@ -17,6 +17,9 @@
 				</div>
 				<ion-progress-bar [hidden]="hideProgressBar(metaData.id)" class="progress-bar" [value]="getDownloadCompletionRate(metaData.id)"></ion-progress-bar>
 			</div>
+			<div class="no-maps" *ngIf="offlineMaps && offlineMaps.length === 0">
+				Ingen kartutsnitt har blitt lastet ned enda. Trykk på + for å laste ned et kartutsnitt!
+			</div>
 		</div>
 
 		<ion-fab [hidden]="!optionsMenuHidden || !changeNameBoxHidden" vertical="bottom" horizontal="end" slot="fixed">
