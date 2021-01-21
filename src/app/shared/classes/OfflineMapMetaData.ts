@@ -1,4 +1,5 @@
 export class OfflineMapMetaData {
+	id: string;
 	name: string;
 	size: number; // Size of map in bytes
 	downloadDate: number;

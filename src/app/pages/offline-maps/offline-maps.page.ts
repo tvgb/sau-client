@@ -17,7 +17,8 @@ export class OfflineMapsPage {
 	changeNameBoxHidden = true;
 	offlineMaps: OfflineMapMetaData[];
 	downloadProgressions: DownloadProgressionData[] = [];
-	selectedMapName: string;
+	selectedMapId: string;
+	newMapName: string;
 
 	@ViewChild('backdrop') backdrop: ElementRef;
 	@ViewChild('optionsMenu') optionsMenu: ElementRef;
@@ -38,10 +39,8 @@ export class OfflineMapsPage {
 		});
 	}
 
-
-
-	showOptionsMenu(selectedMapName: string): void {
-		this.selectedMapName = selectedMapName;
+	showOptionsMenu(selectedMapId: string): void {
+		this.selectedMapId = selectedMapId;
 
 		this.optionsMenuHidden = false;
 		const showBackdropAnimation = this.getShowBackdropAnimation();
@@ -82,9 +81,10 @@ export class OfflineMapsPage {
 	}
 
 	showChangeNameBox(): void {
-		if (!this.selectedMapName) {
+		if (!this.selectedMapId) {
 			return;
 		}
+		this.setSelectedMapName();
 		this.hideOptionsMenu(false);
 		this.changeNameBoxHidden = false;
 	}
@@ -103,9 +103,9 @@ export class OfflineMapsPage {
 		.fromTo('opacity', '1', '0');
 	}
 
-	hideProgressBar(mapName: string): boolean {
+	hideProgressBar(mapId: string): boolean {
 		for (const downloadProgression of this.downloadProgressions) {
-			if (downloadProgression.offlineMapMetaData.name === mapName) {
+			if (downloadProgression.offlineMapMetaData.id === mapId) {
 				return false;
 			}
 		}
@@ -113,32 +113,44 @@ export class OfflineMapsPage {
 		return true;
 	}
 
+	changeOfflineMapName(): void {
+		if (!this.selectedMapId) {
+			return;
+		}
+
+		this.hideOptionsMenu();
+		console.log(this.newMapName);
+		this.mapService.changeMapName(this.selectedMapId, this.newMapName).then(() => {
+			this.setOfflineMaps();
+		});
+	}
+
 	deleteOfflineMap(): void {
-		if (!this.selectedMapName) {
+		if (!this.selectedMapId) {
 			return;
 		}
 		this.hideOptionsMenu();
-		this.offlineMaps = this.offlineMaps.filter(om => om.name !== this.selectedMapName);
-		this.mapService.deleteOfflineMap(this.selectedMapName);
-		this.selectedMapName = null;
+		this.offlineMaps = this.offlineMaps.filter(om => om.id !== this.selectedMapId);
+		this.mapService.deleteOfflineMap(this.selectedMapId);
+		this.selectedMapId = null;
 	}
 
 	updateOfflineMap(): void {
-		if (!this.selectedMapName) {
+		if (!this.selectedMapId) {
 			return;
 		}
 
 		this.hideOptionsMenu();
-		this.mapService.updateOfflineMap(this.selectedMapName);
-		this.selectedMapName = null;
+		this.mapService.updateOfflineMap(this.selectedMapId);
+		this.selectedMapId = null;
 	}
 
 	getMapFileSize(bytes: number): string {
 		return `${Math.round(bytes / 100000) / 10} MB`;
 	}
 
-	getDownloadCompletionRate(mapName: string): number {
-		const downloadProgressionData = this.downloadProgressions.find(d => d.offlineMapMetaData.name === mapName);
+	getDownloadCompletionRate(mapId: string): number {
+		const downloadProgressionData = this.downloadProgressions.find(d => d.offlineMapMetaData.id === mapId);
 		if (downloadProgressionData) {
 			return downloadProgressionData.downloadedTiles / downloadProgressionData.totalTiles;
 		}
@@ -148,6 +160,15 @@ export class OfflineMapsPage {
 
 	plusButtonClicked(): void {
 		this.navController.navigateForward('/download-map');
+	}
+
+	private setSelectedMapName(): void {
+		if (this.selectedMapId && this.offlineMaps.length > 0) {
+			this.newMapName = this.offlineMaps.find(om => om.id === this.selectedMapId).name;
+			return;
+		}
+
+		this.newMapName = '';
 	}
 
 	private setOfflineMaps(): void {

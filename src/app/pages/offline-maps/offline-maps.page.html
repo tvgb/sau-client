@@ -10,12 +10,12 @@
 				<div class="map-info-container">
 					<div class="map-info"> {{ getMapFileSize(metaData.size) }} </div>
 					<div class="map-info"> | </div>
-					<div class="map-info"> Lastet ned: {{ metaData.downloadDate | date:'dd.MM.yyyy' }} </div>
+					<div class="map-info"> Oppdatert: {{ metaData.downloadDate | date:'dd.MM.yyyy' }} </div>
 				</div>
 				<div class="map-options">
-					<div class="map-options-button" (click)="showOptionsMenu(metaData.name)">&middot;&middot;&middot;</div>
+					<div class="map-options-button" (click)="showOptionsMenu(metaData.id)">&middot;&middot;&middot;</div>
 				</div>
-				<ion-progress-bar [hidden]="hideProgressBar(metaData.name)" class="progress-bar" [value]="getDownloadCompletionRate(metaData.name)"></ion-progress-bar>
+				<ion-progress-bar [hidden]="hideProgressBar(metaData.id)" class="progress-bar" [value]="getDownloadCompletionRate(metaData.id)"></ion-progress-bar>
 			</div>
 		</div>
 
@@ -37,12 +37,12 @@
 			Gi kartet ditt et nytt navn:
 
 			<ion-item lines="full" class="change-name-box-item" >
-				<ion-input [autofocus]="true" [minlength]="4" [value]="this.selectedMapName"></ion-input>
+				<ion-input [autofocus]="true" [minlength]="4" [(ngModel)]="newMapName"></ion-input>
 			</ion-item>
 
 			<div class="change-name-box-buttons-container">
-				<div class="change-name-box-button" (click)="hideOptionsMenu()">Avbryt</div>
-				<div class="change-name-box-button">Lagre</div>
+				<div class="change-name-box-button" (click)="hideOptionsMenu()"> Avbryt </div>
+				<div class="change-name-box-button" (click)="changeOfflineMapName()"> Lagre </div>
 			</div>
 		</div>
 	</div>
