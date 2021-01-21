@@ -98,4 +98,8 @@ export class GpsService {
 			});
 		}
 	}
+
+	getCurrentPosition(): Promise<Geoposition> {
+		return this.geolocation.getCurrentPosition();
+	}
 }
