@@ -13,16 +13,37 @@
 					<div class="map-info"> Lastet ned: {{ metaData.downloadDate | date:'dd.MM.yyyy' }} </div>
 				</div>
 				<div class="map-options">
-					<div class="map-options-button" (click)="openOptionsMenu()">&middot;&middot;&middot;</div>
+					<div class="map-options-button" (click)="showOptionsMenu(metaData.name)">&middot;&middot;&middot;</div>
 				</div>
 				<ion-progress-bar [hidden]="hideProgressBar(metaData.name)" class="progress-bar" [value]="getDownloadCompletionRate(metaData.name)"></ion-progress-bar>
 			</div>
 		</div>
-	</div>
 
-	<ion-fab vertical="bottom" horizontal="end" slot="fixed">
-		<ion-fab-button (click)="plusButtonClicked()">
-			<ion-icon name="add"></ion-icon>
-		</ion-fab-button>
-	</ion-fab>
+		<ion-fab [hidden]="!optionsMenuHidden || !changeNameBoxHidden" vertical="bottom" horizontal="end" slot="fixed">
+			<ion-fab-button (click)="plusButtonClicked()">
+				<ion-icon name="add"></ion-icon>
+			</ion-fab-button>
+		</ion-fab>
+	
+		<div #backdrop [hidden]="optionsMenuHidden && changeNameBoxHidden" class="backdrop" (click)="hideOptionsMenu()"></div>
+		<div #optionsMenu [hidden]="optionsMenuHidden" class="options-menu">
+			<div class="options-menu-button" (click)="showChangeNameBox()"> Endre navn </div>	
+			<div class="options-menu-button" (click)="updateOfflineMap()"> Oppdater </div>	
+			<div class="options-menu-button" (click)="deleteOfflineMap()"> Slett </div>	
+			<div class="options-menu-button" (click)="hideOptionsMenu()"> Avbryt </div>	
+		</div>
+	
+		<div [hidden]="changeNameBoxHidden" class="change-name-box">
+			Gi kartet ditt et nytt navn:
+
+			<ion-item lines="full" class="change-name-box-item" >
+				<ion-input [autofocus]="true" [minlength]="4" [value]="this.selectedMapName"></ion-input>
+			</ion-item>
+
+			<div class="change-name-box-buttons-container">
+				<div class="change-name-box-button" (click)="hideOptionsMenu()">Avbryt</div>
+				<div class="change-name-box-button">Lagre</div>
+			</div>
+		</div>
+	</div>
 </ion-content>

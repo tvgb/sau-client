@@ -1,5 +1,5 @@
 .offline-maps-container {
-	height: 100%;
+	height: 100vh;
 }
 
 .offline-maps-header {
@@ -16,9 +16,68 @@
 	align-items: center;
 }
 
+.backdrop {
+	height: 100%;
+	width: 100%;
+	background-color: rgba($color: #000000, $alpha: 0.3);
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: flex;
+	flex-direction: column-reverse;
+}
+
 .options-menu {
-	height: 60%;
-	max-height: 60%;
+	position: absolute;
+	top: 100%;
+	left: 0;
+	height: 200px;
+	width: 100%;
+	background-color: white;
+}
+
+.options-menu-button {
+	width: 100%;
+	height: 50px;
+	font-weight: 500;
+	color: black;
+	display: flex;
+	align-items: center;
+	padding-left: 12px;
+	cursor: pointer;
+}
+
+.change-name-box {
+	padding: 5% 7% 0% 7%;
+	height: 200px;
+	width: 80%;
+	margin-left: -40%;
+	background-color: var(--ion-background-color);;
+	position: absolute;
+	top: 20%;
+	left: 50%;
+	box-shadow: 0px 5px 30px 1px rgba(0,0,0,0.1);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+}
+
+.change-name-box-item {
+	--background: var(--ion-background-color);
+	width: 100%;
+}
+
+.change-name-box-buttons-container {
+	width: 100%;
+	display: flex;
+}
+
+.change-name-box-button {
+	height: 40px;
+	width: 50%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .map-meta-data {

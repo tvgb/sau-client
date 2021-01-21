@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { ModalController, NavController } from '@ionic/angular';
+import { cordovaInstance } from '@ionic-native/core';
+import { AnimationController, Animation, ModalController, NavController } from '@ionic/angular';
 import { DownloadProgressionData } from 'src/app/shared/classes/DownloadProgressionData';
 import { OfflineMapMetaData } from 'src/app/shared/classes/OfflineMapMetaData';
 import { MapService } from '../map/services/map.service';
-import { OptionsModalPage } from './options-modal/options-modal.page';
 
 @Component({
 	selector: 'app-offline-maps',
@@ -13,18 +13,19 @@ import { OptionsModalPage } from './options-modal/options-modal.page';
 })
 export class OfflineMapsPage {
 
-
+	optionsMenuHidden = true;
+	changeNameBoxHidden = true;
 	offlineMaps: OfflineMapMetaData[];
 	downloadProgressions: DownloadProgressionData[] = [];
+	selectedMapName: string;
 
-	constructor(private mapService: MapService, private navController: NavController, private modalController: ModalController) { }
+	@ViewChild('backdrop') backdrop: ElementRef;
+	@ViewChild('optionsMenu') optionsMenu: ElementRef;
+
+	constructor(private mapService: MapService, private navController: NavController, private animationCtrl: AnimationController) { }
 
 	ionViewWillEnter() {
-		this.mapService.getOfflineMapsMetaData().then(res => {
-			if (res) {
-				this.offlineMaps = res;
-			}
-		});
+		this.setOfflineMaps();
 
 		this.mapService.getCurrentlyDownloading().subscribe((res: DownloadProgressionData[]) => {
 			if (res) {
@@ -33,20 +34,73 @@ export class OfflineMapsPage {
 		});
 
 		this.mapService.mapsUpdated().subscribe(() => {
-			this.mapService.getOfflineMapsMetaData().then(offlineMaps => {
-				if (offlineMaps) {
-					this.offlineMaps = offlineMaps;
-				}
-			});
+			this.setOfflineMaps();
 		});
 	}
 
-	async openOptionsMenu() {
-		const modal = await this.modalController.create({
-			component: OptionsModalPage,
-			cssClass: 'options-menu'
-		});
-		return await modal.present();
+
+
+	showOptionsMenu(selectedMapName: string): void {
+		this.selectedMapName = selectedMapName;
+
+		this.optionsMenuHidden = false;
+		const showBackdropAnimation = this.getShowBackdropAnimation();
+		const showOptionsMenuAnimation = this.animationCtrl.create()
+			.addElement(this.optionsMenu.nativeElement)
+			.duration(200)
+			.easing('cubic-bezier(0, 0, 0.58, 1)')
+			.fromTo('transform', 'translateY(0px)', `translateY(-100%)`);
+
+		this.animationCtrl.create()
+			.addAnimation([showBackdropAnimation, showOptionsMenuAnimation])
+			.play();
+	}
+
+	hideOptionsMenu(hideBackdrop: boolean = true): void {
+		const animations: Animation[] = [];
+
+		if (this.optionsMenuHidden && !this.changeNameBoxHidden) {
+			this.changeNameBoxHidden = true;
+		}
+
+		animations.push(
+			this.animationCtrl.create()
+				.addElement(this.optionsMenu.nativeElement)
+				.duration(200)
+				.fromTo('transform', 'translateY(-100%)', `translateY(0px)`)
+		);
+
+		if (hideBackdrop) {
+			animations.push(this.getHideBackdropAnimation());
+		}
+
+		this.animationCtrl.create()
+			.addAnimation(animations)
+			.play().then(() => {
+				this.optionsMenuHidden = true;
+			});
+	}
+
+	showChangeNameBox(): void {
+		if (!this.selectedMapName) {
+			return;
+		}
+		this.hideOptionsMenu(false);
+		this.changeNameBoxHidden = false;
+	}
+
+	private getShowBackdropAnimation(): Animation {
+		return this.animationCtrl.create()
+		.addElement(this.backdrop.nativeElement)
+		.duration(200)
+		.fromTo('opacity', '0', '1');
+	}
+
+	private getHideBackdropAnimation(): Animation {
+		return this.animationCtrl.create()
+		.addElement(this.backdrop.nativeElement)
+		.duration(200)
+		.fromTo('opacity', '1', '0');
 	}
 
 	hideProgressBar(mapName: string): boolean {
@@ -57,6 +111,26 @@ export class OfflineMapsPage {
 		}
 
 		return true;
+	}
+
+	deleteOfflineMap(): void {
+		if (!this.selectedMapName) {
+			return;
+		}
+		this.hideOptionsMenu();
+		this.offlineMaps = this.offlineMaps.filter(om => om.name !== this.selectedMapName);
+		this.mapService.deleteOfflineMap(this.selectedMapName);
+		this.selectedMapName = null;
+	}
+
+	updateOfflineMap(): void {
+		if (!this.selectedMapName) {
+			return;
+		}
+
+		this.hideOptionsMenu();
+		this.mapService.updateOfflineMap(this.selectedMapName);
+		this.selectedMapName = null;
 	}
 
 	getMapFileSize(bytes: number): string {
@@ -74,5 +148,23 @@ export class OfflineMapsPage {
 
 	plusButtonClicked(): void {
 		this.navController.navigateForward('/download-map');
+	}
+
+	private setOfflineMaps(): void {
+		this.mapService.getOfflineMapsMetaData().then(res => {
+			if (res) {
+				this.offlineMaps = res.sort(this.sortFunction);
+			}
+		});
+	}
+
+	private sortFunction(a: OfflineMapMetaData, b: OfflineMapMetaData): number {
+		if (a.downloadDate > b.downloadDate) {
+			return -1;
+		}
+		if (a.downloadDate < b.downloadDate) {
+			return 1;
+		}
+		return 0;
 	}
 }

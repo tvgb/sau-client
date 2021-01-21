@@ -7,11 +7,7 @@ const routes: Routes = [
 	{
 		path: '',
 		component: OfflineMapsPage
-	},  {
-    path: 'options-modal',
-    loadChildren: () => import('./options-modal/options-modal.module').then( m => m.OptionsModalPageModule)
-  }
-
+	}
 ];
 
 @NgModule({
