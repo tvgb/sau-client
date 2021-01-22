@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
 
 
@@ -97,5 +97,9 @@ export class GpsService {
 					console.log('Error getting location', error);
 			});
 		}
+	}
+
+	getCurrentPosition(): Promise<Geoposition> {
+		return this.geolocation.getCurrentPosition();
 	}
 }

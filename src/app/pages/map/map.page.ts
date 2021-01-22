@@ -86,54 +86,55 @@ export class MapPage implements AfterViewInit {
 	}
 
 	initMap(): void {
-		// Coordinates for the middle of Gløshaugen
-		const lat = 60.3913; // 63.418604;
-		const lng = 5.3221; // 10.402832;
 
-		this.map = L.map('map', {
-			center: [ lat, lng ],
-			zoom: 12,
-			zoomControl: false,
-			attributionControl: false
-		});
-
-		this.gpsService.startTrackingInterval(this.map);
-
-		App.addListener('appStateChange', ({ isActive }) => {
-			if (isActive) {
-				this.gpsService.setTracking(true);
-				this.gpsService.recalibratePosition(this.map);
-			} else {
-				this.gpsService.setTracking(false);
-			}
-		  });
-
-		if (this.OFFLINE_MAP) {
-			L.GridLayer.OfflineMap = L.GridLayer.extend({
-				createTile: (coords, done) => {
-					const tile = document.createElement('img');
-
-					this.mapService.getTile(coords.z, coords.x, coords.y).then((base64Img) => {
-						tile.setAttribute(
-							'src', base64Img.data
-						);
-						done(null, tile);
-					}).catch((e) => {
-						tile.innerHTML = 'Map not available offline.';
-					});
-					return tile;
-				}
+		this.gpsService.getCurrentPosition().then(gpsPosition => {
+			this.map = L.map('map', {
+				center: [gpsPosition.coords.latitude, gpsPosition.coords.longitude],
+				zoom: 12,
+				zoomControl: false,
+				attributionControl: false
 			});
-			L.gridLayer.offlineMap = (opts) => {
-				return new L.GridLayer.OfflineMap(opts);
-			};
-			this.map.addLayer( L.gridLayer.offlineMap() );
-		} else {
-			L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
-			{
-				attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
-			}).addTo(this.map);
-		}
+
+			this.gpsService.startTrackingInterval(this.map);
+
+			App.addListener('appStateChange', ({ isActive }) => {
+				if (isActive) {
+					this.gpsService.setTracking(true);
+					this.gpsService.recalibratePosition(this.map);
+				} else {
+					this.gpsService.setTracking(false);
+				}
+			  });
+
+			if (this.OFFLINE_MAP) {
+				L.GridLayer.OfflineMap = L.GridLayer.extend({
+					createTile: (coords, done) => {
+						const tile = document.createElement('img');
+
+						const mapName = 'testMap1';
+
+						this.mapService.getTile(mapName, coords.z, coords.x, coords.y).then((base64Img) => {
+							tile.setAttribute(
+								'src', base64Img.data
+							);
+							done(null, tile);
+						}).catch((e) => {
+							tile.innerHTML = 'Map not available offline.';
+						});
+						return tile;
+					}
+				});
+				L.gridLayer.offlineMap = (opts) => {
+					return new L.GridLayer.OfflineMap(opts);
+				};
+				this.map.addLayer( L.gridLayer.offlineMap() );
+			} else {
+				L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
+				{
+					attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
+				}).addTo(this.map);
+			}
+		});
 	}
 
 	ionViewWillLeave(): void {

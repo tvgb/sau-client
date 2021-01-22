@@ -1,0 +1,42 @@
+.main-menu-container {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 100%;
+}
+
+.logo-container {
+	margin-top: 100px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+
+	.sheep-img {
+		width: 35%;
+	}
+
+	.app-name {
+		margin-top: 20px;
+		font-size: x-large;
+	}
+}
+
+.buttons-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 20px;
+
+	.main-menu-button {
+		margin-bottom: 20px;
+		height: 50px;
+		width: 80%;
+		--border-radius: 25px;
+		font-size: larger;
+		font-weight: 200;
+	}
+}
+
+
