@@ -1,26 +1,22 @@
-import { Injectable } from '@angular/core';
-import { Store } from '@ngxs/store';
-import { FieldTripId } from 'src/app/shared/enums/FieldTripId';
+// import { Injectable } from '@angular/core';
+// import { Store } from '@ngxs/store';
+// import { FieldTripInfo } from 'src/app/shared/classes/FieldTripInfo';
+// import { SetCurrentFieldTrip } from 'src/app/shared/store/fieldTripInfo.actions';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class FieldTripInfoService {
+// @Injectable({
+//   providedIn: 'root'
+// })
+// export class FieldTripInfoService {
 
-	FieldTripIds: FieldTripId[] = [
-		FieldTripId.OverseerName,
-		FieldTripId.FarmNumber,
-		FieldTripId.BruksNumber,
-		FieldTripId.Participants,
-		FieldTripId.Weather,
-		FieldTripId.Description
-	];
+// 	currentFieldTripId = FieldTripInfo;
 
-  constructor(private store: Store) {
-   }
 
-   getCurrentFieldTripInfo(): void {
-	   this.store.dispatch(
-		   new
-   }
-}
+
+//   constructor(private store: Store) {
+//    }
+
+//    getCurrentFieldTripInfo(): void {
+// 	   this.store.dispatch(
+// 		   new SetCurrentFieldTrip(c));
+//    }
+// }

@@ -1,31 +1,30 @@
 import { Injectable } from '@angular/core';
 import { State, Selector, Action, StateContext } from '@ngxs/store';
-import { FieldTripId } from '../enums/FieldTripId';
 import { FieldTripInfoModel } from '../interfaces/FieldTripInfoModel';
-import { SetCurrentFieldTripId } from './fieldTripInfo.actions';
+import { SetCurrentFieldTrip } from './fieldTripInfo.actions';
 
 
 
 @State<FieldTripInfoModel>({
 	name: 'fieldTripInfo',
-	defaults: {
-		currentFieldTripId: FieldTripId.OverseerName
-	}
 })
 
 @Injectable()
 export class FieldTripInfoState {
+
+	constructor() {}
+
 	@Selector()
-	static getCurrentFieldTripId(state: FieldTripInfoModel) {
-		return state.currentFieldTripId;
+	static getCurrentFieldTripInfo(state: FieldTripInfoModel) {
+		return state;
 	}
 
-	@Action(SetCurrentFieldTripId)
-	setCurrentFieldTripId(ctx: StateContext<FieldTripInfoModel>, action: SetCurrentFieldTripId) {
+	@Action(SetCurrentFieldTrip)
+	setCurrentFieldTripId(ctx: StateContext<FieldTripInfoModel>, action: SetCurrentFieldTrip) {
 		const state = ctx.getState();
 		ctx.setState({
 			...state,
-			currentFieldTripId: action.fieldTripId,
+			fieldTripInfo: action.fieldTripInfo,
 		});
 	}
 }

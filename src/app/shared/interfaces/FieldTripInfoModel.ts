@@ -1,5 +1,5 @@
-import { FieldTripId } from '../enums/FieldTripId';
+import { FieldTripInfo } from '../classes/FieldTripInfo';
 
 export interface FieldTripInfoModel {
-	currentFieldTripId: FieldTripId;
+	fieldTripInfo: FieldTripInfo;
 }

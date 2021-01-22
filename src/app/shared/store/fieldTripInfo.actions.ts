@@ -1,6 +1,6 @@
-import { FieldTripId } from '../enums/FieldTripId';
+import { FieldTripInfo } from '../classes/FieldTripInfo';
 
-export class SetCurrentFieldTripId {
-	static readonly type = '[New Field Trip Page] SetCurrentFieldTripId';
-	constructor(public fieldTripId: FieldTripId) {}
+export class SetCurrentFieldTrip {
+	static readonly type = '[New Field Trip Page] SetCurrentFieldTrip';
+	constructor(public fieldTripInfo: FieldTripInfo) {}
 }

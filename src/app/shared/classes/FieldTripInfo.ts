@@ -1,4 +1,6 @@
+
 export class FieldTripInfo {
+	fieldTripId: string;
 	overseerName: string;
 	farmNumber: number;
 	bruksNumber: number;
@@ -6,7 +8,8 @@ export class FieldTripInfo {
 	weather: string;
 	description: string;
 
-	constructor(overseerName: string, farmNumber: number, bruksNumber: number, participants: number, weather: string, description: string) {
+	constructor(fieldtripId, overseerName, farmNumber, bruksNumber, participants, weather, description) {
+		this.fieldTripId = fieldtripId;
 		this.overseerName = overseerName;
 		this.farmNumber = farmNumber;
 		this.bruksNumber = bruksNumber;
@@ -15,3 +18,5 @@ export class FieldTripInfo {
 		this.description = description;
 	}
 }
+
+
