@@ -30,11 +30,11 @@ export class NewFieldTripPage {
 	constructor(private store: Store) { }
 
 	ionViewWillEnter() {
-		// this.currentFieldTripSub = this.currentFieldTripInfo$.subscribe((res: FieldTripInfo) => {
-		// 	if (res) {
-		// 		this.currentFieldTripInfo = res;
-		// 	}
-		// });
+		this.currentFieldTripSub = this.currentFieldTripInfo$.subscribe((res: FieldTripInfo) => {
+			if (res) {
+				this.currentFieldTripInfo = res;
+			}
+		});
 	}
 
 
@@ -43,5 +43,6 @@ export class NewFieldTripPage {
 		this.fieldTripId = uuidv4();
 		this.currentFieldTripInfo = new FieldTripInfo(this.fieldTripId, this.overseerName, this.farmNumber, this.bruksNumber, this.participants, this.weather, this.description);
 		this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
+		console.log('Store: ' + JSON.stringify(this.currentFieldTripInfo));
 	}
 }
