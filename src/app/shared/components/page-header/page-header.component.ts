@@ -9,6 +9,7 @@ import { Component, Input, OnInit } from '@angular/core';
 
 export class PageHeaderComponent implements OnInit {
 	@Input() pageHeaderText: string;
+	@Input() backButton: boolean;
 
   constructor() { }
 

@@ -1,6 +1,27 @@
-.page-header {
+.page-header-without-button {
 	margin-top: 40px;
 	font-size: 22px;
 	text-align: center;
 	font-weight: 200;
+}
+
+.page-header-with-button {
+    margin-top: 40px;
+	display: flex;
+    font-size: 22px;
+    margin-left: 35px;
+    margin-right: 35px;
+    
+}
+
+.page-header-text {
+    align-self: center;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 200;
+    width: 100%;
+}
+
+.page-header-back-button {
+    width: wrap;
 }
