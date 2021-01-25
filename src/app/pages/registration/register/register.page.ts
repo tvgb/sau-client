@@ -13,6 +13,7 @@ import { Plugins, StatusBarStyle} from '@capacitor/core';
 import { StateResetAll } from 'ngxs-reset-plugin';
 
 const {StatusBar} = Plugins;
+
 @Component({
 	selector: 'app-register',
 	templateUrl: './register.page.html',
