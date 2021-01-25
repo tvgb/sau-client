@@ -5,23 +5,23 @@
    <ion-list class="field-trip-info-list">
         <ion-label> Ditt navn:</ion-label>
         <ion-item>
-            <ion-input [(ngModel)]="overseerName" placeholder="Ola Nordmann"></ion-input> 
+            <ion-input [(ngModel)]="overseerName" required="true" placeholder="Ola Nordmann"></ion-input> 
         </ion-item>
         <ion-label> Gårdsnummer: </ion-label>
         <ion-item>
-            <ion-input [(ngModel)]="farmNumber" placeholder="222345"></ion-input> 
+            <ion-input [(ngModel)]="farmNumber" required="true" type="number" placeholder="222345"></ion-input> 
         </ion-item>
         <ion-label> Bruksnummer:</ion-label>
         <ion-item>
-            <ion-input [(ngModel)]="bruksNumber" placeholder="12"></ion-input> 
+            <ion-input [(ngModel)]="bruksNumber" required="true" type="number" placeholder="12"></ion-input> 
         </ion-item>
         <ion-label> Kommune: </ion-label>
         <ion-item>
-            <ion-input placeholder="Trondheim"></ion-input> 
+            <ion-input [(ngModel)]="kommune" required="true" placeholder="Trondheim"></ion-input> 
         </ion-item>
         <ion-label> Antall deltakere: </ion-label>
         <ion-item>
-            <ion-input [(ngModel)]="participants" type="number" placeholder="1"></ion-input> 
+            <ion-input [(ngModel)]="participants" required="true" type="number" placeholder="1"></ion-input> 
         </ion-item>
         <ion-label>  Vær: </ion-label>
         <ion-item>
