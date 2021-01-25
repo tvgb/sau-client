@@ -19,6 +19,7 @@ export class NewFieldTripPage {
 	overseerName: string;
 	farmNumber: number;
 	bruksNumber: number;
+	kommune: string;
 	participants: number;
 	weather: string;
 	description: string;
@@ -44,7 +45,7 @@ export class NewFieldTripPage {
 		this.fieldTripId = uuidv4();
 		this.currentFieldTripInfo = new FieldTripInfo(
 			this.fieldTripId, this.overseerName, this.farmNumber,
-			this.bruksNumber, this.participants,
+			this.bruksNumber, this.kommune, this.participants,
 			this.weather, this.description);
 		this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
 		this.navController.navigateForward(this.mapUrl);
