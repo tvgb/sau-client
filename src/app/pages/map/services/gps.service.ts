@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
+import { Observable, Subject } from 'rxjs';
+import { Coordinate } from 'src/app/shared/classes/Coordinate';
 
 
 @Injectable({
@@ -16,6 +18,7 @@ export class GpsService {
 	private RECALIBRATION_INTERVAL = 4000;
 	private tracking = true;
 	private getInitialPosistion = true;
+	private lastTrackedPos: Subject<Coordinate> = new Subject();
 
 	constructor(private geolocation: Geolocation) {	}
 
@@ -86,6 +89,7 @@ export class GpsService {
 	updateTrackAndPosition(map: L.Map) {
 		if (this.tracking) {
 			this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
+				this.lastTrackedPos.next({lat: data.coords.latitude, lng: data.coords.longitude});
 				this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
 				if (this.posistionIcon == null) {
 					this.posistionIcon = this.createDefaultMarker();
@@ -97,6 +101,10 @@ export class GpsService {
 					console.log('Error getting location', error);
 			});
 		}
+	}
+
+	getLastTrackedPosition(): Observable<Coordinate> {
+		return this.lastTrackedPos.asObservable();
 	}
 
 	getCurrentPosition(): Promise<Geoposition> {

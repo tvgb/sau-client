@@ -1,8 +1,10 @@
+import { Coordinate } from './Coordinate';
+
 export class OfflineMapMetaData {
 	id: string;
 	name: string;
 	size: number; // Size of map in bytes
 	downloadDate: number;
-	startLatLng: [number, number]; // Top left map coordinate [lat, lng]
-	endLatLng: [number, number]; // Bottom right map coordinate [lat, lng]
+	startPos: Coordinate; // Top left map coordinate [lat, lng]
+	endPos: Coordinate; // Bottom right map coordinate [lat, lng]
 }
