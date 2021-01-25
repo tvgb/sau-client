@@ -1,9 +1,10 @@
 <div class="page-header-container">
     <div class="page-header-with-button" *ngIf='backButton == true; else elseBlock'>
-            <ion-icon size="large" class="page-header-back-button" color="white" name="arrow-back-outline"></ion-icon>
+            <ion-icon size="large" class="page-header-back-button" name="arrow-back-outline"></ion-icon>
         <div class="page-header-text">
             {{pageHeaderText}}
         </div>
+        <ion-icon size="large" class="centering-div" name="arrow-back-outline"></ion-icon>
     </div>
     <ng-template #elseBlock>
         <div class="page-header-without-button">
