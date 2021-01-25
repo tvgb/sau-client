@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 import { FieldTripInfo } from 'src/app/shared/classes/FieldTripInfo';
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { SetCurrentFieldTrip } from 'src/app/shared/store/fieldTripInfo.actions';
+import { NavController} from '@ionic/angular';
 
 @Component({
   selector: 'app-new-field-trip',
