@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { RegistrationService } from '../services/registration.service';
 import { TextToSpeechService } from '../services/text-to-speech.service';
-import { Platform } from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular';
 import { MainCategoryId } from 'src/app/shared/enums/MainCategoryId';
 import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 import { MainCategory, SubCategory } from 'src/app/shared/classes/Category';
@@ -20,6 +19,9 @@ const {StatusBar} = Plugins;
 	styleUrls: ['./register.page.scss'],
 })
 export class RegisterPage {
+
+	summaryUrl = '/registration/summary';
+	mapUrl = '/map';
 
 	currentSubCategory: SubCategory;
 	currentMainCategory: any;
@@ -42,7 +44,7 @@ export class RegisterPage {
 		private store: Store,
 		private registrationService: RegistrationService,
 		private tts: TextToSpeechService,
-		private router: Router,
+		private navController: NavController,
 		private platform: Platform) {
 
 		this.platform.backButton.subscribeWithPriority(10, () => {
@@ -112,7 +114,7 @@ export class RegisterPage {
 
 	onNextMainCategory(): void {
 		if (!this.registrationService.nextMainCategory()) {
-			this.router.navigate(['/registration/summary']);
+			this.navController.navigateForward(this.summaryUrl);
 		} else {
 			this.tts.speak(`Registrer ${this.currentMainCategory.name}, ${this.currentSubCategory.count} ${this.currentSubCategory.name} ${this.currentMainCategory.speakText}`);
 		}
@@ -121,7 +123,7 @@ export class RegisterPage {
 	onPrevMainCategory(): void {
 		if (!this.registrationService.prevMainCategroy()) {
 			this.onCancel();
-			this.router.navigate(['/map']);
+			this.navController.navigateBack(this.mapUrl);
 		} else {
 			this.tts.speak(`Registrer ${this.currentMainCategory.name}, ${this.currentSubCategory.count} ${this.currentSubCategory.name} ${this.currentMainCategory.speakText}`);
 		}

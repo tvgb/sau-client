@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { FieldTripInfo } from 'src/app/shared/classes/FieldTripInfo';
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { SetCurrentFieldTrip } from 'src/app/shared/store/fieldTripInfo.actions';
-import { NavController} from '@ionic/angular';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-new-field-trip',
@@ -26,26 +26,28 @@ export class NewFieldTripPage {
 	currentFieldTripSub: Subscription;
 	currentFieldTripInfo: FieldTripInfo;
 
+	mapUrl = '/map';
+
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) currentFieldTripInfo$: Observable<FieldTripInfo>;
 
-	constructor(private store: Store) { }
+	constructor(private store: Store, private navController: NavController) { }
 
 	ionViewWillEnter() {
-		console.log('Store: ' + JSON.stringify(this.currentFieldTripInfo));
 		this.currentFieldTripSub = this.currentFieldTripInfo$.subscribe((res: FieldTripInfo) => {
 			if (res) {
 				this.currentFieldTripInfo = res;
 			}
-			console.log('Store: ' + JSON.stringify(this.currentFieldTripInfo));
-
 		});
 	}
 
 	createNewFieldTrip() {
 		this.fieldTripId = uuidv4();
-		this.currentFieldTripInfo = new FieldTripInfo(this.fieldTripId, this.overseerName, this.farmNumber, this.bruksNumber, this.participants, this.weather, this.description);
+		this.currentFieldTripInfo = new FieldTripInfo(
+			this.fieldTripId, this.overseerName, this.farmNumber,
+			this.bruksNumber, this.participants,
+			this.weather, this.description);
 		this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
-		console.log('Store: ' + JSON.stringify(this.currentFieldTripInfo));
+		this.navController.navigateForward(this.mapUrl);
 	}
 
 	ionViewWillLeave(): void {
