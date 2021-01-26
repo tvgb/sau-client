@@ -6,24 +6,49 @@
    <form [formGroup]="newFieldTripForm" class="field-trip-form">
         <ion-label> Ditt navn:</ion-label>
         <ion-item>
-            <ion-input formControlName="overseerName" required="true" placeholder="Ola Nordmann"></ion-input> 
+            <ion-input  formControlName="overseerName" required="true" placeholder="Ola Nordmann"></ion-input> 
         </ion-item>
+        <div *ngIf="!newFieldTripForm.controls.overseerName.valid && (newFieldTripForm.controls.overseerName.dirty || submitAttempt)">
+            <p class="invalid">
+            {{invalidText}}
+            </p>
+        </div>
         <ion-label> Gårdsnummer: </ion-label>
         <ion-item>
             <ion-input formControlName="farmNumber" required="true" type="number" placeholder="222345"></ion-input> 
         </ion-item>
+        <div *ngIf="!newFieldTripForm.controls.farmNumber.valid && (newFieldTripForm.controls.farmNumber.dirty || submitAttempt)">
+            <p class="invalid">
+            {{invalidText}}
+            </p>
+        </div>
         <ion-label> Bruksnummer:</ion-label>
         <ion-item>
             <ion-input formControlName="bruksNumber" required="true" type="number" placeholder="12"></ion-input> 
         </ion-item>
+        <div *ngIf="!newFieldTripForm.controls.bruksNumber.valid && (newFieldTripForm.controls.bruksNumber.dirty || submitAttempt)">
+            <p class="invalid">
+            {{invalidText}}
+            </p>
+        </div>
         <ion-label> Kommune: </ion-label>
         <ion-item>
             <ion-input formControlName="kommune" required="true" placeholder="Trondheim"></ion-input> 
         </ion-item>
+        <div *ngIf="!newFieldTripForm.controls.kommune.valid && (newFieldTripForm.controls.kommune.dirty || submitAttempt)">
+            <p class="invalid">
+            {{invalidText}}
+            </p>
+        </div>
         <ion-label> Antall deltakere: </ion-label>
         <ion-item>
             <ion-input formControlName="participants" required="true" type="number" placeholder="1"></ion-input> 
         </ion-item>
+        <div *ngIf="!newFieldTripForm.controls.participants.valid && (newFieldTripForm.controls.participants.dirty || submitAttempt)">
+            <p class="invalid">
+            {{invalidText}}
+            </p>
+        </div>
         <ion-label>  Vær: </ion-label>
         <ion-item>
             <ion-select formControlName="weather" class="field-trip-select" interface="popover" placeholder="Opphold">
@@ -34,6 +59,11 @@
         </ion-item>
         <ion-label>Beskrivelse:</ion-label>
         <ion-textarea formControlName="description" placeholder="Skriv her..."></ion-textarea>
+        <div *ngIf="!newFieldTripForm.controls.description.valid && (newFieldTripForm.controls.description.dirty || submitAttempt)">
+            <p class="invalid">
+            {{invalidText}}
+            </p>
+        </div>
         <div class="field-trip-button-container">
         <ion-button (click)="createNewFieldTrip()" class="field-trip-button" color="primary" fill="solid">START OPPSYNSTUR</ion-button>
    </div>

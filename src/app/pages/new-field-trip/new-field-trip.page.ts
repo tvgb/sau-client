@@ -17,6 +17,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class NewFieldTripPage {
 
 	newFieldTripForm: FormGroup;
+
 	fieldTripId: string;
 	// overseerName: string;
 	// farmNumber: number;
@@ -30,6 +31,8 @@ export class NewFieldTripPage {
 
 	currentFieldTripSub: Subscription;
 	currentFieldTripInfo: FieldTripInfo;
+
+	invalidText = 'Obligatorisk felt.';
 
 	mapUrl = '/map';
 
@@ -58,15 +61,20 @@ export class NewFieldTripPage {
 
 	createNewFieldTrip() {
 		this.submitAttempt = true;
-		this.fieldTripId = uuidv4();
-		this.currentFieldTripInfo = new FieldTripInfo(
-			this.fieldTripId, this.newFieldTripForm.controls.overseerName.value, this.newFieldTripForm.controls.farmNumber.value,
-			this.newFieldTripForm.controls.bruksNumber.value, this.newFieldTripForm.controls.kommune.value,
-			this.newFieldTripForm.controls.participants.value,
-			this.newFieldTripForm.controls.weather.value, this.newFieldTripForm.controls.description.value);
-		console.log(JSON.stringify(this.currentFieldTripInfo));
-		this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
-		this.navController.navigateForward(this.mapUrl);
+		if (this.newFieldTripForm.valid) {
+			this.fieldTripId = uuidv4();
+			this.currentFieldTripInfo = new FieldTripInfo(
+				this.fieldTripId, this.newFieldTripForm.controls.overseerName.value, this.newFieldTripForm.controls.farmNumber.value,
+				this.newFieldTripForm.controls.bruksNumber.value, this.newFieldTripForm.controls.kommune.value,
+				this.newFieldTripForm.controls.participants.value,
+				this.newFieldTripForm.controls.weather.value, this.newFieldTripForm.controls.description.value);
+			console.log(JSON.stringify(this.currentFieldTripInfo));
+			this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
+			this.navController.navigateForward(this.mapUrl);
+		}
+		else {
+			console.log('Invalid input fields');
+		}
 	}
 
 	ionViewWillLeave(): void {
