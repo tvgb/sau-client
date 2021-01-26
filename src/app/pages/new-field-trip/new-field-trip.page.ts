@@ -6,6 +6,7 @@ import { FieldTripInfo } from 'src/app/shared/classes/FieldTripInfo';
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { SetCurrentFieldTrip } from 'src/app/shared/store/fieldTripInfo.actions';
 import { NavController } from '@ionic/angular';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-new-field-trip',
@@ -15,14 +16,17 @@ import { NavController } from '@ionic/angular';
 
 export class NewFieldTripPage {
 
+	newFieldTripForm: FormGroup;
 	fieldTripId: string;
-	overseerName: string;
-	farmNumber: number;
-	bruksNumber: number;
-	kommune: string;
-	participants: number;
-	weather: string;
-	description: string;
+	// overseerName: string;
+	// farmNumber: number;
+	// bruksNumber: number;
+	// kommune: string;
+	// participants: number;
+	// weather: string;
+	// description: string;
+
+	public submitAttempt = false;
 
 	currentFieldTripSub: Subscription;
 	currentFieldTripInfo: FieldTripInfo;
@@ -31,7 +35,18 @@ export class NewFieldTripPage {
 
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) currentFieldTripInfo$: Observable<FieldTripInfo>;
 
-	constructor(private store: Store, private navController: NavController) { }
+	constructor(private store: Store, private navController: NavController, private formbuilder: FormBuilder) {
+		this.newFieldTripForm = this.formbuilder.group({
+			fieldTripId: ['', Validators.required],
+			overseerName: ['', Validators.required],
+			farmNumber: ['', Validators.required],
+			bruksNumber: ['', Validators.required],
+			kommune: ['', Validators.required],
+			participants: ['', Validators.required],
+			weather: [''],
+			description: [''],
+		});
+	}
 
 	ionViewWillEnter() {
 		this.currentFieldTripSub = this.currentFieldTripInfo$.subscribe((res: FieldTripInfo) => {
@@ -42,11 +57,14 @@ export class NewFieldTripPage {
 	}
 
 	createNewFieldTrip() {
+		this.submitAttempt = true;
 		this.fieldTripId = uuidv4();
 		this.currentFieldTripInfo = new FieldTripInfo(
-			this.fieldTripId, this.overseerName, this.farmNumber,
-			this.bruksNumber, this.kommune, this.participants,
-			this.weather, this.description);
+			this.fieldTripId, this.newFieldTripForm.controls.overseerName.value, this.newFieldTripForm.controls.farmNumber.value,
+			this.newFieldTripForm.controls.bruksNumber.value, this.newFieldTripForm.controls.kommune.value,
+			this.newFieldTripForm.controls.participants.value,
+			this.newFieldTripForm.controls.weather.value, this.newFieldTripForm.controls.description.value);
+		console.log(JSON.stringify(this.currentFieldTripInfo));
 		this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
 		this.navController.navigateForward(this.mapUrl);
 	}

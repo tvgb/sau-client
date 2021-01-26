@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { NewFieldTripPageRoutingModule } from './new-field-trip-routing.module';
@@ -12,7 +12,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
   imports: [
 	SharedModule,
 	CommonModule,
-	FormsModule,
+	ReactiveFormsModule,
 	IonicModule,
 	NewFieldTripPageRoutingModule
   ],
