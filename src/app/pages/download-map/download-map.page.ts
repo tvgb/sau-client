@@ -13,6 +13,7 @@ import { MapService } from '../map/services/map.service';
 export class DownloadMapPage implements AfterViewInit {
 
 	private map;
+
 	@ViewChild('downloadArea') downloadArea: ElementRef;
 
 	constructor(private mapService: MapService, private gpsService: GpsService, private navController: NavController) { }

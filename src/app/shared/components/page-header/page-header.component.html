@@ -1,5 +1,5 @@
 <div class="page-header-container">
-    <div class="page-header-with-button" *ngIf='navUrl != undefined; else elseBlock'>
+    <div class="page-header-with-button" *ngIf='navUrl; else elseBlock'>
             <ion-icon (click)="backButtonClicked()" size="large" class="page-header-back-button" name="arrow-back-outline"></ion-icon>
         <div class="page-header-text">
             {{pageHeaderText}}

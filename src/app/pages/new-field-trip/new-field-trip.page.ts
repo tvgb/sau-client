@@ -36,9 +36,9 @@ export class NewFieldTripPage {
 	constructor(private store: Store, private navController: NavController, private formbuilder: FormBuilder) {
 		this.newFieldTripForm = this.formbuilder.group({
 			overseerName: ['', Validators.required],
-			farmNumber: ['', Validators.required],
-			bruksNumber: ['', Validators.required],
-			kommune: ['', Validators.required],
+			fNumber: ['', Validators.required],
+			bNumber: ['', Validators.required],
+			municipality: ['', Validators.required],
 			participants: ['', Validators.required],
 			weather: [''],
 			description: [''],
@@ -71,8 +71,8 @@ export class NewFieldTripPage {
 		if (this.newFieldTripForm.valid) {
 			this.fieldTripId = uuidv4();
 			this.currentFieldTripInfo = new FieldTripInfo(
-				this.fieldTripId, this.newFieldTripForm.controls.overseerName.value, this.newFieldTripForm.controls.farmNumber.value,
-				this.newFieldTripForm.controls.bruksNumber.value, this.newFieldTripForm.controls.kommune.value,
+				this.fieldTripId, this.newFieldTripForm.controls.overseerName.value, this.newFieldTripForm.controls.fNumber.value,
+				this.newFieldTripForm.controls.bNumber.value, this.newFieldTripForm.controls.municipality.value,
 				this.newFieldTripForm.controls.participants.value,
 				this.newFieldTripForm.controls.weather.value, this.newFieldTripForm.controls.description.value);
 			console.log(JSON.stringify(this.currentFieldTripInfo));

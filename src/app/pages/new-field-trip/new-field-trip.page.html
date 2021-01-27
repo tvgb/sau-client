@@ -15,27 +15,27 @@
         </div>
         <ion-label> Gårdsnummer: </ion-label>
         <ion-item>
-            <ion-input formControlName="farmNumber" required="true" type="number" placeholder="222345"></ion-input> 
+            <ion-input formControlName="fNumber" required="true" type="number" placeholder="222345"></ion-input> 
         </ion-item>
-        <div *ngIf="!newFieldTripForm.controls.farmNumber.valid && (newFieldTripForm.controls.farmNumber.dirty || submitAttempt)">
+        <div *ngIf="!newFieldTripForm.controls.fNumber.valid && (newFieldTripForm.controls.fNumber.dirty || submitAttempt)">
             <p class="invalid">
             {{invalidText}}
             </p>
         </div>
         <ion-label> Bruksnummer:</ion-label>
         <ion-item>
-            <ion-input formControlName="bruksNumber" required="true" type="number" placeholder="12"></ion-input> 
+            <ion-input formControlName="bNumber" required="true" type="number" placeholder="12"></ion-input> 
         </ion-item>
-        <div *ngIf="!newFieldTripForm.controls.bruksNumber.valid && (newFieldTripForm.controls.bruksNumber.dirty || submitAttempt)">
+        <div *ngIf="!newFieldTripForm.controls.bNumber.valid && (newFieldTripForm.controls.bNumber.dirty || submitAttempt)">
             <p class="invalid">
             {{invalidText}}
             </p>
         </div>
         <ion-label> Kommune: </ion-label>
         <ion-item>
-            <ion-input formControlName="kommune" required="true" placeholder="Trondheim"></ion-input> 
+            <ion-input formControlName="municipality" required="true" placeholder="Trondheim"></ion-input> 
         </ion-item>
-        <div *ngIf="!newFieldTripForm.controls.kommune.valid && (newFieldTripForm.controls.kommune.dirty || submitAttempt)">
+        <div *ngIf="!newFieldTripForm.controls.municipality.valid && (newFieldTripForm.controls.municipality.dirty || submitAttempt)">
             <p class="invalid">
             {{invalidText}}
             </p>
