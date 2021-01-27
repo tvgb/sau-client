@@ -173,7 +173,7 @@ export class OfflineMapsPage {
 	private setOfflineMaps(): void {
 		this.mapService.getOfflineMapsMetaData().then(res => {
 			if (res) {
-				this.offlineMaps = res.sort(this.sortFunction);
+				this.offlineMaps = res.filter(m => !m.deleted).sort(this.sortFunction);
 			}
 		});
 	}

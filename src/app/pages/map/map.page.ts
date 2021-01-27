@@ -9,7 +9,6 @@ import { TextToSpeechService } from '../registration/services/text-to-speech.ser
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
 import { Plugins, StatusBarStyle, AppState } from '@capacitor/core';
-import { Coordinate } from 'src/app/shared/classes/Coordinate';
 
 const { StatusBar, App } = Plugins;
 
