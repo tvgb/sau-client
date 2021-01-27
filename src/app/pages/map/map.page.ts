@@ -31,10 +31,12 @@ export class MapPage implements AfterViewInit {
 	currentMainCategorySub: Subscription;
 
 	constructor(
+		private platform: Platform,
 		private mapService: MapService,
 		private gpsService: GpsService,
 		private ttsService: TextToSpeechService,
-		private navController: NavController) {}
+		private navController: NavController) {
+		}
 
 	changeStatusBar(): void {
 		StatusBar.setOverlaysWebView({
@@ -46,6 +48,9 @@ export class MapPage implements AfterViewInit {
 	}
 
 	ionViewWillEnter(): void {
+		this.platform.backButton.subscribeWithPriority(5, () => {
+			this.navController.navigateBack('/main-menu');
+		  });
 		this.changeStatusBar();
 		this.currentMainCategorySub = this.currentMainCategory$.subscribe(res => {
 			this.currentMainCategory = res;
@@ -134,8 +139,6 @@ export class MapPage implements AfterViewInit {
 			}
 		});
 	}
-
-
 
 	ionViewWillLeave(): void {
 		this.currentMainCategorySub.unsubscribe();

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
+import { BrowserStack } from 'protractor/built/driverProviders';
 
 
 @Injectable({
@@ -9,13 +10,22 @@ import * as L from 'leaflet';
 export class GpsService {
 	private trackedRoute = [];
 	private calibrationCoords = [];
-	private posistionIcon = null;
 	private posistionMarker;
 	private CALIBRATION_THRESHOLD = 0.0001;
 	private TRACKING_INTERVAL = 10000;
 	private RECALIBRATION_INTERVAL = 4000;
 	private tracking = true;
 	private getInitialPosistion = true;
+
+	private posistionIcon =  new L.Icon({
+		iconUrl: 'assets/icon/marker-icon.png',
+		shadowUrl: 'assets/icon/marker-shadow.png',
+		iconSize: [25, 41],
+		 iconAnchor: [12, 41],
+		popupAnchor: [1, -34],
+		tooltipAnchor: [16, -28],
+		shadowSize: [41, 41]
+	});
 
 	constructor(private geolocation: Geolocation) {	}
 
@@ -29,33 +39,36 @@ export class GpsService {
 			this.updateTrackAndPosition(map);
 			this.getInitialPosistion = false;
 			this.startTrackingInterval(map);
+			return;
 		} else if (this.tracking) {
 			setTimeout(() => {
 				this.updateTrackAndPosition(map);
 				this.startTrackingInterval(map);
 			}, this.TRACKING_INTERVAL);
-		}else {
+		} else {
 			return;
 		}
 	}
 
-	createDefaultMarker() {
-		this.posistionIcon = new L.Icon({
-			iconUrl: 'assets/icon/marker-icon.png',
-			shadowUrl: 'assets/icon/marker-shadow.png',
-			iconSize: [25, 41],
- 			iconAnchor: [12, 41],
-			popupAnchor: [1, -34],
-			tooltipAnchor: [16, -28],
-			shadowSize: [41, 41]
-		});
-		return this.posistionIcon;
-	 }
+	// createDefaultMarker() {
+	// 	console.log('Inside createDefaultMarker');
+	// 	this.posistionIcon = new L.Icon({
+	// 		iconUrl: 'assets/icon/marker-icon.png',
+	// 		shadowUrl: 'assets/icon/marker-shadow.png',
+	// 		iconSize: [25, 41],
+ 	// 		iconAnchor: [12, 41],
+	// 		popupAnchor: [1, -34],
+	// 		tooltipAnchor: [16, -28],
+	// 		shadowSize: [41, 41]
+	// 	});
+	// 	return this.posistionIcon;
+	//  }
 
 	/**
 	 * Recalibrates position when app has been inactive, waits until stable position
 	 */
 	recalibratePosition(map: L.Map) {
+		console.log('RECALIBRATING POSITION');
 		this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
 			this.calibrationCoords.push({lat: data.coords.latitude, lng: data.coords.longitude});
 			if (this.calibrationCoords.length < 2) {
@@ -87,10 +100,19 @@ export class GpsService {
 		if (this.tracking) {
 			this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
 				this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
-				if (this.posistionIcon == null) {
-					this.posistionIcon = this.createDefaultMarker();
+
+				if (!this.posistionMarker) {
 					this.posistionMarker = L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionIcon}).addTo(map);
-				} else { this.posistionMarker.setLatLng([data.coords.latitude, data.coords.longitude]); }
+				} else {
+					console.log('HELLO!');
+					console.log('GPS: ' + JSON.stringify([data.coords.latitude, data.coords.longitude]));
+					this.posistionMarker.setLatLng([data.coords.latitude, data.coords.longitude]);
+				}
+				// if (this.posistionIcon == null) {
+				// 	console.log('posistionIcon er null');
+				// 	this.posistionIcon = this.createDefaultMarker();
+				// 	this.posistionMarker = L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionIcon}).addTo(map);
+				// } else { this.posistionMarker.setLatLng([data.coords.latitude, data.coords.longitude]); }
 				// {smoothFactor: 8}
 				L.polyline(this.trackedRoute).addTo(map);
 			}).catch((error) => {
