@@ -30,7 +30,12 @@ const routes: Routes = [
 	{
 		path: 'download-map',
 		loadChildren: () => import('./pages/download-map/download-map.module').then( m => m.DownloadMapPageModule)
-	}
+	},
+  {
+	path: 'new-field-trip',
+	loadChildren: () => import('./pages/new-field-trip/new-field-trip.module').then( m => m.NewFieldTripPageModule)
+  }
+
 ];
 
 @NgModule({

@@ -1,0 +1,49 @@
+.new-field-trip-container {
+    height: 100%;
+}
+
+.field-trip-info-list {
+    background-color: var(--ion-background-color);
+    margin-top: 40px;
+    margin-left: 35px;
+    margin-right: 35px;
+}
+
+.invalid {
+    color: red;
+    margin-bottom: 30px;
+}
+
+.field-trip-button-container {
+    margin-top: 45px;
+    display: flex;
+    justify-content: center;
+}
+
+.field-trip-button {
+	margin-bottom: 20px;
+	height: 50px;
+	width: 100%;
+	--border-radius: 25px;
+	font-size: larger;
+    font-weight: 200;
+} 
+
+ion-item {
+    margin-top: 5px;
+    --background: rgba(255, 255, 255, 0.05);
+    --border-color: rgba(255, 255, 255, 1);
+    margin-bottom: 20px;
+}
+
+ion-select {
+    width:100%;
+    max-width: 100% !important;
+    padding-left:0px;
+}
+
+ion-textarea {
+    --background: rgba(255, 255, 255, 0.05);
+    margin-bottom: 25px;
+}
+

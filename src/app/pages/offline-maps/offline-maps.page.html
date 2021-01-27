@@ -1,9 +1,7 @@
 <ion-content>
 	<div class="offline-maps-container">
-		<div class="offline-maps-header">
-			Nedlastede kartutsnitt
-		</div>
-
+		<app-page-header [navUrl] = "['/main-menu']" [pageHeaderText] = "['Nedlastede kartutsnitt']">
+        </app-page-header>
 		<div class="map-meta-data-container">
 			<div *ngFor="let metaData of offlineMaps" class="map-meta-data">
 				<div class="map-name"> {{ metaData.name }} </div>

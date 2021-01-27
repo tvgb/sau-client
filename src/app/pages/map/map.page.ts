@@ -2,13 +2,13 @@ import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { GpsService } from './services/gps.service';
-import { Router } from '@angular/router';
-import { Select, UpdateState } from '@ngxs/store';
+import { Select } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { TextToSpeechService } from '../registration/services/text-to-speech.service';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
-import { Plugins, StatusBarStyle, AppState } from '@capacitor/core';
+import { Plugins, StatusBarStyle } from '@capacitor/core';
+import { NavController } from '@ionic/angular';
 
 const { StatusBar, App } = Plugins;
 
@@ -19,7 +19,8 @@ const { StatusBar, App } = Plugins;
 })
 
 export class MapPage implements AfterViewInit {
-	private routeLink = ['/registration/register'];
+	private registrationUrl = '/registration/register';
+	private newFieldTripUrl = '/new-field-trip';
 	private map;
 	private readonly OFFLINE_MAP = true;
 	private currentMainCategory: MainCategory;
@@ -33,8 +34,7 @@ export class MapPage implements AfterViewInit {
 		private mapService: MapService,
 		private gpsService: GpsService,
 		private ttsService: TextToSpeechService,
-		private router: Router) { }
-
+		private navController: NavController) {}
 
 	changeStatusBar(): void {
 		StatusBar.setOverlaysWebView({
@@ -60,12 +60,16 @@ export class MapPage implements AfterViewInit {
 
 	navigateToRegistration() {
 		this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);
-		this.router.navigate(this.routeLink);
+		this.navController.navigateForward(this.registrationUrl);
 	}
 
 	initMap(): void {
+<<<<<<< HEAD
 
 		this.gpsService.getCurrentPosition().then(async gpsPosition => {
+=======
+		this.gpsService.getCurrentPosition().then(gpsPosition => {
+>>>>>>> develop
 			this.map = L.map('map', {
 				center: [gpsPosition.coords.latitude, gpsPosition.coords.longitude],
 				zoom: 12,
@@ -97,6 +101,7 @@ export class MapPage implements AfterViewInit {
 		});
 	}
 
+<<<<<<< HEAD
 	initOfflineMap(): void {
 		L.GridLayer.OfflineMap = L.GridLayer.extend({
 			createTile: (coords, done) => {
@@ -118,6 +123,9 @@ export class MapPage implements AfterViewInit {
 		};
 		this.map.addLayer( L.gridLayer.offlineMap() );
 	}
+=======
+
+>>>>>>> develop
 
 	ionViewWillLeave(): void {
 		this.currentMainCategorySub.unsubscribe();
