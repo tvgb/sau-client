@@ -64,12 +64,8 @@ export class MapPage implements AfterViewInit {
 	}
 
 	initMap(): void {
-<<<<<<< HEAD
 
 		this.gpsService.getCurrentPosition().then(async gpsPosition => {
-=======
-		this.gpsService.getCurrentPosition().then(gpsPosition => {
->>>>>>> develop
 			this.map = L.map('map', {
 				center: [gpsPosition.coords.latitude, gpsPosition.coords.longitude],
 				zoom: 12,
@@ -101,7 +97,6 @@ export class MapPage implements AfterViewInit {
 		});
 	}
 
-<<<<<<< HEAD
 	initOfflineMap(): void {
 		L.GridLayer.OfflineMap = L.GridLayer.extend({
 			createTile: (coords, done) => {
@@ -123,9 +118,6 @@ export class MapPage implements AfterViewInit {
 		};
 		this.map.addLayer( L.gridLayer.offlineMap() );
 	}
-=======
-
->>>>>>> develop
 
 	ionViewWillLeave(): void {
 		this.currentMainCategorySub.unsubscribe();
