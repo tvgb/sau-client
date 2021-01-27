@@ -7,6 +7,9 @@ import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { SetCurrentFieldTrip } from 'src/app/shared/store/fieldTripInfo.actions';
 import { NavController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {Plugins, StatusBarStyle} from '@capacitor/core';
+
+const {StatusBar} = Plugins;
 
 @Component({
   selector: 'app-new-field-trip',
@@ -42,7 +45,20 @@ export class NewFieldTripPage {
 		});
 	}
 
+	changeStatusBarTextColor(): void {
+		StatusBar.setOverlaysWebView({
+			overlay: false
+		});
+		StatusBar.setStyle({
+			style: StatusBarStyle.Dark
+		});
+		StatusBar.setBackgroundColor({
+			color: '#1C262F'
+		});
+	}
+
 	ionViewWillEnter() {
+		this.changeStatusBarTextColor();
 		this.currentFieldTripSub = this.currentFieldTripInfo$.subscribe((res: FieldTripInfo) => {
 			if (res) {
 				this.currentFieldTripInfo = res;
