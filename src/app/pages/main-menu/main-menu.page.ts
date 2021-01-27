@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 import {Plugins, StatusBarStyle} from '@capacitor/core';
+import { NavController } from '@ionic/angular';
 
 const {StatusBar} = Plugins;
 
@@ -11,7 +11,10 @@ const {StatusBar} = Plugins;
 })
 export class MainMenuPage {
 
-	constructor(private router: Router) { }
+	private offlineMapUrl = '/offline-maps';
+	private newFieldTripUrl = '/new-field-trip';
+
+	constructor(private navController: NavController) { }
 
 	ionViewWillEnter() {
 		this.changeStatusBarTextColor();
@@ -28,7 +31,12 @@ export class MainMenuPage {
 			color: '#1C262F'
 		});
 	}
+
+	newFieldTripButtonClicked(): void {
+		this.navController.navigateForward(this.newFieldTripUrl);
+	}
+
 	offlineMapsButtonClicked(): void {
-		this.router.navigateByUrl('offline-maps');
+		this.navController.navigateForward(this.offlineMapUrl);
 	}
 }

@@ -1,6 +1,4 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { cordovaInstance } from '@ionic-native/core';
 import { AnimationController, Animation, ModalController, NavController } from '@ionic/angular';
 import { DownloadProgressionData } from 'src/app/shared/classes/DownloadProgressionData';
 import { OfflineMapMetaData } from 'src/app/shared/classes/OfflineMapMetaData';
