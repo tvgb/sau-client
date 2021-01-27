@@ -3,10 +3,10 @@
    <app-page-header [navUrl] = "['/main-menu']" [pageHeaderText] = "['Ny oppsynstur']" >
    </app-page-header>
    <ion-list class="field-trip-info-list">
-   <form [formGroup]="newFieldTripForm" class="field-trip-form">
+   <form [formGroup]="newFieldTripForm" >
         <ion-label> Ditt navn:</ion-label>
         <ion-item>
-            <ion-input  formControlName="overseerName" required="true" placeholder="Ola Nordmann"></ion-input> 
+            <ion-input formControlName="overseerName" required="true" placeholder="Ola Nordmann"></ion-input> 
         </ion-item>
         <div *ngIf="!newFieldTripForm.controls.overseerName.valid && (newFieldTripForm.controls.overseerName.dirty || submitAttempt)">
             <p class="invalid">
@@ -59,11 +59,6 @@
         </ion-item>
         <ion-label>Beskrivelse:</ion-label>
         <ion-textarea formControlName="description" placeholder="Skriv her..."></ion-textarea>
-        <div *ngIf="!newFieldTripForm.controls.description.valid && (newFieldTripForm.controls.description.dirty || submitAttempt)">
-            <p class="invalid">
-            {{invalidText}}
-            </p>
-        </div>
         <div class="field-trip-button-container">
         <ion-button (click)="createNewFieldTrip()" class="field-trip-button" color="primary" fill="solid">START OPPSYNSTUR</ion-button>
    </div>

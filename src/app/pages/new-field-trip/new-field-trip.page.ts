@@ -17,15 +17,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class NewFieldTripPage {
 
 	newFieldTripForm: FormGroup;
-
 	fieldTripId: string;
-	// overseerName: string;
-	// farmNumber: number;
-	// bruksNumber: number;
-	// kommune: string;
-	// participants: number;
-	// weather: string;
-	// description: string;
 
 	public submitAttempt = false;
 
@@ -40,7 +32,6 @@ export class NewFieldTripPage {
 
 	constructor(private store: Store, private navController: NavController, private formbuilder: FormBuilder) {
 		this.newFieldTripForm = this.formbuilder.group({
-			fieldTripId: ['', Validators.required],
 			overseerName: ['', Validators.required],
 			farmNumber: ['', Validators.required],
 			bruksNumber: ['', Validators.required],
@@ -71,9 +62,6 @@ export class NewFieldTripPage {
 			console.log(JSON.stringify(this.currentFieldTripInfo));
 			this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
 			this.navController.navigateForward(this.mapUrl);
-		}
-		else {
-			console.log('Invalid input fields');
 		}
 	}
 
