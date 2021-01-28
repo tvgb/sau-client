@@ -26,6 +26,7 @@ export class MapService {
 	private mapId: string;
 	private lastTrackedPosition: Coordinate;
 	private appActive = true;
+	private runningInBackground = false;
 
 	private readonly BASE_URLS = [
 		'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps',
@@ -37,18 +38,17 @@ export class MapService {
 
 	constructor(private http: HttpClient, private gpsService: GpsService) {
 		App.addListener('appStateChange', (state) => {
-			console.log('STATE CHANGED TO:', state.isActive);
 			this.appActive = state.isActive;
+			console.log('Is active:', this.appActive);
 
 			if (!this.appActive) {
-				const taskId = BackgroundTask.beforeExit(async () => {
-					console.log('Starting background task!');
-					await this.finishDownloadingAndDeleting()
-
-					BackgroundTask.finish({
-						taskId
-					});
+				this.runningInBackground = true;
+				this.finishStartedTasksInBackground().then((taskId: string) => {
+					console.log('Background task finished:', taskId);
+					this.runningInBackground = false;
 				});
+			} else {
+				this.finishDownloadingAndDeleting();
 			}
 		});
 
@@ -94,20 +94,16 @@ export class MapService {
 
 		if (!mapId) {
 			mapId = uuidv4();
-		}
-
-		if (!mapName) {
 			mapName = `Nytt kart - ${new Date().toLocaleDateString()}`;
+			const offlineMapMetaData = await this.saveMapMetaData(mapId, mapName, startPos, endPos, false, false);
+			this.mapsUpdated$.next();
+
+			this.downloads.next([...this.downloads.getValue(), ({
+				totalTiles: this.getTotalTiles(startPos, endPos),
+				downloadedTiles: 0,
+				offlineMapMetaData
+			} as DownloadProgressionData)]);
 		}
-
-		const offlineMapMetaData = await this.saveMapMetaData(mapId, mapName, startPos, endPos, false, false);
-		this.mapsUpdated$.next();
-
-		this.downloads.next([...this.downloads.getValue(), ({
-			totalTiles: this.getTotalTiles(startPos, endPos),
-			downloadedTiles: 0,
-			offlineMapMetaData
-		} as DownloadProgressionData)]);
 
 		let currentUrl = 0;
 
@@ -121,21 +117,21 @@ export class MapService {
 			const endY = endXY[1];
 
 			for (let x = startX; x <= endX; x++) {
-				console.log('We are running yo:', z, startX, endX, x);
 				for (let y = startY; y <= endY; y++) {
-					if (!this.appActive) {
-						
+					if (!this.appActive && !this.runningInBackground) {
 						return;
 					}
 					if (!(await this.TileExists(mapId, z, x, y))) {
 						this.downloadTile(mapId, z, x, y, this.BASE_URLS[currentUrl]);
-						this.downloads.next([...this.downloads.getValue().map((d) => {
-							if (d.offlineMapMetaData.id === mapId) {
-								d.downloadedTiles++;
-							}
+						if (!this.runningInBackground) {
+							this.downloads.next([...this.downloads.getValue().map((d) => {
+								if (d.offlineMapMetaData.id === mapId) {
+									d.downloadedTiles++;
+								}
 
-							return d;
-						})]);
+								return d;
+							})]);
+						}
 					} else {
 						continue;
 					}
@@ -269,6 +265,28 @@ export class MapService {
 
 	getCurrentlyDownloading(): Observable<DownloadProgressionData[]> {
 		return this.downloads.asObservable();
+	}
+
+	private async finishStartedTasksInBackground(): Promise<string> {
+		const taskId = BackgroundTask.beforeExit(async () => {
+			const offlineMapsMetaData = await this.getOfflineMapsMetaData();
+
+			for (const metaData of offlineMapsMetaData) {
+				if (!metaData.downloadFinished) {
+					await this.downloadMapTileArea(metaData.startPos, metaData.endPos, metaData.id, metaData.name);
+				}
+
+				if (!metaData.deleted) {
+					await this.deleteOfflineMap(metaData.id);
+				}
+			}
+
+			BackgroundTask.finish({
+				taskId
+			});
+		});
+
+		return taskId;
 	}
 
 	private async setOfflineMapId(currentGpsPos: Coordinate): Promise<any> {
@@ -511,16 +529,12 @@ export class MapService {
 	}
 
 	private async finishDownloadingAndDeleting() {
-		console.log('yes we are here');
 		await this.getOfflineMapsMetaData().then(async metaDatas => {
-			console.log(metaDatas);
 			for (const metaData of metaDatas) {
 				if (metaData.deleted) {
 					await this.deleteOfflineMap(metaData.id);
 				} else if (!metaData.downloadFinished) {
-					console.log('Downloading map:', metaData.name);
 					await this.downloadMapTileArea(metaData.startPos, metaData.endPos, metaData.id, metaData.name);
-					console.log('Done downloading:', metaData.name);
 				}
 			}
 		});
