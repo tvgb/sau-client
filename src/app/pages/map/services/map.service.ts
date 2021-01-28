@@ -283,6 +283,7 @@ export class MapService {
 			BackgroundTask.finish({
 				taskId
 			});
+			this.runningInBackground = false;
 			console.log('Background task finished:', taskId);
 		});
 
