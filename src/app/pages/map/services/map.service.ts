@@ -467,7 +467,7 @@ export class MapService {
 					title: 'Kartutsnitt ferdig nedlastet.',
 					body: `Kartet ${mapName} ble akkurat ferdig nedlastet og er klart for bruk.`,
 					id: 1,
-					schedule: { at: new Date(Date.now()) },
+					schedule: { at: new Date(Date.now() + 1000)},
 					sound: null,
 					attachments: null,
 					actionTypeId: '',
