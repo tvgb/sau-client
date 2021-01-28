@@ -36,6 +36,9 @@ export class MapPage implements AfterViewInit {
 		private gpsService: GpsService,
 		private ttsService: TextToSpeechService,
 		private navController: NavController) {
+			this.platform.backButton.subscribeWithPriority(5, () => {
+				this.navController.navigateBack('/main-menu');
+			  });
 		}
 
 	changeStatusBar(): void {
@@ -48,9 +51,6 @@ export class MapPage implements AfterViewInit {
 	}
 
 	ionViewWillEnter(): void {
-		this.platform.backButton.subscribeWithPriority(5, () => {
-			this.navController.navigateBack('/main-menu');
-		  });
 		this.changeStatusBar();
 		this.currentMainCategorySub = this.currentMainCategory$.subscribe(res => {
 			this.currentMainCategory = res;
@@ -80,6 +80,8 @@ export class MapPage implements AfterViewInit {
 
 	ngAfterViewInit(): void {
 		setTimeout(_ => {
+			this.gpsService.setTracking(true);
+			this.gpsService.setAddMarker(true);
 			this.initMap();
 		});
 	}
@@ -142,5 +144,6 @@ export class MapPage implements AfterViewInit {
 
 	ionViewWillLeave(): void {
 		this.currentMainCategorySub.unsubscribe();
+		this.gpsService.setTracking(false);
 	}
 }

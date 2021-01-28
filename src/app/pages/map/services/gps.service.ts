@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
-import { BrowserStack } from 'protractor/built/driverProviders';
-
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +14,7 @@ export class GpsService {
 	private RECALIBRATION_INTERVAL = 4000;
 	private tracking = true;
 	private getInitialPosistion = true;
+	private addMarkerAgain;
 
 	private posistionIcon =  new L.Icon({
 		iconUrl: 'assets/icon/marker-icon.png',
@@ -31,6 +30,10 @@ export class GpsService {
 
 	setTracking(trackingStatus: boolean) {
 		this.tracking = trackingStatus;
+	}
+
+	setAddMarker(addMarkerAgainStatus: boolean) {
+		this.addMarkerAgain = addMarkerAgainStatus;
 	}
 
 	startTrackingInterval(map: L.Map) {
@@ -101,10 +104,11 @@ export class GpsService {
 			this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
 				this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
 
-				if (!this.posistionMarker) {
+				console.log('SET MARKER AGAIN: ', this.addMarkerAgain);
+				if (!this.posistionMarker || this.addMarkerAgain) {
 					this.posistionMarker = L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionIcon}).addTo(map);
+					this.addMarkerAgain = false;
 				} else {
-					console.log('HELLO!');
 					console.log('GPS: ' + JSON.stringify([data.coords.latitude, data.coords.longitude]));
 					this.posistionMarker.setLatLng([data.coords.latitude, data.coords.longitude]);
 				}
