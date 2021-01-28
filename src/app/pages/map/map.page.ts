@@ -20,7 +20,6 @@ const { StatusBar, App } = Plugins;
 
 export class MapPage implements AfterViewInit {
 	private registrationUrl = '/registration/register';
-	private newFieldTripUrl = '/new-field-trip';
 	private map;
 	private readonly OFFLINE_MAP = false;
 	private currentMainCategory: MainCategory;
@@ -51,6 +50,11 @@ export class MapPage implements AfterViewInit {
 	}
 
 	ionViewWillEnter(): void {
+		if (!this.gpsService.getTracking()) {
+			this.gpsService.setTracking(true);
+			this.gpsService.startTrackingInterval(this.map);
+		}
+
 		this.changeStatusBar();
 		this.currentMainCategorySub = this.currentMainCategory$.subscribe(res => {
 			this.currentMainCategory = res;
@@ -99,8 +103,7 @@ export class MapPage implements AfterViewInit {
 				zoomControl: false,
 				attributionControl: false
 			});
-
-			this.gpsService.startTrackingInterval(this.map);
+		this.gpsService.startTrackingInterval(this.map);
 
 			App.addListener('appStateChange', ({ isActive }) => {
 				if (isActive) {

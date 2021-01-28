@@ -28,6 +28,10 @@ export class GpsService {
 
 	constructor(private geolocation: Geolocation) {	}
 
+	getTracking(): boolean {
+		return this.tracking;
+	}
+
 	setTracking(trackingStatus: boolean) {
 		this.tracking = trackingStatus;
 	}
@@ -53,25 +57,10 @@ export class GpsService {
 		}
 	}
 
-	// createDefaultMarker() {
-	// 	console.log('Inside createDefaultMarker');
-	// 	this.posistionIcon = new L.Icon({
-	// 		iconUrl: 'assets/icon/marker-icon.png',
-	// 		shadowUrl: 'assets/icon/marker-shadow.png',
-	// 		iconSize: [25, 41],
- 	// 		iconAnchor: [12, 41],
-	// 		popupAnchor: [1, -34],
-	// 		tooltipAnchor: [16, -28],
-	// 		shadowSize: [41, 41]
-	// 	});
-	// 	return this.posistionIcon;
-	//  }
-
 	/**
 	 * Recalibrates position when app has been inactive, waits until stable position
 	 */
 	recalibratePosition(map: L.Map) {
-		console.log('RECALIBRATING POSITION');
 		this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
 			this.calibrationCoords.push({lat: data.coords.latitude, lng: data.coords.longitude});
 			if (this.calibrationCoords.length < 2) {
@@ -104,19 +93,10 @@ export class GpsService {
 			this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
 				this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
 
-				console.log('SET MARKER AGAIN: ', this.addMarkerAgain);
 				if (!this.posistionMarker || this.addMarkerAgain) {
 					this.posistionMarker = L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionIcon}).addTo(map);
 					this.addMarkerAgain = false;
-				} else {
-					console.log('GPS: ' + JSON.stringify([data.coords.latitude, data.coords.longitude]));
-					this.posistionMarker.setLatLng([data.coords.latitude, data.coords.longitude]);
-				}
-				// if (this.posistionIcon == null) {
-				// 	console.log('posistionIcon er null');
-				// 	this.posistionIcon = this.createDefaultMarker();
-				// 	this.posistionMarker = L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionIcon}).addTo(map);
-				// } else { this.posistionMarker.setLatLng([data.coords.latitude, data.coords.longitude]); }
+				} else {this.posistionMarker.setLatLng([data.coords.latitude, data.coords.longitude]); }
 				// {smoothFactor: 8}
 				L.polyline(this.trackedRoute).addTo(map);
 			}).catch((error) => {
