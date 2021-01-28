@@ -277,7 +277,7 @@ export class MapService {
 					await this.downloadMapTileArea(metaData.startPos, metaData.endPos, metaData.id, metaData.name);
 				}
 
-				if (!metaData.deleted) {
+				if (metaData.deleted) {
 					await this.deleteOfflineMap(metaData.id);
 				}
 			}
@@ -532,10 +532,12 @@ export class MapService {
 	private async finishDownloadingAndDeleting() {
 		await this.getOfflineMapsMetaData().then(async metaDatas => {
 			for (const metaData of metaDatas) {
+				if (!metaData.downloadFinished) {
+					await this.downloadMapTileArea(metaData.startPos, metaData.endPos, metaData.id, metaData.name);
+				}
+
 				if (metaData.deleted) {
 					await this.deleteOfflineMap(metaData.id);
-				} else if (!metaData.downloadFinished) {
-					await this.downloadMapTileArea(metaData.startPos, metaData.endPos, metaData.id, metaData.name);
 				}
 			}
 		});
