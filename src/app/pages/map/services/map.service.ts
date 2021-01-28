@@ -91,6 +91,7 @@ export class MapService {
 	 * startLat and startLng needs to be north west, while endLat and endLng needs to be south east.
 	 */
 	async downloadMapTileArea(startPos: Coordinate, endPos: Coordinate, mapId: string = null, mapName: string = null) {
+		console.log('STARTING DOWNLOAD', this.appActive, this.runningInBackground);
 
 		if (!mapId) {
 			mapId = uuidv4();
