@@ -119,6 +119,7 @@ export class MapService {
 			for (let x = startX; x <= endX; x++) {
 				for (let y = startY; y <= endY; y++) {
 					if (!this.appActive && !this.runningInBackground) {
+						console.log('Returning:', this.appActive, this.runningInBackground);
 						return;
 					}
 					if (!(await this.TileExists(mapId, z, x, y))) {
