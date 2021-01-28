@@ -43,10 +43,7 @@ export class MapService {
 
 			if (!this.appActive) {
 				this.runningInBackground = true;
-				this.finishStartedTasksInBackground().then((taskId: string) => {
-					console.log('Background task finished:', taskId);
-					this.runningInBackground = false;
-				});
+				this.finishStartedTasksInBackground();
 			} else {
 				this.finishDownloadingAndDeleting();
 			}
@@ -286,6 +283,7 @@ export class MapService {
 			BackgroundTask.finish({
 				taskId
 			});
+			console.log('Background task finished:', taskId);
 		});
 
 		return taskId;
