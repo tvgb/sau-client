@@ -10,14 +10,13 @@ import { Coordinate } from 'src/app/shared/classes/Coordinate';
 import { GpsService } from './gps.service';
 import { Plugins } from '@capacitor/core';
 
-const { LocalNotifications } = Plugins;
-
+const { LocalNotifications, BackgroundTask, App} = Plugins;
 
 @Injectable({
 	providedIn: 'root'
 })
 export class MapService {
-	private readonly ZOOM_LEVELS = [8, 9, 10, 11, 12, 13];
+	private readonly ZOOM_LEVELS = [12];
 	private readonly DOWNLOAD_DELAY = 200;
 	private readonly FILESYSTEM_DIRECTORY = FilesystemDirectory.External;
 	private readonly MAX_HTTP_RETRIES = 5;
@@ -26,6 +25,7 @@ export class MapService {
 	private mapsUpdated$: Subject<any> = new Subject();
 	private mapId: string;
 	private lastTrackedPosition: Coordinate;
+	private appActive = true;
 
 	private readonly BASE_URLS = [
 		'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps',
@@ -36,6 +36,24 @@ export class MapService {
 	private readonly MAP_LAYER = 'norges_grunnkart';
 
 	constructor(private http: HttpClient, private gpsService: GpsService) {
+		App.addListener('appStateChange', (state) => {
+			console.log('STATE CHANGED TO:', state.isActive);
+			this.appActive = state.isActive;
+
+			if (!this.appActive) {
+				const taskId = BackgroundTask.beforeExit(async () => {
+					console.log('Starting background task!');
+					await this.finishDownloadingAndDeleting()
+
+					BackgroundTask.finish({
+						taskId
+					});
+				});
+			}
+		});
+
+		LocalNotifications.requestPermission();
+
 		gpsService.getLastTrackedPosition().subscribe(pos => {
 			if (pos) {
 				this.lastTrackedPosition = pos;
@@ -103,7 +121,12 @@ export class MapService {
 			const endY = endXY[1];
 
 			for (let x = startX; x <= endX; x++) {
+				console.log('We are running yo:', z, startX, endX, x);
 				for (let y = startY; y <= endY; y++) {
+					if (!this.appActive) {
+						
+						return;
+					}
 					if (!(await this.TileExists(mapId, z, x, y))) {
 						this.downloadTile(mapId, z, x, y, this.BASE_URLS[currentUrl]);
 						this.downloads.next([...this.downloads.getValue().map((d) => {
@@ -131,6 +154,7 @@ export class MapService {
 		await this.saveMapMetaData(mapId, mapName, startPos, endPos, true);
 		this.mapsUpdated$.next();
 		this.downloads.next([...this.downloads.getValue().filter(d => d.offlineMapMetaData.id !== mapId)]);
+		console.log('Map download sequence ended!');
 		this.showDownloadFinishedNotification(mapName);
 	}
 
@@ -463,16 +487,12 @@ export class MapService {
 	private showDownloadFinishedNotification(mapName: string) {
 		LocalNotifications.schedule({
 			notifications: [
-				{
-					title: 'Kartutsnitt ferdig nedlastet.',
-					body: `Kartet ${mapName} ble akkurat ferdig nedlastet og er klart for bruk.`,
-					id: 1,
-					schedule: { at: new Date(Date.now() + 1000)},
-					sound: null,
-					attachments: null,
-					actionTypeId: '',
-					extra: null
-				}
+			  {
+				title: 'Kartutsnitt ferdig nedlastet',
+				body: `${mapName} har blitt lastet ned og er klart for bruk.`,
+				id: Date.now(),
+				schedule: { at: new Date(Date.now() + 1000 * 2) }
+			  }
 			]
 		});
 	}
@@ -491,12 +511,16 @@ export class MapService {
 	}
 
 	private async finishDownloadingAndDeleting() {
-		this.getOfflineMapsMetaData().then(metaDatas => {
+		console.log('yes we are here');
+		await this.getOfflineMapsMetaData().then(async metaDatas => {
+			console.log(metaDatas);
 			for (const metaData of metaDatas) {
 				if (metaData.deleted) {
-					this.deleteOfflineMap(metaData.id);
+					await this.deleteOfflineMap(metaData.id);
 				} else if (!metaData.downloadFinished) {
-					this.downloadMapTileArea(metaData.startPos, metaData.endPos, metaData.id, metaData.name);
+					console.log('Downloading map:', metaData.name);
+					await this.downloadMapTileArea(metaData.startPos, metaData.endPos, metaData.id, metaData.name);
+					console.log('Done downloading:', metaData.name);
 				}
 			}
 		});
