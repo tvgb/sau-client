@@ -33,7 +33,7 @@ export class DownloadMapPage implements AfterViewInit {
 		const startPos = this.map.containerPointToLatLng(L.point(offsetLeft, offsetTop));
 		const endPos = this.map.containerPointToLatLng(L.point(offsetWidth + offsetLeft, offsetTop + offsetHeight)) ;
 
-		this.mapService.downloadMapTileArea(startPos, endPos);
+		this.mapService.startMapTileAreaDownload(startPos, endPos);
 		this.navController.navigateBack('/offline-maps');
 	}
 
