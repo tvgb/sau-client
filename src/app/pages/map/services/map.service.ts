@@ -93,23 +93,16 @@ export class MapService {
 
 		offlineMapMetaData = await this.downloadMapTileArea(offlineMapMetaData);
 
-		while (!offlineMapMetaData.downloadFinished) {
-			console.log(offlineMapMetaData);
-
+		if (!offlineMapMetaData.downloadFinished) {
 			this.stopDownloads = false;
-			if (this.appActive) {
-				console.log('Downloading in FOREGROUND!');
+			console.log('Starting download in background!');
+			const taskId = BackgroundTask.beforeExit(async () => {
 				offlineMapMetaData = await this.downloadMapTileArea(offlineMapMetaData);
-			} else {
-				console.log('Downloading in BACKGROUND!');
-				const taskId = BackgroundTask.beforeExit(async () => {
-					offlineMapMetaData = await this.downloadMapTileArea(offlineMapMetaData);
 
-					BackgroundTask.finish({
-						taskId
-					});
+				BackgroundTask.finish({
+					taskId
 				});
-			}
+			});
 		}
 
 		console.log(offlineMapMetaData);
