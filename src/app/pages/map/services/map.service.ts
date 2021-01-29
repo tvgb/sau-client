@@ -91,6 +91,7 @@ export class MapService {
 			deleted: false
 		};
 
+		this.stopDownloads = false;
 		offlineMapMetaData = await this.downloadMapTileArea(offlineMapMetaData);
 
 		if (!offlineMapMetaData.downloadFinished) {
