@@ -35,19 +35,15 @@ export class NewFieldTripPage {
 
 	constructor(private store: Store, private navController: NavController, private formbuilder: FormBuilder) {
 		this.newFieldTripForm = this.formbuilder.group({
-			overseerName: ['', Validators.required],
-			fNumber: ['', Validators.required],
-			bNumber: ['', Validators.required],
-			municipality: ['', Validators.required],
-			participants: ['', Validators.required],
+			overseerName: ['Kari Nordmann', Validators.required],
+			fNumber: ['22', Validators.required],
+			bNumber: ['12', Validators.required],
+			municipality: ['Trondheim', Validators.required],
+			participants: ['1', Validators.required],
 			weather: [''],
 			description: [''],
 		});
-		// Keyboard.addListener('keyboardWillHide', () => {
-		// 	console.log('KIMIA');
-		// 	Keyboard.hide();
 
-		//   });
 	}
 
 
@@ -88,6 +84,7 @@ export class NewFieldTripPage {
 
 			this.navController.navigateForward(this.mapUrl);
 		}
+
 	}
 
 	ionViewWillLeave(): void {
