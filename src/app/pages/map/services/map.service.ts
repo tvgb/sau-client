@@ -117,7 +117,7 @@ export class MapService {
 			for (let x = startX; x <= endX; x++) {
 				console.log('Downloading ...', x, this.appActive, this.runningInBackground);
 				for (let y = startY; y <= endY; y++) {
-					if (!this.appActive && !this.runningInBackground) {
+					if (!(this.appActive || this.runningInBackground)) {
 						console.log('Returning:', this.appActive, this.runningInBackground);
 						return;
 					}
