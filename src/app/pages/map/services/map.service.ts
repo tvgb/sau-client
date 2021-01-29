@@ -151,15 +151,13 @@ export class MapService {
 					}
 					if (!(await this.TileExists(mapId, z, x, y))) {
 						this.downloadTile(mapId, z, x, y, this.BASE_URLS[currentUrl]);
-						if (this.appActive) {
-							this.downloads.next([...this.downloads.getValue().map((d) => {
-								if (d.offlineMapMetaData.id === mapId) {
-									d.downloadedTiles++;
-								}
+						this.downloads.next([...this.downloads.getValue().map((d) => {
+							if (d.offlineMapMetaData.id === mapId) {
+								d.downloadedTiles++;
+							}
 
-								return d;
-							})]);
-						}
+							return d;
+						})]);
 					} else {
 						continue;
 					}
