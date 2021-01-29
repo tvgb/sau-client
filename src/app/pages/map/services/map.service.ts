@@ -268,16 +268,22 @@ export class MapService {
 
 	private async finishStartedTasksInBackground(): Promise<string> {
 		const taskId = BackgroundTask.beforeExit(async () => {
+			console.log('Getting meta data');
 			const offlineMapsMetaData = await this.getOfflineMapsMetaData();
+			console.log('Offline maps fetched:', offlineMapsMetaData);
+
 
 			for (const metaData of offlineMapsMetaData) {
+				console.log('METADATA:', metaData);
 				if (!metaData.downloadFinished) {
+					console.log('Downloading map:', metaData);
 					await this.downloadMapTileArea(metaData.startPos, metaData.endPos, metaData.id, metaData.name);
+					console.log('Finished downloading map:', metaData);
 				}
 
-				if (metaData.deleted) {
-					await this.deleteOfflineMap(metaData.id);
-				}
+				// if (metaData.deleted) {
+				// 	await this.deleteOfflineMap(metaData.id);
+				// }
 			}
 
 			BackgroundTask.finish({
