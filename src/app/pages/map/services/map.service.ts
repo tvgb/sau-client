@@ -227,7 +227,12 @@ export class MapService {
 			}).then((res) => {
 				console.log('Map deleted:', mapId);
 				return res;
+			}).catch((error) => {
+				console.log('Error happening when deleting entire map:', mapId, error);
 			});
+		}).catch((error) => {
+			console.log('Error when removing mapTiles folder:', mapId, error);
+			return error;
 		});
 	}
 
