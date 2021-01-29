@@ -115,6 +115,7 @@ export class MapService {
 			const endY = endXY[1];
 
 			for (let x = startX; x <= endX; x++) {
+				console.log('Downloading ...', x);
 				for (let y = startY; y <= endY; y++) {
 					if (!this.appActive && !this.runningInBackground) {
 						console.log('Returning:', this.appActive, this.runningInBackground);
@@ -395,7 +396,7 @@ export class MapService {
 						await this.writeFile(mapId, reader.result, z, x, y).then(() => {
 							retries = 0;
 						}).catch((e) => {
-							console.log('Failed while writing to file:', retries, z, x, y, e);
+							// console.log('Failed while writing to file:', retries, z, x, y, e);
 						});
 
 						retries--;
