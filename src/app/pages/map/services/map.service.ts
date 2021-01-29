@@ -115,7 +115,7 @@ export class MapService {
 			const endY = endXY[1];
 
 			for (let x = startX; x <= endX; x++) {
-				console.log('Downloading ...', x);
+				console.log('Downloading ...', x, this.appActive, this.runningInBackground);
 				for (let y = startY; y <= endY; y++) {
 					if (!this.appActive && !this.runningInBackground) {
 						console.log('Returning:', this.appActive, this.runningInBackground);
@@ -224,6 +224,9 @@ export class MapService {
 				directory: this.FILESYSTEM_DIRECTORY,
 				path: `/${mapId}`,
 				recursive: true
+			}).then((res) => {
+				console.log('Map deleted:', mapId);
+				return res;
 			});
 		});
 	}
