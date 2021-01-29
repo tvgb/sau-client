@@ -1,4 +1,4 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { GpsService } from './services/gps.service';
@@ -9,6 +9,7 @@ import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
 import { Plugins, StatusBarStyle } from '@capacitor/core';
 import { NavController, Platform } from '@ionic/angular';
+import { Coordinate } from 'src/app/shared/classes/Coordinate';
 
 const { StatusBar, App } = Plugins;
 
@@ -23,11 +24,25 @@ export class MapPage implements AfterViewInit {
 	private map;
 	private readonly OFFLINE_MAP = false;
 	private currentMainCategory: MainCategory;
+	private trackedRouteSub: Subscription;
+
+	private posistionIcon =  new L.Icon({
+		iconUrl: 'assets/icon/marker-icon.png',
+		shadowUrl: 'assets/icon/marker-shadow.png',
+		iconSize: [25, 41],
+		 iconAnchor: [12, 41],
+		popupAnchor: [1, -34],
+		tooltipAnchor: [16, -28],
+		shadowSize: [41, 41]
+	});
+
 
 
 	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
 
 	currentMainCategorySub: Subscription;
+	posistionMarker: any;
+	addMarkerAgain: boolean;
 
 	constructor(
 		private platform: Platform,
@@ -50,15 +65,23 @@ export class MapPage implements AfterViewInit {
 	}
 
 	ionViewWillEnter(): void {
+		this.changeStatusBar();
+		this.trackedRouteSub =  this.gpsService.getTrackedRoute().subscribe((res) => {
+			if (this.map) {
+				L.polyline(res).addTo(this.map);
+				console.log('RESSS!! : ', res[res.length - 1]);
+				this.posistionMarker.setLatLng([res[res.length - 1].lat, res[res.length - 1].lng]);
+			}
+		});
+
+		this.currentMainCategorySub = this.currentMainCategory$.subscribe(res => {
+			this.currentMainCategory = res;
+		});
+
 		if (!this.gpsService.getTracking()) {
 			this.gpsService.setTracking(true);
 			this.gpsService.startTrackingInterval(this.map);
 		}
-
-		this.changeStatusBar();
-		this.currentMainCategorySub = this.currentMainCategory$.subscribe(res => {
-			this.currentMainCategory = res;
-		});
 		// This covers Gløshaugen ++++
 		// const startLat = 63.433167;
 		// const startLong =  10.358562;
@@ -103,7 +126,10 @@ export class MapPage implements AfterViewInit {
 				zoomControl: false,
 				attributionControl: false
 			});
-		this.gpsService.startTrackingInterval(this.map);
+
+			this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude], {icon: this.posistionIcon}).addTo(this.map);
+
+	 	this.gpsService.startTrackingInterval(this.map);
 
 			App.addListener('appStateChange', ({ isActive }) => {
 				if (isActive) {
@@ -147,6 +173,7 @@ export class MapPage implements AfterViewInit {
 
 	ionViewWillLeave(): void {
 		this.currentMainCategorySub.unsubscribe();
+		this.trackedRouteSub.unsubscribe();
 		this.gpsService.setTracking(false);
 	}
 }

@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import * as L from 'leaflet';
+import { BehaviorSubject } from 'rxjs';
+import { Coordinate } from 'src/app/shared/classes/Coordinate';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GpsService {
 	private trackedRoute = [];
+	private trackedRoute$: BehaviorSubject<Coordinate[]> = new BehaviorSubject<Coordinate[]>([]);
 	private calibrationCoords = [];
 	private posistionMarker;
 	private CALIBRATION_THRESHOLD = 0.0001;
@@ -16,15 +19,6 @@ export class GpsService {
 	private getInitialPosistion = true;
 	private addMarkerAgain;
 
-	private posistionIcon =  new L.Icon({
-		iconUrl: 'assets/icon/marker-icon.png',
-		shadowUrl: 'assets/icon/marker-shadow.png',
-		iconSize: [25, 41],
-		 iconAnchor: [12, 41],
-		popupAnchor: [1, -34],
-		tooltipAnchor: [16, -28],
-		shadowSize: [41, 41]
-	});
 
 	constructor(private geolocation: Geolocation) {	}
 
@@ -91,18 +85,18 @@ export class GpsService {
 	updateTrackAndPosition(map: L.Map) {
 		if (this.tracking) {
 			this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
-				this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
-
-				if (!this.posistionMarker || this.addMarkerAgain) {
-					this.posistionMarker = L.marker([data.coords.latitude, data.coords.longitude], {icon: this.posistionIcon}).addTo(map);
-					this.addMarkerAgain = false;
-				} else {this.posistionMarker.setLatLng([data.coords.latitude, data.coords.longitude]); }
+				// this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
+				this.trackedRoute$.next([...this.trackedRoute$.getValue(), new Coordinate(data.coords.latitude, data.coords.longitude)]);
 				// {smoothFactor: 8}
-				L.polyline(this.trackedRoute).addTo(map);
+				// L.polyline(this.trackedRoute).addTo(map);
 			}).catch((error) => {
 					console.log('Error getting location', error);
 			});
 		}
+	}
+
+	getTrackedRoute() {
+		return this.trackedRoute$.asObservable();
 	}
 
 	getCurrentPosition(): Promise<Geoposition> {
