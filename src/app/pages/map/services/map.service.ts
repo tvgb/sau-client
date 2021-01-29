@@ -43,10 +43,10 @@ export class MapService {
 
 			if (!this.appActive) {
 				this.runningInBackground = true;
-				this.finishStartedTasksInBackground();
-			} else {
-				this.finishDownloadingAndDeleting();
 			}
+			// } else {
+			// 	this.finishDownloadingAndDeleting();
+			// }
 		});
 
 		LocalNotifications.requestPermission();
@@ -118,6 +118,8 @@ export class MapService {
 				console.log('Downloading ...', x, this.appActive, this.runningInBackground);
 				for (let y = startY; y <= endY; y++) {
 					if (!(this.appActive || this.runningInBackground)) {
+						console.log('Starting backgroundtask:', this.mapId);
+						this.finishStartedTasksInBackground();
 						console.log('Returning:', this.appActive, this.runningInBackground);
 						return;
 					}
@@ -276,6 +278,8 @@ export class MapService {
 	}
 
 	private async finishStartedTasksInBackground(): Promise<string> {
+		this.runningInBackground = true;
+
 		const taskId = BackgroundTask.beforeExit(async () => {
 			console.log('Getting meta data');
 			const offlineMapsMetaData = await this.getOfflineMapsMetaData();
