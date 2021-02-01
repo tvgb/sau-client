@@ -7,9 +7,9 @@ import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { SetCurrentFieldTrip } from 'src/app/shared/store/fieldTripInfo.actions';
 import { NavController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {Plugins, StatusBarStyle} from '@capacitor/core';
+import {Plugins, StatusBarStyle, KeyboardInfo} from '@capacitor/core';
 
-const {StatusBar} = Plugins;
+const {StatusBar, Keyboard} = Plugins;
 
 @Component({
   selector: 'app-new-field-trip',
@@ -35,15 +35,18 @@ export class NewFieldTripPage {
 
 	constructor(private store: Store, private navController: NavController, private formbuilder: FormBuilder) {
 		this.newFieldTripForm = this.formbuilder.group({
-			overseerName: ['', Validators.required],
-			fNumber: ['', Validators.required],
-			bNumber: ['', Validators.required],
-			municipality: ['', Validators.required],
-			participants: ['', Validators.required],
+			overseerName: ['Kari Nordmann', Validators.required],
+			fNumber: ['22', Validators.required],
+			bNumber: ['12', Validators.required],
+			municipality: ['Trondheim', Validators.required],
+			participants: ['1', Validators.required],
 			weather: [''],
 			description: [''],
 		});
+
 	}
+
+
 
 	changeStatusBarTextColor(): void {
 		StatusBar.setOverlaysWebView({
@@ -69,6 +72,7 @@ export class NewFieldTripPage {
 	createNewFieldTrip() {
 		this.submitAttempt = true;
 		if (this.newFieldTripForm.valid) {
+			Keyboard.hide();
 			this.fieldTripId = uuidv4();
 			this.currentFieldTripInfo = new FieldTripInfo(
 				this.fieldTripId, this.newFieldTripForm.controls.overseerName.value, this.newFieldTripForm.controls.fNumber.value,
@@ -77,8 +81,10 @@ export class NewFieldTripPage {
 				this.newFieldTripForm.controls.weather.value, this.newFieldTripForm.controls.description.value);
 			console.log(JSON.stringify(this.currentFieldTripInfo));
 			this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
+
 			this.navController.navigateForward(this.mapUrl);
 		}
+
 	}
 
 	ionViewWillLeave(): void {

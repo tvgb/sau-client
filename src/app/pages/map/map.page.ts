@@ -8,7 +8,7 @@ import { TextToSpeechService } from '../registration/services/text-to-speech.ser
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
 import { Plugins, StatusBarStyle } from '@capacitor/core';
-import { NavController } from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular';
 
 const { StatusBar, App } = Plugins;
 
@@ -20,21 +20,39 @@ const { StatusBar, App } = Plugins;
 
 export class MapPage implements AfterViewInit {
 	private registrationUrl = '/registration/register';
-	private newFieldTripUrl = '/new-field-trip';
 	private map;
 	private readonly OFFLINE_MAP = true;
 	private currentMainCategory: MainCategory;
+	private trackedRouteSub: Subscription;
+
+	private posistionIcon =  new L.Icon({
+		iconUrl: 'assets/icon/marker-icon.png',
+		shadowUrl: 'assets/icon/marker-shadow.png',
+		iconSize: [25, 41],
+		 iconAnchor: [12, 41],
+		popupAnchor: [1, -34],
+		tooltipAnchor: [16, -28],
+		shadowSize: [41, 41]
+	});
+
 
 
 	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
 
 	currentMainCategorySub: Subscription;
+	posistionMarker: any;
+	addMarkerAgain: boolean;
 
 	constructor(
+		private platform: Platform,
 		private mapService: MapService,
 		private gpsService: GpsService,
 		private ttsService: TextToSpeechService,
-		private navController: NavController) {}
+		private navController: NavController) {
+			this.platform.backButton.subscribeWithPriority(5, () => {
+				this.navController.navigateBack('/main-menu');
+			  });
+		}
 
 	changeStatusBar(): void {
 		StatusBar.setOverlaysWebView({
@@ -47,13 +65,26 @@ export class MapPage implements AfterViewInit {
 
 	ionViewWillEnter(): void {
 		this.changeStatusBar();
+		this.trackedRouteSub =  this.gpsService.getTrackedRoute().subscribe((res) => {
+			if (this.map) {
+				L.polyline(res).addTo(this.map);
+				this.posistionMarker.setLatLng([res[res.length - 1].lat, res[res.length - 1].lng]);
+			}
+		});
+
 		this.currentMainCategorySub = this.currentMainCategory$.subscribe(res => {
 			this.currentMainCategory = res;
 		});
+
+		if (!this.gpsService.getTracking()) {
+			this.gpsService.setTracking(true);
+			this.gpsService.startTrackingInterval(this.map);
+		}
 	}
 
 	ngAfterViewInit(): void {
 		setTimeout(_ => {
+			this.gpsService.setTracking(true);
 			this.initMap();
 		});
 	}
@@ -75,7 +106,9 @@ export class MapPage implements AfterViewInit {
 				attributionControl: false
 			});
 
-			this.gpsService.startTrackingInterval(this.map);
+			this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude], {icon: this.posistionIcon}).addTo(this.map);
+
+	 	this.gpsService.startTrackingInterval(this.map);
 
 			App.addListener('appStateChange', ({ isActive }) => {
 				if (isActive) {
@@ -121,5 +154,7 @@ export class MapPage implements AfterViewInit {
 
 	ionViewWillLeave(): void {
 		this.currentMainCategorySub.unsubscribe();
+		this.trackedRouteSub.unsubscribe();
+		this.gpsService.setTracking(false);
 	}
 }
