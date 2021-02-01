@@ -11,7 +11,7 @@
 
 .map-container {
 	position: absolute;
-	top: 85px;
+	top: calc(85px + 20px + env(safe-area-inset-top));
 	left: 0;
 	right: 0;
 	bottom: 0;
