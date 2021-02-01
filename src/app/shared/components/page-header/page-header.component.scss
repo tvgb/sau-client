@@ -6,6 +6,7 @@
 }
 
 .page-header-without-button {
+	width: 100%;
 	font-size: 22px;
 	text-align: center;
     font-weight: 200;
@@ -13,7 +14,10 @@
 }
 
 .page-header-with-button {
+	padding: 0 35px;
+	width: 100%;
 	display: flex;
+	justify-content: space-between;
     font-size: 22px;
     margin-bottom: 20px;
 }
