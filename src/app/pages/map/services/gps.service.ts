@@ -8,16 +8,13 @@ import { Coordinate } from 'src/app/shared/classes/Coordinate';
   providedIn: 'root'
 })
 export class GpsService {
-	private trackedRoute = [];
 	private trackedRoute$: BehaviorSubject<Coordinate[]> = new BehaviorSubject<Coordinate[]>([]);
 	private calibrationCoords = [];
-	private posistionMarker;
 	private CALIBRATION_THRESHOLD = 0.0001;
 	private TRACKING_INTERVAL = 10000;
 	private RECALIBRATION_INTERVAL = 4000;
 	private tracking = true;
 	private getInitialPosistion = true;
-	private addMarkerAgain;
 
 
 	constructor(private geolocation: Geolocation) {	}
@@ -28,10 +25,6 @@ export class GpsService {
 
 	setTracking(trackingStatus: boolean) {
 		this.tracking = trackingStatus;
-	}
-
-	setAddMarker(addMarkerAgainStatus: boolean) {
-		this.addMarkerAgain = addMarkerAgainStatus;
 	}
 
 	startTrackingInterval(map: L.Map) {
@@ -85,10 +78,7 @@ export class GpsService {
 	updateTrackAndPosition(map: L.Map) {
 		if (this.tracking) {
 			this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
-				// this.trackedRoute.push({lat: data.coords.latitude, lng: data.coords.longitude});
 				this.trackedRoute$.next([...this.trackedRoute$.getValue(), new Coordinate(data.coords.latitude, data.coords.longitude)]);
-				// {smoothFactor: 8}
-				// L.polyline(this.trackedRoute).addTo(map);
 			}).catch((error) => {
 					console.log('Error getting location', error);
 			});

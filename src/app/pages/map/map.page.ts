@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnInit } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { GpsService } from './services/gps.service';
@@ -9,7 +9,6 @@ import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
 import { Plugins, StatusBarStyle } from '@capacitor/core';
 import { NavController, Platform } from '@ionic/angular';
-import { Coordinate } from 'src/app/shared/classes/Coordinate';
 
 const { StatusBar, App } = Plugins;
 
@@ -69,7 +68,6 @@ export class MapPage implements AfterViewInit {
 		this.trackedRouteSub =  this.gpsService.getTrackedRoute().subscribe((res) => {
 			if (this.map) {
 				L.polyline(res).addTo(this.map);
-				console.log('RESSS!! : ', res[res.length - 1]);
 				this.posistionMarker.setLatLng([res[res.length - 1].lat, res[res.length - 1].lng]);
 			}
 		});
@@ -108,7 +106,6 @@ export class MapPage implements AfterViewInit {
 	ngAfterViewInit(): void {
 		setTimeout(_ => {
 			this.gpsService.setTracking(true);
-			this.gpsService.setAddMarker(true);
 			this.initMap();
 		});
 	}
