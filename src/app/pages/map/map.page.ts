@@ -21,7 +21,7 @@ const { StatusBar, App } = Plugins;
 export class MapPage implements AfterViewInit {
 	private registrationUrl = '/registration/register';
 	private map;
-	private readonly OFFLINE_MAP = false;
+	private readonly OFFLINE_MAP = true;
 	private currentMainCategory: MainCategory;
 	private trackedRouteSub: Subscription;
 
@@ -80,27 +80,6 @@ export class MapPage implements AfterViewInit {
 			this.gpsService.setTracking(true);
 			this.gpsService.startTrackingInterval(this.map);
 		}
-		// This covers Gløshaugen ++++
-		// const startLat = 63.433167;
-		// const startLong =  10.358562;
-		// const endLat = 63.400195;
-		// const endLong = 10.445320;
-
-		// This covers Gløshaugen +
-		const startLat = 63.423846;
-		const startLong =  10.387870;
-		const endLat = 63.412948;
-		const endLong = 10.417666;
-
-		// This covers Gløshaugen
-		// const startLat = 63.422297;
-		// const startLong =  10.394725;
-		// const endLat = 63.413847;
-		// const endLong = 10.415751;
-
-		if (this.OFFLINE_MAP) {
-			this.mapService.downloadMapTileArea(startLat, startLong, endLat, endLong);
-		}
 	}
 
 	ngAfterViewInit(): void {
@@ -116,10 +95,13 @@ export class MapPage implements AfterViewInit {
 	}
 
 	initMap(): void {
-		this.gpsService.getCurrentPosition().then(gpsPosition => {
+
+		this.gpsService.getCurrentPosition().then(async gpsPosition => {
 			this.map = L.map('map', {
 				center: [gpsPosition.coords.latitude, gpsPosition.coords.longitude],
 				zoom: 12,
+				minZoom: this.mapService.getMinZoom(),
+				maxZoom: this.mapService.getMaxZoom(),
 				zoomControl: false,
 				attributionControl: false
 			});
@@ -138,27 +120,7 @@ export class MapPage implements AfterViewInit {
 			  });
 
 			if (this.OFFLINE_MAP) {
-				L.GridLayer.OfflineMap = L.GridLayer.extend({
-					createTile: (coords, done) => {
-						const tile = document.createElement('img');
-
-						const mapName = 'testMap1';
-
-						this.mapService.getTile(mapName, coords.z, coords.x, coords.y).then((base64Img) => {
-							tile.setAttribute(
-								'src', base64Img.data
-							);
-							done(null, tile);
-						}).catch((e) => {
-							tile.innerHTML = 'Map not available offline.';
-						});
-						return tile;
-					}
-				});
-				L.gridLayer.offlineMap = (opts) => {
-					return new L.GridLayer.OfflineMap(opts);
-				};
-				this.map.addLayer( L.gridLayer.offlineMap() );
+				this.initOfflineMap();
 			} else {
 				L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
 				{
@@ -166,6 +128,28 @@ export class MapPage implements AfterViewInit {
 				}).addTo(this.map);
 			}
 		});
+	}
+
+	initOfflineMap(): void {
+		L.GridLayer.OfflineMap = L.GridLayer.extend({
+			createTile: (coords, done) => {
+				const tile = document.createElement('img');
+
+				this.mapService.getTile(coords.z, coords.x, coords.y).then((base64Img) => {
+					tile.setAttribute(
+						'src', base64Img.data
+					);
+					done(null, tile);
+				}).catch((e) => {
+					tile.innerHTML = 'Map not available offline.';
+				});
+				return tile;
+			}
+		});
+		L.gridLayer.offlineMap = (opts) => {
+			return new L.GridLayer.OfflineMap(opts);
+		};
+		this.map.addLayer( L.gridLayer.offlineMap() );
 	}
 
 	ionViewWillLeave(): void {
