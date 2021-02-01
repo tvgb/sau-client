@@ -9,6 +9,7 @@ import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
 import { Plugins, StatusBarStyle } from '@capacitor/core';
 import { NavController, Platform } from '@ionic/angular';
+import { AlertService } from 'src/app/shared/services/alert.service';
 
 const { StatusBar, App } = Plugins;
 
@@ -35,6 +36,8 @@ export class MapPage implements AfterViewInit {
 		shadowSize: [41, 41]
 	});
 
+	private alertHeader = 'Fullfør oppsynstur';
+	private alertMessage = 'Ønsker du å fullføre og lagre denne oppsynsturen?';
 
 
 	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
@@ -48,6 +51,7 @@ export class MapPage implements AfterViewInit {
 		private mapService: MapService,
 		private gpsService: GpsService,
 		private ttsService: TextToSpeechService,
+		private alertService: AlertService,
 		private navController: NavController) {
 			this.platform.backButton.subscribeWithPriority(5, () => {
 				this.navController.navigateBack('/main-menu');
@@ -92,6 +96,10 @@ export class MapPage implements AfterViewInit {
 	navigateToRegistration() {
 		this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);
 		this.navController.navigateForward(this.registrationUrl);
+	}
+
+	navigateToSummary() {
+		this.navController.navigateForward('/registration/summary');
 	}
 
 	initMap(): void {
@@ -150,6 +158,10 @@ export class MapPage implements AfterViewInit {
 			return new L.GridLayer.OfflineMap(opts);
 		};
 		this.map.addLayer( L.gridLayer.offlineMap() );
+	}
+
+	showConfirmAlert() {
+		this.alertService.confirmAlert(this.alertHeader, this.alertMessage, this, this.navigateToRegistration);
 	}
 
 	ionViewWillLeave(): void {
