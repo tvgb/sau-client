@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { StateResetAll } from 'ngxs-reset-plugin';
-import { AlertController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 import { Store } from '@ngxs/store';
 import { VibrationService } from '../../services/vibration.service';
 
@@ -23,6 +23,7 @@ export class NavigationComponent implements OnInit {
 	constructor(
 		private vibration: VibrationService,
 		private router: Router,
+		private navController: NavController,
 		private store: Store,
 		private alertController: AlertController) { }
 
@@ -64,7 +65,7 @@ export class NavigationComponent implements OnInit {
 					text: 'Ja',
 					handler: () => {
 						console.log('Bekreft ja!');
-						this.router.navigate([this.cancelRoute]);
+						this.navController.navigateBack(this.cancelRoute);
 						console.log('Returning to map page, clearing state');
 						this.store.dispatch(new StateResetAll());
 						this.cancelRegistration.emit();
