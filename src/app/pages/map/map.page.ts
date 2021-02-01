@@ -21,7 +21,7 @@ const { StatusBar, App } = Plugins;
 export class MapPage implements AfterViewInit {
 	private registrationUrl = '/registration/register';
 	private map;
-	private readonly OFFLINE_MAP = true;
+	private readonly OFFLINE_MAP = false;
 	private currentMainCategory: MainCategory;
 	private trackedRouteSub: Subscription;
 
@@ -29,7 +29,7 @@ export class MapPage implements AfterViewInit {
 		iconUrl: 'assets/icon/marker-icon.png',
 		shadowUrl: 'assets/icon/marker-shadow.png',
 		iconSize: [25, 41],
-		 iconAnchor: [12, 41],
+		iconAnchor: [12, 41],
 		popupAnchor: [1, -34],
 		tooltipAnchor: [16, -28],
 		shadowSize: [41, 41]
