@@ -39,12 +39,7 @@ export class MapService {
 	constructor(private http: HttpClient, private gpsService: GpsService) {
 		App.addListener('appStateChange', (state) => {
 			this.appActive = state.isActive;
-			console.log('Is active:', this.appActive);
-
 			this.stopDownloads = true;
-			// } else {
-			// 	this.finishDownloadingAndDeleting();
-			// }
 		});
 
 		LocalNotifications.requestPermission();
@@ -56,7 +51,7 @@ export class MapService {
 			}
 		});
 
-		// this.finishDownloadingAndDeleting();
+		this.finishDownloadingAndDeleting();
 	}
 
 	getMaxZoom(): number {
@@ -96,7 +91,6 @@ export class MapService {
 
 		if (!offlineMapMetaData.downloadFinished) {
 			this.stopDownloads = false;
-			console.log('Starting download in background!');
 			const taskId = BackgroundTask.beforeExit(async () => {
 				offlineMapMetaData = await this.downloadMapTileArea(offlineMapMetaData);
 
@@ -105,8 +99,6 @@ export class MapService {
 				});
 			});
 		}
-
-		console.log(offlineMapMetaData);
 	}
 
 	/**
@@ -143,10 +135,8 @@ export class MapService {
 			const endY = endXY[1];
 
 			for (let x = startX; x <= endX; x++) {
-				console.log('Downloading', this.appActive);
 				for (let y = startY; y <= endY; y++) {
 					if (this.stopDownloads) {
-						console.log('Stopping downloads:', this.stopDownloads);
 						return offlineMapMetaData;
 					}
 					if (!(await this.TileExists(mapId, z, x, y))) {
@@ -177,7 +167,6 @@ export class MapService {
 		await this.saveMapMetaData(offlineMapMetaData, true);
 		this.mapsUpdated$.next();
 		this.downloads.next([...this.downloads.getValue().filter(d => d.offlineMapMetaData.id !== mapId)]);
-		console.log('Map download sequence ended!');
 		this.showDownloadFinishedNotification(offlineMapMetaData.name);
 		return offlineMapMetaData;
 	}
@@ -248,15 +237,7 @@ export class MapService {
 				directory: this.FILESYSTEM_DIRECTORY,
 				path: `/${mapId}`,
 				recursive: true
-			}).then((res) => {
-				console.log('Map deleted:', mapId);
-				return res;
-			}).catch((error) => {
-				console.log('Error happening when deleting entire map:', mapId, error);
 			});
-		}).catch((error) => {
-			console.log('Error when removing mapTiles folder:', mapId, error);
-			return error;
 		});
 	}
 
@@ -281,37 +262,6 @@ export class MapService {
 	getCurrentlyDownloading(): Observable<DownloadProgressionData[]> {
 		return this.downloads.asObservable();
 	}
-
-	// private async finishStartedTasksInBackground(): Promise<string> {
-
-	// 	const taskId = BackgroundTask.beforeExit(async () => {
-	// 		console.log('Getting meta data');
-	// 		const offlineMapsMetaData = await this.getOfflineMapsMetaData();
-	// 		console.log('Offline maps fetched:', offlineMapsMetaData);
-
-
-	// 		for (const metaData of offlineMapsMetaData) {
-	// 			console.log('METADATA:', metaData);
-	// 			if (!metaData.downloadFinished) {
-	// 				console.log('Downloading map:', metaData);
-	// 				await this.downloadMapTileArea(metaData.startPos, metaData.endPos, metaData.id, metaData.name);
-	// 				console.log('Finished downloading map:', metaData);
-	// 			}
-
-	// 			// if (metaData.deleted) {
-	// 			// 	await this.deleteOfflineMap(metaData.id);
-	// 			// }
-	// 		}
-
-	// 		BackgroundTask.finish({
-	// 			taskId
-	// 		});
-	// 		this.runningInBackground = false;
-	// 		console.log('Background task finished:', taskId);
-	// 	});
-
-	// 	return taskId;
-	// }
 
 	private async setOfflineMapId(currentGpsPos: Coordinate): Promise<any> {
 		let bestCandidateId: string;
@@ -552,19 +502,19 @@ export class MapService {
 		);
 	}
 
-	// private async finishDownloadingAndDeleting() {
-	// 	await this.getOfflineMapsMetaData().then(async metaDatas => {
-	// 		for (const metaData of metaDatas) {
-	// 			if (!metaData.downloadFinished) {
-	// 				await this.downloadMapTileArea(metaData.startPos, metaData.endPos, metaData.id, metaData.name);
-	// 			}
+	private async finishDownloadingAndDeleting() {
+		await this.getOfflineMapsMetaData().then(async metaDatas => {
+			for (const metaData of metaDatas) {
+				if (!metaData.downloadFinished) {
+					await this.downloadMapTileArea(metaData);
+				}
 
-	// 			if (metaData.deleted) {
-	// 				await this.deleteOfflineMap(metaData.id);
-	// 			}
-	// 		}
-	// 	});
-	// }
+				if (metaData.deleted) {
+					await this.deleteOfflineMap(metaData.id);
+				}
+			}
+		});
+	}
 
 	private getErrorMessage(maxRetry: number): string {
 		return`Tried to download map tile for ${maxRetry} times without success. Giving up.`;
