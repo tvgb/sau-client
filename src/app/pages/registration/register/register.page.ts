@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
@@ -10,6 +10,7 @@ import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 import { MainCategory, SubCategory } from 'src/app/shared/classes/Category';
 import { Plugins, StatusBarStyle} from '@capacitor/core';
 import { StateResetAll } from 'ngxs-reset-plugin';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 const {StatusBar} = Plugins;
 
@@ -19,6 +20,8 @@ const {StatusBar} = Plugins;
 	styleUrls: ['./register.page.scss'],
 })
 export class RegisterPage {
+	@ViewChild('ref') ref: ElementRef;
+	@ViewChild('colourInput') colourInput: ElementRef;
 
 	summaryUrl = '/registration/summary';
 	mapUrl = '/map';
@@ -31,6 +34,10 @@ export class RegisterPage {
 	subCategoryCountInCurrentMainCategory: number;
 	totalTMID = 'totalTMID';
 
+	colour: string;
+
+	coloursPicked: string[] = [];
+
 	@Select(SheepInfoState.getCurrentSubCategory) currentSubCategory$: Observable<SubCategory>;
 	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
 	@Select(AppInfoState.getCurrentMainCategoryId) currentCategory$: Observable<MainCategoryId>;
@@ -39,16 +46,22 @@ export class RegisterPage {
 	currentMainCategorySub: Subscription;
 	currentMainCategoryIdSub: Subscription;
 	subCategoryCountInCurrentMainCategorySub: Subscription;
+	newEarTagForm: FormGroup;
 
 	constructor(
 		private store: Store,
 		private registrationService: RegistrationService,
 		private tts: TextToSpeechService,
 		private navController: NavController,
-		private platform: Platform) {
+		private platform: Platform,
+		private formbuilder: FormBuilder) {
 
 		this.platform.backButton.subscribeWithPriority(10, () => {
 			this.onPrevMainCategory();
+		});
+
+		this.newEarTagForm = this.formbuilder.group({
+			owner: ['', Validators.required],
 		});
 	}
 
@@ -140,6 +153,11 @@ export class RegisterPage {
 	onCancel(): void {
 		this.registrationService.cancel();
 		this.store.dispatch(new StateResetAll());
+	}
+
+	onColourPicked(): void {
+		this.coloursPicked.push(this.colour);
+		this.colour = undefined;
 	}
 
 	ionViewWillLeave(): void {
