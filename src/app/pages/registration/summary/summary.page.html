@@ -2,9 +2,17 @@
 	<h1 id="summary-heading"> OPPSUMMERING </h1>
 	<div id="summary-registertext"><ion-text >Avansert registrering av sau fullført</ion-text></div>
 	<div class="summary-column">
-	   <h2 class="summary-column-heading">SAU</h2>
+	   <h2 class="summary-column-heading">ØREMERKE</h2>
 	   <div class="summary-element">
-		   <app-count-overview
+			<div class="ear-tag-container">
+				Her skal øremerker viser fram.
+			</div>
+	   </div>
+	</div>
+	<div class="summary-column">
+		<h2 class="summary-column-heading">SAU</h2>
+		<div class="summary-element">
+			<app-count-overview
 				[subCategories]="['Totalt', 'Søyer', 'Lam']"
 				[counts]="[
 					currentSheepInfo.totalSheep.totalSheep.count,
