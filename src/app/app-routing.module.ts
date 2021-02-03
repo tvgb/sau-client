@@ -34,7 +34,11 @@ const routes: Routes = [
   {
 	path: 'new-field-trip',
 	loadChildren: () => import('./pages/new-field-trip/new-field-trip.module').then( m => m.NewFieldTripPageModule)
+  },  {
+    path: 'field-trip-summary',
+    loadChildren: () => import('./pages/field-trip-summary/field-trip-summary.module').then( m => m.FieldTripSummaryPageModule)
   }
+
 
 ];
 

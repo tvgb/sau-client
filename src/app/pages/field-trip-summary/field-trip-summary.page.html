@@ -1,0 +1,34 @@
+<ion-content id="summary-content">
+ <h1 class="summary-heading"> OPPSUMMERING</h1>
+ <div class="summary-column">
+    <div class="summary-column-heading">
+        <h2>DATO</h2>
+    </div>
+    <div class="summary-element"><ion-text>02.02.2021</ion-text></div>
+ </div>
+ <div class="summary-column">
+    <div class="summary-column-heading">
+        <h2>TID BRUKT</h2>
+    </div>
+    <div class="summary-element"><ion-text>2 timer, 45 minutter, 30 sekunder</ion-text></div>
+ </div>
+ <div id="summary-map"></div>
+ <div class="summary-column">
+    <div class="summary-column-heading">
+        <h2>REGISTRERINGER</h2>
+    </div>
+    <div class="summary-registration">SAU: 15</div>
+    <div class="summary-registration">UGLER: 25</div>
+    <div class="summary-registration">ULV: 1</div>
+ </div>
+</ion-content>
+<ion-footer>
+	<ion-row>
+		<ion-col class="ion-no-padding">
+			<ion-button (click)="navigateBack()" id="back-button" color="tertiary" class="ion-no-margin" expand="full" size="large">TILBAKE</ion-button>
+		</ion-col>
+		<ion-col class="ion-no-padding">
+			<ion-button (click)="completeFieldTrip()" color="primary" id="complete-button" class="ion-no-margin" expand="full" size="large">FULLFØR</ion-button>
+		</ion-col>
+	</ion-row>
+</ion-footer>

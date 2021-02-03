@@ -99,7 +99,7 @@ export class MapPage implements AfterViewInit {
 	}
 
 	navigateToSummary() {
-		this.navController.navigateForward('/registration/summary');
+		this.navController.navigateForward('/field-trip-summary');
 	}
 
 	initMap(): void {
@@ -161,7 +161,7 @@ export class MapPage implements AfterViewInit {
 	}
 
 	showConfirmAlert() {
-		this.alertService.confirmAlert(this.alertHeader, this.alertMessage, this, this.navigateToRegistration);
+		this.alertService.confirmAlert(this.alertHeader, this.alertMessage, this, this.navigateToSummary);
 	}
 
 	ionViewWillLeave(): void {
