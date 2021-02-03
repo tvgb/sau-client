@@ -7,7 +7,7 @@ import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { SetCurrentFieldTrip } from 'src/app/shared/store/fieldTripInfo.actions';
 import { NavController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {Plugins, KeyboardInfo } from '@capacitor/core';
+import { Plugins } from '@capacitor/core';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 
 const { Keyboard } = Plugins;
@@ -45,7 +45,6 @@ export class NewFieldTripPage {
 			weather: [''],
 			description: [''],
 		});
-
 	}
 
 	ionViewWillEnter() {
@@ -71,7 +70,6 @@ export class NewFieldTripPage {
 			this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
 			this.navController.navigateForward(this.mapUrl);
 		}
-
 	}
 
 	ionViewWillLeave(): void {
