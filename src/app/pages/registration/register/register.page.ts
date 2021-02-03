@@ -8,10 +8,8 @@ import { NavController, Platform } from '@ionic/angular';
 import { MainCategoryId } from 'src/app/shared/enums/MainCategoryId';
 import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 import { MainCategory, SubCategory } from 'src/app/shared/classes/Category';
-import { Plugins, StatusBarStyle} from '@capacitor/core';
 import { StateResetAll } from 'ngxs-reset-plugin';
-
-const {StatusBar} = Plugins;
+import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 
 @Component({
 	selector: 'app-register',
@@ -42,6 +40,7 @@ export class RegisterPage {
 
 	constructor(
 		private store: Store,
+		private statusBarService: StatusbarService,
 		private registrationService: RegistrationService,
 		private tts: TextToSpeechService,
 		private navController: NavController,
@@ -52,20 +51,8 @@ export class RegisterPage {
 		});
 	}
 
-	changeStatusBarTextColor(): void {
-		StatusBar.setOverlaysWebView({
-			overlay: false
-		});
-		StatusBar.setStyle({
-			style: StatusBarStyle.Dark
-		});
-		StatusBar.setBackgroundColor({
-			color: '#1C262F'
-		});
-	}
-
 	ionViewWillEnter() {
-		this.changeStatusBarTextColor();
+		this.statusBarService.changeStatusBar(false, true);
 		this.currentSubCategorySub = this.currentSubCategory$.subscribe((res: SubCategory) => {
 			if (res) {
 				this.currentSubCategory = res;

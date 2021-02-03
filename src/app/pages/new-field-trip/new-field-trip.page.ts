@@ -7,9 +7,10 @@ import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { SetCurrentFieldTrip } from 'src/app/shared/store/fieldTripInfo.actions';
 import { NavController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {Plugins, StatusBarStyle, KeyboardInfo} from '@capacitor/core';
+import {Plugins, KeyboardInfo } from '@capacitor/core';
+import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 
-const {StatusBar, Keyboard} = Plugins;
+const { Keyboard } = Plugins;
 
 @Component({
   selector: 'app-new-field-trip',
@@ -33,7 +34,8 @@ export class NewFieldTripPage {
 
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) currentFieldTripInfo$: Observable<FieldTripInfo>;
 
-	constructor(private store: Store, private navController: NavController, private formbuilder: FormBuilder) {
+	constructor(private store: Store, private navController: NavController, private formbuilder: FormBuilder,
+		           private statusBarService: StatusbarService) {
 		this.newFieldTripForm = this.formbuilder.group({
 			overseerName: ['Kari Nordmann', Validators.required],
 			fNumber: ['22', Validators.required],
@@ -46,22 +48,8 @@ export class NewFieldTripPage {
 
 	}
 
-
-
-	changeStatusBarTextColor(): void {
-		StatusBar.setOverlaysWebView({
-			overlay: false
-		});
-		StatusBar.setStyle({
-			style: StatusBarStyle.Dark
-		});
-		StatusBar.setBackgroundColor({
-			color: '#1C262F'
-		});
-	}
-
 	ionViewWillEnter() {
-		this.changeStatusBarTextColor();
+		this.statusBarService.changeStatusBar(false, true);
 		this.currentFieldTripSub = this.currentFieldTripInfo$.subscribe((res: FieldTripInfo) => {
 			if (res) {
 				this.currentFieldTripInfo = res;
@@ -81,7 +69,6 @@ export class NewFieldTripPage {
 				this.newFieldTripForm.controls.weather.value, this.newFieldTripForm.controls.description.value);
 			console.log(JSON.stringify(this.currentFieldTripInfo));
 			this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
-
 			this.navController.navigateForward(this.mapUrl);
 		}
 

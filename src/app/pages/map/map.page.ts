@@ -7,11 +7,12 @@ import { Observable, Subscription } from 'rxjs';
 import { TextToSpeechService } from '../registration/services/text-to-speech.service';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
-import { Plugins, StatusBarStyle } from '@capacitor/core';
+import { Plugins } from '@capacitor/core';
 import { NavController, Platform } from '@ionic/angular';
 import { AlertService } from 'src/app/shared/services/alert.service';
+import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 
-const { StatusBar, App } = Plugins;
+const { App } = Plugins;
 
 @Component({
 	selector: 'app-map',
@@ -48,6 +49,7 @@ export class MapPage implements AfterViewInit {
 
 	constructor(
 		private platform: Platform,
+		private statusBarService: StatusbarService,
 		private mapService: MapService,
 		private gpsService: GpsService,
 		private ttsService: TextToSpeechService,
@@ -58,17 +60,8 @@ export class MapPage implements AfterViewInit {
 			  });
 		}
 
-	changeStatusBar(): void {
-		StatusBar.setOverlaysWebView({
-			overlay: true
-		});
-		StatusBar.setStyle({
-			style: StatusBarStyle.Light
-		});
-	}
-
 	ionViewWillEnter(): void {
-		this.changeStatusBar();
+		this.statusBarService.changeStatusBar(true, false);
 		this.trackedRouteSub =  this.gpsService.getTrackedRoute().subscribe((res) => {
 			if (this.map) {
 				L.polyline(res).addTo(this.map);
