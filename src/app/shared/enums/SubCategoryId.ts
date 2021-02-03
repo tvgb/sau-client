@@ -12,5 +12,7 @@ export enum SubCategoryId {
 	GreenCollar = 'greenCollar',
 	YellowCollar = 'yellowCollar',
 	RedCollar = 'redCollar',
-	MissingCollar = 'missingCollar'
+	MissingCollar = 'missingCollar',
+
+	EarTag = 'EarTag'
 }

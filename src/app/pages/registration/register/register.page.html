@@ -55,6 +55,7 @@
 		</div>
 		
 		<app-counter
+			*ngIf="currentMainCategoryId !== mainCategoryId.EarTag; else registerEarTagTemplate"
 			(increment)="onIncrement()"
 			(decrement)="onDecrement()"
 			(subCategoryLeft)="onSubCategoryLeft()"
@@ -64,6 +65,18 @@
 			[currentSubCategoryName]="currentSubCategory.name"
 			class="counter">
 		</app-counter>
+
+		<ng-template #registerEarTagTemplate>
+			<div class="ear-tag-container">
+				<div class="observed-ear-tags-container">
+					OBSERVERTE ØREMERKER
+				</div>
+				<div class="add-new-ear-tag-container">
+					REGISTRER NYTT ØREMERKE
+				</div>
+			</div>
+		</ng-template>
+
 		<app-navigation
 			(nextMainCategory)="onNextMainCategory()"
 			(prevMainCategory)="onPrevMainCategory()"

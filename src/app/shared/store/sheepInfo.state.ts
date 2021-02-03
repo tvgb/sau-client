@@ -105,6 +105,13 @@ import { MainCategory, SubCategory } from '../classes/Category';
 				speakText: 'mangler',
 				count: 0
 			}
+		},
+
+		earTag: {
+			id: MainCategoryId.EarTag,
+			name: 'Øremerker',
+			speakText: 'øremerker',
+			earTagInfos: []
 		}
 	}
 })

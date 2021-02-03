@@ -115,6 +115,8 @@ export class RegisterPage {
 	onNextMainCategory(): void {
 		if (!this.registrationService.nextMainCategory()) {
 			this.navController.navigateForward(this.summaryUrl);
+		} else if (this.currentMainCategoryId === MainCategoryId.EarTag) {
+			this.tts.speak(`Registrer ${this.currentMainCategory.name}`);
 		} else {
 			this.tts.speak(`Registrer ${this.currentMainCategory.name}, ${this.currentSubCategory.count} ${this.currentSubCategory.name} ${this.currentMainCategory.speakText}`);
 		}
@@ -124,6 +126,8 @@ export class RegisterPage {
 		if (!this.registrationService.prevMainCategroy()) {
 			this.onCancel();
 			this.navController.navigateBack(this.mapUrl);
+		} else if (this.currentMainCategoryId === MainCategoryId.EarTag) {
+			this.tts.speak(`Registrer ${this.currentMainCategory.name}`);
 		} else {
 			this.tts.speak(`Registrer ${this.currentMainCategory.name}, ${this.currentSubCategory.count} ${this.currentSubCategory.name} ${this.currentMainCategory.speakText}`);
 		}
