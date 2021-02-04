@@ -7,6 +7,7 @@ import { MainCategory } from 'src/app/shared/classes/Category';
 import { MainCategoryId } from 'src/app/shared/enums/MainCategoryId';
 import { SheepInfoModel } from 'src/app/shared/interfaces/SheepInfoModel';
 import { AlertService } from 'src/app/shared/services/alert.service';
+import { AddRegistration } from 'src/app/shared/store/fieldTripInfo.actions';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { RegistrationService } from '../services/registration.service';
 import { TextToSpeechService } from '../services/text-to-speech.service';
@@ -17,6 +18,7 @@ import { TextToSpeechService } from '../services/text-to-speech.service';
   styleUrls: ['./summary.page.scss'],
 })
 export class SummaryPage {
+
 
 	currentSheepInfo: SheepInfoModel;
 	currentMainCategory: MainCategory;
@@ -38,7 +40,6 @@ export class SummaryPage {
 		private alertService: AlertService,
 		private navController: NavController,
 		private tts: TextToSpeechService,
-		private store: Store,
 		private registrationService: RegistrationService) { }
 
 	ionViewWillEnter(): void {
@@ -93,13 +94,13 @@ export class SummaryPage {
 		return true;
 	}
 
-	completeRegistration() {
+	onCompleteRegistration() {
 		this.alertService.confirmAlert(this.alertHeader, this.alertMessage, this, this.confirmHandler);
 	}
 
 	confirmHandler() {
-		this.store.dispatch(new StateResetAll());
-		this.registrationService.complete();
+		this.registrationService.completeRegistration(this.currentSheepInfo);
+		// this.registrationService.complete();
 		this.navController.navigateBack(this.mapLink);
 	}
 

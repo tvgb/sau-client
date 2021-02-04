@@ -2,7 +2,7 @@ import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { GpsService } from './services/gps.service';
-import { Select } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { TextToSpeechService } from '../registration/services/text-to-speech.service';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
@@ -11,6 +11,11 @@ import { Plugins } from '@capacitor/core';
 import { NavController, Platform } from '@ionic/angular';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
+import { formatDate } from '@angular/common';
+import { RegistrationService } from '../registration/services/registration.service';
+import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
+import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
+import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel';
 
 const { App } = Plugins;
 
@@ -26,6 +31,8 @@ export class MapPage implements AfterViewInit {
 	private readonly OFFLINE_MAP = false;
 	private currentMainCategory: MainCategory;
 	private trackedRouteSub: Subscription;
+	private fieldTripInfoSub: Subscription;
+	private trackedRoute = [];
 
 	private posistionIcon =  new L.Icon({
 		iconUrl: 'assets/icon/marker-icon.png',
@@ -40,7 +47,7 @@ export class MapPage implements AfterViewInit {
 	private alertHeader = 'Fullfør oppsynstur';
 	private alertMessage = 'Ønsker du å fullføre og lagre denne oppsynsturen?';
 
-
+	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfoModel>;
 	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
 
 	currentMainCategorySub: Subscription;
@@ -49,6 +56,7 @@ export class MapPage implements AfterViewInit {
 
 	constructor(
 		private platform: Platform,
+		private regService: RegistrationService,
 		private statusBarService: StatusbarService,
 		private mapService: MapService,
 		private gpsService: GpsService,
@@ -63,15 +71,23 @@ export class MapPage implements AfterViewInit {
 	ionViewWillEnter(): void {
 		this.statusBarService.changeStatusBar(true, false);
 		this.trackedRouteSub =  this.gpsService.getTrackedRoute().subscribe((res) => {
+			this.trackedRoute = res;
 			if (this.map) {
 				L.polyline(res).addTo(this.map);
 				this.posistionMarker.setLatLng([res[res.length - 1].lat, res[res.length - 1].lng]);
 			}
 		});
 
+		setTimeout(_ => {
+			this.fieldTripInfoSub = this.fieldTripInfo$.subscribe((res) => {
+				console.log('FieldTripInfo: ', res);
+			});
+		}, 3000);
+
 		this.currentMainCategorySub = this.currentMainCategory$.subscribe(res => {
 			this.currentMainCategory = res;
 		});
+
 
 		if (!this.gpsService.getTracking()) {
 			this.gpsService.setTracking(true);
@@ -87,6 +103,9 @@ export class MapPage implements AfterViewInit {
 	}
 
 	navigateToRegistration() {
+		this.regService.position = this.posistionMarker.getLatLng();
+		console.log('Position: ', this.regService.position);
+		this.regService.registrationType = RegistrationType.Sheep;
 		this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);
 		this.navController.navigateForward(this.registrationUrl);
 	}

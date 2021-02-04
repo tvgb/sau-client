@@ -2,15 +2,22 @@ import { Injectable } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SubCategory } from 'src/app/shared/classes/Category';
+import { Coordinate } from 'src/app/shared/classes/Coordinate';
+import { Registration } from 'src/app/shared/classes/Registration';
+import { SheepInfo } from 'src/app/shared/classes/SheepInfo';
 import { MainCategoryId } from 'src/app/shared/enums/MainCategoryId';
 import { SubCategoryId } from 'src/app/shared/enums/SubCategoryId';
 import { SetCurrentMainCategoryId, SetCurrentSubCategoryId } from 'src/app/shared/store/appInfo.actions';
+import { AddRegistration } from 'src/app/shared/store/fieldTripInfo.actions';
 import { DecrementSubCategoryCount, IncrementSubCategoryCount } from 'src/app/shared/store/sheepInfo.actions';
 
 @Injectable({
   	providedIn: 'root'
 })
 export class RegistrationService {
+
+	position: Coordinate;
+	registrationType;
 
 	mainCategoryIds: MainCategoryId[] = [
 		MainCategoryId.TotalSheep,
@@ -122,6 +129,12 @@ export class RegistrationService {
 
 	getSubCategoryCountInCurrentMainCategory(): Observable<number> {
 		return this.subCategoryCountInCurrentMainCategory.asObservable();
+	}
+
+	completeRegistration(sheepInfo: SheepInfo): void {
+		const reg = new Registration(new Date(), this.position, sheepInfo, this.registrationType);
+		this.store.dispatch(new AddRegistration(reg));
+		this.complete();
 	}
 
 	complete(): void {

@@ -9,6 +9,7 @@ import { NavController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Plugins } from '@capacitor/core';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
+import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel';
 
 const { Keyboard } = Plugins;
 
@@ -32,7 +33,7 @@ export class NewFieldTripPage {
 
 	mapUrl = '/map';
 
-	@Select(FieldTripInfoState.getCurrentFieldTripInfo) currentFieldTripInfo$: Observable<FieldTripInfo>;
+	@Select(FieldTripInfoState.getCurrentFieldTripInfo) currentFieldTripInfo$: Observable<FieldTripInfoModel>;
 
 	constructor(private store: Store, private navController: NavController, private formbuilder: FormBuilder,
 		           private statusBarService: StatusbarService) {
@@ -49,11 +50,11 @@ export class NewFieldTripPage {
 
 	ionViewWillEnter() {
 		this.statusBarService.changeStatusBar(false, true);
-		this.currentFieldTripSub = this.currentFieldTripInfo$.subscribe((res: FieldTripInfo) => {
-			if (res) {
-				this.currentFieldTripInfo = res;
-			}
-		});
+		// this.currentFieldTripSub = this.currentFieldTripInfo$.subscribe((res: FieldTripInfo) => {
+		// 	if (res) {
+		// 		this.currentFieldTripInfo = res;
+		// 	}
+		// });
 	}
 
 	createNewFieldTrip() {

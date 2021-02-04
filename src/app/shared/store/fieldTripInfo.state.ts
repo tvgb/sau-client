@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { State, Selector, Action, StateContext } from '@ngxs/store';
 import { FieldTripInfoModel } from '../interfaces/FieldTripInfoModel';
-import { SetCurrentFieldTrip } from './fieldTripInfo.actions';
+import { AddRegistration, SetCurrentFieldTrip } from './fieldTripInfo.actions';
 
 
 
@@ -20,11 +20,32 @@ export class FieldTripInfoState {
 	}
 
 	@Action(SetCurrentFieldTrip)
-	setCurrentFieldTripId(ctx: StateContext<FieldTripInfoModel>, action: SetCurrentFieldTrip) {
-		const state = ctx.getState();
+	setCurrentFieldTrip(ctx: StateContext<FieldTripInfoModel>, action: SetCurrentFieldTrip) {
 		ctx.setState({
-			...state,
 			fieldTripInfo: action.fieldTripInfo,
 		});
+	}
+
+	@Action(AddRegistration)
+	addRegistration(ctx: StateContext<FieldTripInfoModel>, action: AddRegistration) {
+		const state = ctx.getState();
+		console.log('ACTION', action.registration);
+		if (!action.registration) {
+			ctx.setState({
+				...state,
+				fieldTripInfo: {
+					...state.fieldTripInfo,
+					registrations: [action.registration]
+				}
+			});
+		} else {
+			ctx.setState({
+			...state,
+				fieldTripInfo: {
+					...state.fieldTripInfo,
+					registrations: [...state.fieldTripInfo.registrations, action.registration]
+				}
+			});
+		}
 	}
 }

@@ -9,7 +9,7 @@ export class FieldTripInfo {
 	participants: number;
 	weather: string;
 	description: string;
-	Registrations: Registration[];
+	registrations: Registration[];
 
 	constructor(fieldtripId: string, overseerName: string, fNumber: number,
 		           bNumber: number, municipality: string, participants: number, weather: string, description: string) {
