@@ -9,7 +9,7 @@ export class EarTagIconComponent {
 
 	@Input() coloursPicked: string[] = [];
 	@Input() colour: string;
-	@Input() smallVersion = true;
+	@Input() smallVersion = false;
 
 	getColour(side: string): string {
 		if (this.coloursPicked.length === 1) {

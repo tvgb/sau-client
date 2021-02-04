@@ -21,9 +21,11 @@
 
 ion-checkbox {
 	--background: transparent;
+	--border-color: white;
 }
 
 ion-item {
+	margin-top: 10px;
 	--background: rgba(255, 255, 255, 0.05);
 	--border-color: rgba(255, 255, 255, 1);
 }

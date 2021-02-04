@@ -3,7 +3,10 @@
 		OBSERVERTE ØREMERKER
 
 		<div class="ear-tags-container">
-			<div class="ear-tag-selector-container" *ngFor="let earTag of checkAbleEartags">
+			<div 
+				class="ear-tag-selector-container" 
+				*ngFor="let earTag of checkAbleEartags"
+				(click)="earTag.isChecked = !earTag.isChecked">
 				<app-ear-tag-icon
 					[coloursPicked]="earTag.colours"
 					[smallVersion]="true">
