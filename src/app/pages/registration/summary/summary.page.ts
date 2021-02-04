@@ -100,7 +100,6 @@ export class SummaryPage {
 
 	confirmHandler() {
 		this.registrationService.completeRegistration(this.currentSheepInfo);
-		// this.registrationService.complete();
 		this.navController.navigateBack(this.mapLink);
 	}
 

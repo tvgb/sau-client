@@ -74,6 +74,6 @@ export class NewFieldTripPage {
 	}
 
 	ionViewWillLeave(): void {
-		this.currentFieldTripSub.unsubscribe();
+		//  this.currentFieldTripSub.unsubscribe();
 	}
 }

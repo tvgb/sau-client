@@ -16,7 +16,9 @@ import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel
 
 export class FieldTripSummaryPage implements AfterViewInit {
 
-	private fieldTripInfo: FieldTripInfoModel;
+	fieldTripInfo;
+	date: string;
+	registrations = [];
 	private fieldTripInfoSub: Subscription;
 	private mapUrl = '/map';
 	private trackedRouteSub: Subscription;
@@ -33,9 +35,8 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		this.statusBarService.changeStatusBar(false, true);
 		this.fieldTripInfoSub = this.fieldTripInfo$.subscribe((res) => {
 			this.fieldTripInfo = res;
-			console.log(res);
 		});
-
+		this.date = new Date().toLocaleDateString();
 // 	  this.trackedRouteSub = this.gpsService.getTrackedRoute().subscribe((res) => {
 // 		  if (this.map) {
 // 				L.polyline(res).addTo(this.map);

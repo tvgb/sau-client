@@ -8,7 +8,7 @@ import { NavController, Platform } from '@ionic/angular';
 import { MainCategoryId } from 'src/app/shared/enums/MainCategoryId';
 import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 import { MainCategory, SubCategory } from 'src/app/shared/classes/Category';
-import { StateResetAll } from 'ngxs-reset-plugin';
+import { StateReset, StateResetAll } from 'ngxs-reset-plugin';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 
 @Component({
@@ -122,7 +122,7 @@ export class RegisterPage {
 
 	onCancel(): void {
 		this.registrationService.cancel();
-		this.store.dispatch(new StateResetAll());
+		this.store.dispatch(new StateReset(SheepInfoState, AppInfoState));
 	}
 
 	ionViewWillLeave(): void {

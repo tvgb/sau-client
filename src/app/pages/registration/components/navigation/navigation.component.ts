@@ -1,10 +1,13 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { StateResetAll } from 'ngxs-reset-plugin';
+import { StateReset, StateResetAll } from 'ngxs-reset-plugin';
 import { NavController } from '@ionic/angular';
 import { Store } from '@ngxs/store';
 import { VibrationService } from '../../services/vibration.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
+import { SheepInfo } from 'src/app/shared/classes/SheepInfo';
+import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
+import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 
 @Component({
 	selector: 'app-navigation',
@@ -53,7 +56,7 @@ export class NavigationComponent implements OnInit {
 
 	confirmHandler() {
 		this.navController.navigateBack(this.cancelNavLink);
-		this.store.dispatch(new StateResetAll());
+		this.store.dispatch(new StateReset(SheepInfoState, AppInfoState));
 		this.cancelRegistration.emit();
 	}
 }

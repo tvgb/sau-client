@@ -4,7 +4,7 @@
     <div class="summary-column-heading">
         <h2>DATO</h2>
     </div>
-    <div class="summary-element"><ion-text>02.02.2021</ion-text></div>
+    <div class="summary-element"><ion-text>{{date}}</ion-text></div>
  </div>
  <div class="summary-column">
     <div class="summary-column-heading">
@@ -17,9 +17,14 @@
     <div class="summary-column-heading">
         <h2>REGISTRERINGER</h2>
     </div>
-    <div class="summary-registration">SAU: 15</div>
-    <div class="summary-registration">UGLER: 25</div>
-    <div class="summary-registration">ULV: 1</div>
+    <div *ngIf="!fieldTripInfo?.registrations; else elseblock" > <ion-text class="summary-registration">Det er ingen registreringer. </ion-text> </div>
+    <ng-template #elseblock >
+        <div *ngFor="let registration of fieldTripInfo.registrations, index as i">
+            <div class="summary-registration">{{registration.registrationType}} : {{registration.sheepInfo.totalSheep.totalSheep.count}}
+            </div>
+        </div>
+    </ng-template>
+      <!-- <div class="summary-registration">SAU: 15</div> -->
  </div>
 </ion-content>
 <ion-footer>

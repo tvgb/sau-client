@@ -1,4 +1,4 @@
 export enum RegistrationType {
-	Sheep = 'sheep',
-	Predator = 'predator'
+	Sheep = 'SAU',
+	Predator = 'ROVDYR'
 }
