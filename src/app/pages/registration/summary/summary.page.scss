@@ -55,7 +55,6 @@
     fill: #B02525;
     font-size: 30px;
     margin-left: 10px;
-    
 }
 
 .warning-text {
@@ -69,12 +68,6 @@
 
 #complete-button {
     height: 80px;
-}
-
-.ear-tag-container {
-	display: flex;
-	height: 45px;
-	width: 90%;
 }
 
 .ear-tag-selector {
@@ -91,4 +84,33 @@
 	align-items: center;
 	justify-content: center;
 	border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ear-tag-container {
+	display: flex;
+	align-items: center;
+	margin-top: 10px;
+	font-weight: 300;
+	width: 100%;
+}
+
+.ear-tags-container {
+	display: flex;
+	flex-direction: column;
+	width: 90%;
+}
+
+.ear-tag-selector-text {
+	flex-grow: 2;
+	margin-left: 20px;
+	font-size: 18px;	
+}
+
+.no-ear-tags-selected {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 200;
+	color: rgba(255, 255, 255, 0.5);
+	height: 70%;
 }

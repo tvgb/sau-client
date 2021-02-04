@@ -1,7 +1,7 @@
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { Injectable } from '@angular/core';
 import { SheepInfoModel } from '../interfaces/SheepInfoModel';
-import { DecrementSubCategoryCount, IncrementSubCategoryCount } from './sheepInfo.actions';
+import { DecrementSubCategoryCount, IncrementSubCategoryCount, SetEarTagInfos } from './sheepInfo.actions';
 import { AppInfoState } from './appInfo.state';
 import { AppInfoModel } from '../interfaces/AppInfoModel';
 import { MainCategoryId } from '../enums/MainCategoryId';
@@ -126,6 +126,11 @@ export class SheepInfoState {
 		return state;
 	}
 
+	@Selector()
+	static getEarTagInfos(state: SheepInfoModel) {
+		return state.earTag.earTagInfos;
+	}
+
 	@Selector([AppInfoState])
 	static getCurrentSubCategory(state: SheepInfoModel, appInfoState: AppInfoModel): SubCategory {
 		const currentMainCategoryId = appInfoState.currentMainCategoryId;
@@ -177,6 +182,19 @@ export class SheepInfoState {
 					...currentSubCategoryId,
 					count: currentSubCategoryId.count - 1
 				}
+			}
+		});
+	}
+
+	@Action(SetEarTagInfos)
+	setEarTagInfos(ctx: StateContext<SheepInfoModel>, action: SetEarTagInfos) {
+		const state = ctx.getState();
+
+		ctx.patchState({
+			...state,
+			earTag: {
+				...state.earTag,
+				earTagInfos: action.payload.earTagInfos
 			}
 		});
 	}
