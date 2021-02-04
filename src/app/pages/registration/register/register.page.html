@@ -1,5 +1,5 @@
 <ion-content class="register-content">
-	<div class="register-container" *ngIf="currentMainCategory && currentSubCategory && subCategoryCountInCurrentMainCategory">
+	<div #registerContainer class="register-container" *ngIf="currentMainCategory && currentSubCategory && subCategoryCountInCurrentMainCategory">
 		<div class="register-top-part">
 			<h1 class="register-heading"> {{ currentMainCategory.name }} </h1>
 
@@ -67,44 +67,9 @@
 		</app-counter>
 
 		<ng-template #registerEarTagTemplate>
-			<div class="ear-tag-container">
-				<div class="observed-ear-tags-container">
-					OBSERVERTE ØREMERKER
-				</div>
-				<div class="add-new-ear-tag-container">
-					REGISTRER NYTT ØREMERKE
-					<form [formGroup]="newEarTagForm" class="add-new-ear-tag-form">
-						<ion-label> Eier: </ion-label>
-						<ion-item lines="full">
-							<ion-input formControlName="owner" required="true" type="text" placeholder="Ola Normann"></ion-input> 
-						</ion-item>
-
-
-						<div class="colour-picker-container">
-							<div class="label-text">
-								Farge:
-							</div>
-							
-							<div class="colours-picked-container">
-								<div *ngFor="let colour of coloursPicked" class="colour" [ngStyle]="{'background-color': colour}">
-								</div>
-								<div *ngIf="coloursPicked.length < 2" class="add-new-colour-button colour" [ngStyle]="{'background-color': colour}">
-									<div *ngIf="!colour">
-										+
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<app-colour-picker 
-							(colour)="colour = $event"
-							(colourPicked)="onColourPicked()"
-							[height]="45"
-							[width]="337">
-						</app-colour-picker>
-					</form>
-				</div>
-			</div>
+			<app-ear-tag
+				[formWidth]="formWidth">
+			</app-ear-tag>
 		</ng-template>
 
 		<app-navigation

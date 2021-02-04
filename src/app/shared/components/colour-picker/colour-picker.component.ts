@@ -72,17 +72,23 @@ export class ColourPickerComponent implements AfterViewInit {
 			this.ctx.beginPath();
 			this.ctx.strokeStyle = 'white';
 			this.ctx.lineWidth = 1;
-			this.ctx.rect(this.selectedX - 10, this.selectedY - 10, 20, 20);
+			this.ctx.rect(this.selectedX - 5, 0, 10, height);
 			this.ctx.stroke();
 			this.ctx.closePath();
 		  }
 	}
 
-	onPanMove(e: any): void {
+	onPan(e: any): void {
 		this.selectedX = e.srcEvent.offsetX;
 		this.selectedY = e.srcEvent.offsetY;
-		this.draw();
-		this.emitColor(this.selectedX, this.selectedY);
+		if (this.insideBounds(this.selectedX, this.selectedY)) {
+			this.draw();
+			this.emitColor(this.selectedX, this.selectedY);
+		}
+	}
+
+	insideBounds(x: number, y: number): boolean {
+		return x <= this.width && x >= 0 && y <= this.height && y >= 0;
 	}
 
 	onPanEnd(): void {
@@ -96,7 +102,6 @@ export class ColourPickerComponent implements AfterViewInit {
 
 	getColorAtPosition(x: number, y: number): string {
 		const imageData = this.ctx.getImageData(x, y, 1, 1).data;
-		console.log('rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)');
 		return 'rgba(' + imageData[0] + ',' + imageData[1] + ',' + imageData[2] + ',1)';
 	}
 }
