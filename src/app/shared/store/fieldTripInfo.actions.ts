@@ -1,4 +1,4 @@
-import { FieldTripInfo } from '../classes/FieldTripInfo';
+import { FieldTripInfo, UpdateFieldTripInfoObject } from '../classes/FieldTripInfo';
 import { Registration } from '../classes/Registration';
 
 export class SetCurrentFieldTrip {
@@ -8,7 +8,7 @@ export class SetCurrentFieldTrip {
 
 export class SetDateTimeEnded {
 	static readonly type = '[Map Page] SetDateTimeEnded';
-	constructor(public dateTimeEnded: number) {}
+	constructor(public changes: UpdateFieldTripInfoObject) {}
 }
 
 export class AddRegistration {

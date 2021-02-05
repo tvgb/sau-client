@@ -35,8 +35,9 @@ export class NewFieldTripPage {
 
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) currentFieldTripInfo$: Observable<FieldTripInfoModel>;
 
-	constructor(private store: Store, private navController: NavController, private formbuilder: FormBuilder,
-		           private statusBarService: StatusbarService) {
+	constructor(private store: Store,
+				         private navController: NavController, private formbuilder: FormBuilder,
+		        private statusBarService: StatusbarService) {
 		this.newFieldTripForm = this.formbuilder.group({
 			overseerName: ['Kari Nordmann', Validators.required],
 			fNumber: ['22', Validators.required],
@@ -63,10 +64,11 @@ export class NewFieldTripPage {
 			Keyboard.hide();
 			this.fieldTripId = uuidv4();
 			this.currentFieldTripInfo = new FieldTripInfo(
-				this.fieldTripId, this.newFieldTripForm.controls.overseerName.value, this.newFieldTripForm.controls.fNumber.value,
-				this.newFieldTripForm.controls.bNumber.value, this.newFieldTripForm.controls.municipality.value,
-				this.newFieldTripForm.controls.participants.value,
-				this.newFieldTripForm.controls.weather.value, this.newFieldTripForm.controls.description.value, Date.now());
+				{fieldtripId: this.fieldTripId, overseerName: this.newFieldTripForm.controls.overseerName.value,
+					fNumber: this.newFieldTripForm.controls.fNumber.value, bNumber: this.newFieldTripForm.controls.bNumber.value,
+					municipality: this.newFieldTripForm.controls.municipality.value, participants: this.newFieldTripForm.controls.participants.value,
+					weather: this.newFieldTripForm.controls.weather.value, description: this.newFieldTripForm.controls.description.value,
+					dateTimeStarted: Date.now() });
 			console.log(JSON.stringify(this.currentFieldTripInfo));
 			this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
 			this.navController.navigateForward(this.mapUrl);

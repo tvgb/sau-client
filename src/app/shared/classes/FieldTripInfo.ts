@@ -12,10 +12,11 @@ export class FieldTripInfo {
 	registrations: Registration[];
 	dateTimeStarted: number;
 	dateTimeEnded: number;
+	trackedRoute: [];
 
-	constructor(fieldtripId: string, overseerName: string, fNumber: number,
-				         bNumber: number, municipality: string, participants: number,
-					        weather: string, description: string, dateTimeStarted: number) {
+	constructor({ fieldtripId, overseerName, fNumber, bNumber, municipality, participants, weather, description, dateTimeStarted }:
+		{ fieldtripId: string; overseerName: string; fNumber: number; bNumber: number;
+			 municipality: string; participants: number; weather: string; description: string; dateTimeStarted: number; }) {
 		this.fieldTripId = fieldtripId;
 		this.overseerName = overseerName;
 		this.fNumber = fNumber;
@@ -26,6 +27,11 @@ export class FieldTripInfo {
 		this.description = description;
 		this.dateTimeStarted = dateTimeStarted;
 	}
+}
+
+export class UpdateFieldTripInfoObject {
+	dateTimeEnded?: number;
+	trackedRoute?: [];
 }
 
 

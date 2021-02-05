@@ -16,6 +16,7 @@ import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel';
 import { SetDateTimeEnded } from 'src/app/shared/store/fieldTripInfo.actions';
+import { UpdateFieldTripInfoObject } from 'src/app/shared/classes/FieldTripInfo';
 
 const { App } = Plugins;
 
@@ -31,7 +32,6 @@ export class MapPage implements AfterViewInit {
 	private readonly OFFLINE_MAP = false;
 	private currentMainCategory: MainCategory;
 	private trackedRouteSub: Subscription;
-	private fieldTripInfoSub: Subscription;
 	private trackedRoute = [];
 
 	private posistionIcon =  new L.Icon({
@@ -86,7 +86,7 @@ export class MapPage implements AfterViewInit {
 
 		if (!this.gpsService.getTracking()) {
 			this.gpsService.setTracking(true);
-			this.gpsService.startTrackingInterval(this.map);
+			this.gpsService.startTrackingInterval();
 		}
 	}
 
@@ -105,12 +105,11 @@ export class MapPage implements AfterViewInit {
 	}
 
 	navigateToSummary(): void {
-		this.store.dispatch(new SetDateTimeEnded(Date.now()));
+		this.store.dispatch(new SetDateTimeEnded({dateTimeEnded: Date.now(), trackedRoute: this.trackedRoute} as UpdateFieldTripInfoObject));
 		this.navController.navigateForward('/field-trip-summary');
 	}
 
 	initMap(): void {
-
 		this.gpsService.getCurrentPosition().then(async gpsPosition => {
 			this.map = L.map('map', {
 				center: [gpsPosition.coords.latitude, gpsPosition.coords.longitude],
@@ -122,13 +121,12 @@ export class MapPage implements AfterViewInit {
 			});
 
 			this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude], {icon: this.posistionIcon}).addTo(this.map);
-
-	 	this.gpsService.startTrackingInterval(this.map);
+	 	this.gpsService.startTrackingInterval();
 
 			App.addListener('appStateChange', ({ isActive }) => {
 				if (isActive) {
 					this.gpsService.setTracking(true);
-					this.gpsService.recalibratePosition(this.map);
+					this.gpsService.recalibratePosition();
 				} else {
 					this.gpsService.setTracking(false);
 				}
@@ -157,6 +155,7 @@ export class MapPage implements AfterViewInit {
 					done(null, tile);
 				}).catch((e) => {
 					tile.innerHTML = 'Map not available offline.';
+					console.log(e);
 				});
 				return tile;
 			}
@@ -164,7 +163,7 @@ export class MapPage implements AfterViewInit {
 		L.gridLayer.offlineMap = (opts) => {
 			return new L.GridLayer.OfflineMap(opts);
 		};
-		this.map.addLayer( L.gridLayer.offlineMap() );
+		this.map.addLayer(L.gridLayer.offlineMap() );
 	}
 
 	showConfirmAlert() {

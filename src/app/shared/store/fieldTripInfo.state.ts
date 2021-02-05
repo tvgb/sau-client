@@ -28,13 +28,18 @@ export class FieldTripInfoState {
 	@Action(SetDateTimeEnded)
 	setDateTimeEnded(ctx: StateContext<FieldTripInfoModel>, action: SetDateTimeEnded) {
 		const state = ctx.getState();
-		ctx.setState({
-			...state,
-			fieldTripInfo: {
-				...state.fieldTripInfo,
-				dateTimeEnded: action.dateTimeEnded
-			}
+		const fieldTripInfo = {...state.fieldTripInfo};
+		Object.assign(fieldTripInfo, action.changes);
+		ctx.patchState({
+			fieldTripInfo
 		});
+		// ctx.setState({
+		// 	...state,
+		// 	fieldTripInfo: {
+		// 		...state.fieldTripInfo,
+		// 		action.changes
+		// 	}
+		// });
 	}
 
 	@Action(AddRegistration)

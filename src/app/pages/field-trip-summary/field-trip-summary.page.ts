@@ -1,11 +1,12 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component} from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
-import { Select, Store } from '@ngxs/store';
+import { Select} from '@ngxs/store';
 import { FieldTripInfo } from 'src/app/shared/classes/FieldTripInfo';
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
+import { MapService } from '../map/services/map.service';
 
 @Component({
   selector: 'app-field-trip-summary',
@@ -22,16 +23,13 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	sec: number;
 	registrations = [];
 	private fieldTripInfoSub: Subscription;
+	private startPos = [63.424, 10.3961];
 	private mapUrl = '/map';
-	private trackedRouteSub: Subscription;
 	private map;
-	private testTrackedRoute = [new L.LatLng(63.428202, 10.392846), new L.LatLng(63.428018, 10.403417),
-		new L.LatLng(63.422071, 10.399155), new L.LatLng(63.422756, 10.394511), new L.LatLng(63.428202, 10.392846)];
-
 
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
 
-	constructor(private store: Store, private navController: NavController, private statusBarService: StatusbarService ) { }
+	constructor(private navController: NavController, private statusBarService: StatusbarService, private mapService: MapService ) { }
 
 	ionViewWillEnter(): void {
 		this.statusBarService.changeStatusBar(false, true);
@@ -40,14 +38,10 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		});
 
 		this.getDateAndDuration();
-// 	  this.trackedRouteSub = this.gpsService.getTrackedRoute().subscribe((res) => {
-// 		  if (this.map) {
-// 				L.polyline(res).addTo(this.map);
-// 		  }
-// 	  });
 	  }
 
 	getDateAndDuration(): void {
+		this.date = this.fieldTripInfo.dateTimeStarted;
 		let delta = Math.abs(this.fieldTripInfo.dateTimeEnded - this.fieldTripInfo.dateTimeStarted) / 1000;
 		const days = Math.floor(delta / 86400);
 		delta -= days * 86400;
@@ -57,8 +51,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 		this.min = Math.floor(delta / 60) % 60;
 		delta -= this.min * 60;
-
-		this.sec = Math.round(delta % 60); // fjern dette
 	}
 
 	ngAfterViewInit(): void {
@@ -70,16 +62,21 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	initMap(): void {
 		this.map = L.map('summary-map', {
 			zoomControl: false,
-			attributionControl: false
+			attributionControl: false,
 		});
+
+		if (this.fieldTripInfo?.trackedRoute) {
+			const polyline = L.polyline(this.fieldTripInfo.trackedRoute);
+			polyline.addTo(this.map);
+			this.map.fitBounds(polyline.getBounds());
+		} else {
+			this.map.setView(this.startPos, 12);
+		}
+
 		L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
 		{
 			attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
 		}).addTo(this.map);
-
-		const polyline = L.polyline(this.testTrackedRoute);
-		polyline.addTo(this.map);
-		this.map.fitBounds(polyline.getBounds());
 	}
 
 	navigateBack(): void {
@@ -87,6 +84,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	}
 
 	ionViewWillLeave(): void {
-	// this.trackedRouteSub.unsubscribe();
+	this.fieldTripInfoSub.unsubscribe();
 	}
 }
