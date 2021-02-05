@@ -4,13 +4,13 @@
     <div class="summary-column-heading">
         <h2>DATO</h2>
     </div>
-    <div class="summary-element"><ion-text>{{date}}</ion-text></div>
+    <div class="summary-element"><ion-text>{{date | date:"dd/MM/yyyy"}}</ion-text></div>
  </div>
  <div class="summary-column">
     <div class="summary-column-heading">
         <h2>TID BRUKT</h2>
     </div>
-    <div class="summary-element"><ion-text>2 timer, 45 minutter, 30 sekunder</ion-text></div>
+    <div class="summary-element"><ion-text>{{duration | date:"h"}} timer, {{duration | date:"mm"}} minutter, {{duration | date:"ss"}} sekunder</ion-text></div>
  </div>
  <div id="summary-map"></div>
  <div class="summary-column">

@@ -16,8 +16,9 @@ import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel
 
 export class FieldTripSummaryPage implements AfterViewInit {
 
-	fieldTripInfo;
-	date: string;
+	fieldTripInfo: FieldTripInfo;
+	date: number;
+	duration;
 	registrations = [];
 	private fieldTripInfoSub: Subscription;
 	private mapUrl = '/map';
@@ -27,7 +28,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		new L.LatLng(63.422071, 10.399155), new L.LatLng(63.422756, 10.394511), new L.LatLng(63.428202, 10.392846)];
 
 
-	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfoModel>;
+	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
 
 	constructor(private store: Store, private navController: NavController, private statusBarService: StatusbarService ) { }
 
@@ -36,13 +37,25 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		this.fieldTripInfoSub = this.fieldTripInfo$.subscribe((res) => {
 			this.fieldTripInfo = res;
 		});
-		this.date = new Date().toLocaleDateString();
+
+		this.getDateAndDuration();
 // 	  this.trackedRouteSub = this.gpsService.getTrackedRoute().subscribe((res) => {
 // 		  if (this.map) {
 // 				L.polyline(res).addTo(this.map);
 // 		  }
 // 	  });
-  	}
+	  }
+
+	getDateAndDuration() {
+		this.date =  this.fieldTripInfo.dateTimeStarted;
+		console.log('DATE: ', this.date, this.fieldTripInfo.dateTimeEnded);
+		console.log('DATE DIFF', (this.fieldTripInfo.dateTimeEnded - this.fieldTripInfo.dateTimeStarted) / (1000 * 60));
+		this.duration =  (this.fieldTripInfo.dateTimeEnded - this.fieldTripInfo.dateTimeStarted) / (1000 * 60);
+		// this.duration = dateTimeEnded - dateStarted;
+		// this.date = dateStarted.toLocaleDateString();
+		// this.duration.getUTCDate();
+		// new Date().
+	}
 
 	ngAfterViewInit(): void {
 		setTimeout(_ => {

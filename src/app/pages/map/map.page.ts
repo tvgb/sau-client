@@ -15,6 +15,7 @@ import { RegistrationService } from '../registration/services/registration.servi
 import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel';
+import { SetDateTimeEnded } from 'src/app/shared/store/fieldTripInfo.actions';
 
 const { App } = Plugins;
 
@@ -55,6 +56,7 @@ export class MapPage implements AfterViewInit {
 
 	constructor(
 		private platform: Platform,
+		private store: Store,
 		private regService: RegistrationService,
 		private statusBarService: StatusbarService,
 		private mapService: MapService,
@@ -95,14 +97,15 @@ export class MapPage implements AfterViewInit {
 		});
 	}
 
-	navigateToRegistration() {
+	navigateToRegistration(): void {
 		this.regService.position = this.posistionMarker.getLatLng();
 		this.regService.registrationType = RegistrationType.Sheep;
 		this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);
 		this.navController.navigateForward(this.registrationUrl);
 	}
 
-	navigateToSummary() {
+	navigateToSummary(): void {
+		this.store.dispatch(new SetDateTimeEnded(Date.now()));
 		this.navController.navigateForward('/field-trip-summary');
 	}
 

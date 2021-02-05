@@ -6,6 +6,11 @@ export class SetCurrentFieldTrip {
 	constructor(public fieldTripInfo: FieldTripInfo) {}
 }
 
+export class SetDateTimeEnded {
+	static readonly type = '[Map Page] SetDateTimeEnded';
+	constructor(public dateTimeEnded: number) {}
+}
+
 export class AddRegistration {
 	static readonly type = '[Summary Page] addRegistration';
 	constructor(public registration: Registration) {}

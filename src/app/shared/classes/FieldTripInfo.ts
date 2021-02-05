@@ -10,9 +10,12 @@ export class FieldTripInfo {
 	weather: string;
 	description: string;
 	registrations: Registration[];
+	dateTimeStarted: number;
+	dateTimeEnded: number;
 
 	constructor(fieldtripId: string, overseerName: string, fNumber: number,
-		           bNumber: number, municipality: string, participants: number, weather: string, description: string) {
+				         bNumber: number, municipality: string, participants: number,
+					        weather: string, description: string, dateTimeStarted: number) {
 		this.fieldTripId = fieldtripId;
 		this.overseerName = overseerName;
 		this.fNumber = fNumber;
@@ -21,6 +24,7 @@ export class FieldTripInfo {
 		this.participants = participants;
 		this.weather = weather;
 		this.description = description;
+		this.dateTimeStarted = dateTimeStarted;
 	}
 }
 

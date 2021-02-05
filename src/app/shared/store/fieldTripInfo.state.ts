@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { State, Selector, Action, StateContext } from '@ngxs/store';
+import { FieldTripInfo } from '../classes/FieldTripInfo';
 import { FieldTripInfoModel } from '../interfaces/FieldTripInfoModel';
-import { AddRegistration, SetCurrentFieldTrip } from './fieldTripInfo.actions';
+import { AddRegistration, SetCurrentFieldTrip, SetDateTimeEnded } from './fieldTripInfo.actions';
 
 @State<FieldTripInfoModel>({
 	name: 'fieldTripInfo',
@@ -21,6 +22,18 @@ export class FieldTripInfoState {
 	setCurrentFieldTrip(ctx: StateContext<FieldTripInfoModel>, action: SetCurrentFieldTrip) {
 		ctx.setState({
 			fieldTripInfo: action.fieldTripInfo,
+		});
+	}
+
+	@Action(SetDateTimeEnded)
+	setDateTimeEnded(ctx: StateContext<FieldTripInfoModel>, action: SetDateTimeEnded) {
+		const state = ctx.getState();
+		ctx.setState({
+			...state,
+			fieldTripInfo: {
+				...state.fieldTripInfo,
+				dateTimeEnded: action.dateTimeEnded
+			}
 		});
 	}
 

@@ -66,7 +66,7 @@ export class NewFieldTripPage {
 				this.fieldTripId, this.newFieldTripForm.controls.overseerName.value, this.newFieldTripForm.controls.fNumber.value,
 				this.newFieldTripForm.controls.bNumber.value, this.newFieldTripForm.controls.municipality.value,
 				this.newFieldTripForm.controls.participants.value,
-				this.newFieldTripForm.controls.weather.value, this.newFieldTripForm.controls.description.value);
+				this.newFieldTripForm.controls.weather.value, this.newFieldTripForm.controls.description.value, Date.now());
 			console.log(JSON.stringify(this.currentFieldTripInfo));
 			this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
 			this.navController.navigateForward(this.mapUrl);
