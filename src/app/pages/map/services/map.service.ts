@@ -164,6 +164,7 @@ export class MapService {
 
 		offlineMapMetaData.name = (await this.getOfflineMapMetaData(mapId)).name;
 		offlineMapMetaData.downloadFinished = true;
+		offlineMapMetaData.downloadDate = Date.now();
 		await this.saveMapMetaData(offlineMapMetaData, true);
 		this.mapsUpdated$.next();
 		this.downloads.next([...this.downloads.getValue().filter(d => d.offlineMapMetaData.id !== mapId)]);
@@ -189,7 +190,7 @@ export class MapService {
 
 	async getOfflineMapsMetaData(): Promise<OfflineMapMetaData[]> {
 
-		const offlineMapsMetaData: OfflineMapMetaData[] = [];
+		let offlineMapsMetaData: OfflineMapMetaData[];
 
 		await Filesystem.readdir({
 			directory: this.FILESYSTEM_DIRECTORY,
@@ -207,6 +208,8 @@ export class MapService {
 					});
 				}
 			}
+		}).catch(() => {
+			offlineMapsMetaData = [];
 		});
 
 		return offlineMapsMetaData;
