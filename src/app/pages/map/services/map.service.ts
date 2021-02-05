@@ -41,8 +41,6 @@ export class MapService {
 			}
 		});
 
-		LocalNotifications.requestPermission();
-
 		gpsService.getLastTrackedPosition().subscribe(pos => {
 			if (pos) {
 				this.lastTrackedPosition = pos;
@@ -159,7 +157,7 @@ export class MapService {
 					this.downloads.next([...this.downloads.getValue().map((d) => {
 						if (d.offlineMapMetaData.id === mapId) {
 							d.downloadedTiles++;
-							console.log(d.totalTiles, d.downloadedTiles, stopDownloading, inBackground);
+							// console.log(d.totalTiles, d.downloadedTiles, stopDownloading, inBackground);
 						}
 						return d;
 					})]);
@@ -173,7 +171,9 @@ export class MapService {
 		await this.saveMapMetaData(offlineMapMetaData, true);
 		this.mapsUpdated$.next();
 		this.downloads.next([...this.downloads.getValue().filter(d => d.offlineMapMetaData.id !== mapId)]);
-		this.showDownloadFinishedNotification(offlineMapMetaData.name);
+		if (inBackground) {
+			this.showDownloadFinishedNotification(offlineMapMetaData.name);
+		}
 		return offlineMapMetaData;
 	}
 
@@ -356,7 +356,6 @@ export class MapService {
 				return EMPTY;
 			}),
 			map(async res => {
-				console.log('YES IT IS DONE NOW:', z, x, y, baseUrl);
 				const reader = new FileReader();
 				reader.readAsDataURL(res);
 
@@ -490,12 +489,12 @@ export class MapService {
 	private showDownloadFinishedNotification(mapName: string) {
 		LocalNotifications.schedule({
 			notifications: [
-			  {
-				title: 'Kartutsnitt ferdig nedlastet',
-				body: `${mapName} har blitt lastet ned og er klart for bruk.`,
-				id: Date.now(),
-				schedule: { at: new Date(Date.now() + 1000 * 2) }
-			  }
+			  	{
+					title: 'Kartutsnitt ferdig nedlastet',
+					body: `${mapName} har blitt lastet ned og er klart for bruk.`,
+					id: Date.now(),
+					schedule: { at: new Date(Date.now() + 1000 * 2) }
+				}
 			]
 		});
 	}
