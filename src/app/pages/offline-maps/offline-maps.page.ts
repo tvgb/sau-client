@@ -24,6 +24,8 @@ export class OfflineMapsPage {
 	constructor(private mapService: MapService, private navController: NavController, private animationCtrl: AnimationController) { }
 
 	ionViewWillEnter() {
+		console.log('YYEEEEEEEEES!');
+
 		this.setOfflineMaps();
 
 		this.mapService.getCurrentlyDownloading().subscribe((res: DownloadProgressionData[]) => {
