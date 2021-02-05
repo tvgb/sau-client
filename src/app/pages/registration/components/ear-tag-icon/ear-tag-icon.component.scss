@@ -1,0 +1,60 @@
+:host {
+	height: auto;
+}
+
+.new-ear-tag {
+	width: auto;
+	height: auto;
+
+	.triangle {
+		width: 0;
+		height: 0;
+		border-style: solid;
+	}
+
+	.ear-tag-row {
+		display: flex;
+	}
+	
+	.top-left {
+		border-width: 0 0 10px 6px;
+		border-color: transparent;
+	}
+	
+	.top-right {
+		border-width: 10px 0 0 6px;
+		border-color: transparent;
+	}
+
+	.top-part {
+		width: 10px;
+		height: 10px;
+		background-color: transparent;
+	}
+
+	.bottom-part {
+		width: 50%;
+		height: 20px;
+		background-color: transparent;
+	}
+}
+
+.small-version {
+	.top-left {
+		border-width: 0 0 6px 3px;
+	}
+
+	.top-right {
+		border-width: 6px 0 0 3px;
+	}
+
+	.top-part {
+		width: 7px;
+		height: 6px;
+	}
+
+	.bottom-part {
+		width: 50%;
+		height: 12px;
+	}
+}

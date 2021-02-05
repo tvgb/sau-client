@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
@@ -10,6 +10,7 @@ import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 import { MainCategory, SubCategory } from 'src/app/shared/classes/Category';
 import { Plugins, StatusBarStyle} from '@capacitor/core';
 import { StateResetAll } from 'ngxs-reset-plugin';
+import { EarTagInfo } from 'src/app/shared/classes/EarTagInfo';
 
 const {StatusBar} = Plugins;
 
@@ -19,6 +20,8 @@ const {StatusBar} = Plugins;
 	styleUrls: ['./register.page.scss'],
 })
 export class RegisterPage {
+	@ViewChild('colourInput') colourInput: ElementRef;
+	@ViewChild('registerContainer') registerContainer: ElementRef;
 
 	summaryUrl = '/registration/summary';
 	mapUrl = '/map';
@@ -30,6 +33,8 @@ export class RegisterPage {
 
 	subCategoryCountInCurrentMainCategory: number;
 	totalTMID = 'totalTMID';
+
+	formWidth: number;
 
 	@Select(SheepInfoState.getCurrentSubCategory) currentSubCategory$: Observable<SubCategory>;
 	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
@@ -115,6 +120,9 @@ export class RegisterPage {
 	onNextMainCategory(): void {
 		if (!this.registrationService.nextMainCategory()) {
 			this.navController.navigateForward(this.summaryUrl);
+		} else if (this.currentMainCategoryId === MainCategoryId.EarTag) {
+			this.setFormWitdh();
+			this.tts.speak(`Registrer ${this.currentMainCategory.name}`);
 		} else {
 			this.tts.speak(`Registrer ${this.currentMainCategory.name}, ${this.currentSubCategory.count} ${this.currentSubCategory.name} ${this.currentMainCategory.speakText}`);
 		}
@@ -124,6 +132,9 @@ export class RegisterPage {
 		if (!this.registrationService.prevMainCategroy()) {
 			this.onCancel();
 			this.navController.navigateBack(this.mapUrl);
+		} else if (this.currentMainCategoryId === MainCategoryId.EarTag) {
+			this.setFormWitdh();
+			this.tts.speak(`Registrer ${this.currentMainCategory.name}`);
 		} else {
 			this.tts.speak(`Registrer ${this.currentMainCategory.name}, ${this.currentSubCategory.count} ${this.currentSubCategory.name} ${this.currentMainCategory.speakText}`);
 		}
@@ -136,6 +147,14 @@ export class RegisterPage {
 	onCancel(): void {
 		this.registrationService.cancel();
 		this.store.dispatch(new StateResetAll());
+	}
+
+	private setFormWitdh(): void {
+		if (this.registerContainer) {
+			this.formWidth = this.registerContainer.nativeElement.clientWidth * 0.9; // Fordi elementene har 90% width. Ja dette er en hack.
+		} else {
+			this.formWidth = 300;
+		}
 	}
 
 	ionViewWillLeave(): void {

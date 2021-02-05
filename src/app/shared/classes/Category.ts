@@ -1,5 +1,6 @@
 import { MainCategoryId } from '../enums/MainCategoryId';
 import { SubCategoryId } from '../enums/SubCategoryId';
+import { EarTagInfo } from './EarTagInfo';
 
 export interface Category {
 	name: string;
@@ -40,4 +41,8 @@ export class CollarColour extends MainCategory {
 	yellowCollar: SubCategory;
 	redCollar: SubCategory;
 	missingCollar: SubCategory;
+}
+
+export class EarTag extends MainCategory {
+	earTagInfos: EarTagInfo[];
 }
