@@ -81,7 +81,7 @@ export class MapService {
 
 		if (!offlineMapMetaData.downloadFinished) {
 			const taskId = BackgroundTask.beforeExit(async () => {
-				offlineMapMetaData = await this.downloadMapTileArea(offlineMapMetaData);
+				await this.downloadMapTileArea(offlineMapMetaData, true);
 				BackgroundTask.finish({
 					taskId
 				});
@@ -92,7 +92,7 @@ export class MapService {
 	/**
 	 * startLat and startLng needs to be north west, while endLat and endLng needs to be south east.
 	 */
-	private async downloadMapTileArea(offlineMapMetaData: OfflineMapMetaData): Promise<OfflineMapMetaData> {
+	private async downloadMapTileArea(offlineMapMetaData: OfflineMapMetaData, inBackground: boolean = false): Promise<OfflineMapMetaData> {
 
 		let stopDownloading = false;
 		App.addListener('appStateChange', () => {
@@ -150,13 +150,13 @@ export class MapService {
 							currentUrl++;
 						} else {
 							currentUrl = 0;
-							await new Promise(r => setTimeout(r, this.DOWNLOAD_DELAY));
 						}
 					}
 
 					this.downloads.next([...this.downloads.getValue().map((d) => {
 						if (d.offlineMapMetaData.id === mapId) {
 							d.downloadedTiles++;
+							console.log(d.totalTiles, d.downloadedTiles, stopDownloading, inBackground);
 						}
 						return d;
 					})]);
