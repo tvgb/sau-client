@@ -25,6 +25,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	private fieldTripInfoSub: Subscription;
 	private startPos = [63.424, 10.3961];
 	private mapUrl = '/map';
+	private mainMenuUrl = '/main-menu';
 	private map;
 
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
@@ -81,6 +82,11 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 	navigateBack(): void {
 		this.navController.navigateBack(this.mapUrl);
+	}
+
+	completeSummary(): void {
+		this.navController.navigateBack(this.mainMenuUrl);
+		// Add in File!!
 	}
 
 	ionViewWillLeave(): void {
