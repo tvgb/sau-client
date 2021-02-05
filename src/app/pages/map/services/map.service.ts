@@ -52,12 +52,10 @@ export class MapService {
 	}
 
 	getMaxZoom(): number {
-		console.log(this.ZOOM_LEVELS.sort((a, b) => a - b)[this.ZOOM_LEVELS.length - 1]);
 		return this.ZOOM_LEVELS.sort((a, b) => a - b)[this.ZOOM_LEVELS.length - 1];
 	}
 
 	getMinZoom(): number {
-		console.log(this.ZOOM_LEVELS.sort((a, b) => a - b)[0]);
 		return this.ZOOM_LEVELS.sort((a, b) => a - b)[0];
 	}
 
@@ -157,7 +155,6 @@ export class MapService {
 					this.downloads.next([...this.downloads.getValue().map((d) => {
 						if (d.offlineMapMetaData.id === mapId) {
 							d.downloadedTiles++;
-							// console.log(d.totalTiles, d.downloadedTiles, stopDownloading, inBackground);
 						}
 						return d;
 					})]);
