@@ -40,6 +40,7 @@ export class MapService {
 		App.addListener('appStateChange', (state) => {
 			this.appActive = state.isActive;
 			this.stopDownloads = true;
+			this.mapsUpdated$.next();
 		});
 
 		LocalNotifications.requestPermission();
