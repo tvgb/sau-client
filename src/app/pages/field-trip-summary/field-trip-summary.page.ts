@@ -6,7 +6,6 @@ import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { Select, Store } from '@ngxs/store';
 import { FieldTripInfo } from 'src/app/shared/classes/FieldTripInfo';
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
-import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel';
 
 @Component({
   selector: 'app-field-trip-summary',
@@ -18,7 +17,9 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 	fieldTripInfo: FieldTripInfo;
 	date: number;
-	duration;
+	hours: number;
+	min: number;
+	sec: number;
 	registrations = [];
 	private fieldTripInfoSub: Subscription;
 	private mapUrl = '/map';
@@ -46,15 +47,18 @@ export class FieldTripSummaryPage implements AfterViewInit {
 // 	  });
 	  }
 
-	getDateAndDuration() {
-		this.date =  this.fieldTripInfo.dateTimeStarted;
-		console.log('DATE: ', this.date, this.fieldTripInfo.dateTimeEnded);
-		console.log('DATE DIFF', (this.fieldTripInfo.dateTimeEnded - this.fieldTripInfo.dateTimeStarted) / (1000 * 60));
-		this.duration =  (this.fieldTripInfo.dateTimeEnded - this.fieldTripInfo.dateTimeStarted) / (1000 * 60);
-		// this.duration = dateTimeEnded - dateStarted;
-		// this.date = dateStarted.toLocaleDateString();
-		// this.duration.getUTCDate();
-		// new Date().
+	getDateAndDuration(): void {
+		let delta = Math.abs(this.fieldTripInfo.dateTimeEnded - this.fieldTripInfo.dateTimeStarted) / 1000;
+		const days = Math.floor(delta / 86400);
+		delta -= days * 86400;
+
+		this.hours = Math.floor(delta / 3600) % 24;
+		delta -= this.hours * 3600;
+
+		this.min = Math.floor(delta / 60) % 60;
+		delta -= this.min * 60;
+
+		this.sec = Math.round(delta % 60); // fjern dette
 	}
 
 	ngAfterViewInit(): void {
