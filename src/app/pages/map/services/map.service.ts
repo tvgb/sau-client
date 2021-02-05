@@ -25,9 +25,6 @@ export class MapService {
 	private mapsUpdated$: Subject<any> = new Subject();
 	private mapId: string;
 	private lastTrackedPosition: Coordinate;
-	private appActive = true;
-	private stopDownloads = false;
-	private backgroundTaskId: string;
 
 	private readonly BASE_URLS = [
 		'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps',
@@ -38,16 +35,8 @@ export class MapService {
 	private readonly MAP_LAYER = 'norges_grunnkart';
 
 	constructor(private http: HttpClient, private gpsService: GpsService) {
-		
 		App.addListener('appStateChange', (state) => {
-			console.log('IS APP ACTIVE:', this.appActive);
-			console.log('TASK ID:', this.backgroundTaskId);
-
-			this.appActive = state.isActive;
-			this.stopDownloads = true;
-			this.mapsUpdated$.next();
-
-			if (this.appActive) {
+			if (state.isActive) {
 				this.finishDownloadingAndDeleting();
 			}
 		});
@@ -88,21 +77,13 @@ export class MapService {
 	}
 
 	async startMapTileAreaDownload(offlineMapMetaData: OfflineMapMetaData) {
-		this.stopDownloads = false;
-
-		const id1 = uuidv4();
-		offlineMapMetaData = await this.downloadMapTileArea(offlineMapMetaData, id1);
-		console.log('NORMAL TASK ENDED:', id1);
+		offlineMapMetaData = await this.downloadMapTileArea(offlineMapMetaData);
 
 		if (!offlineMapMetaData.downloadFinished) {
-			this.stopDownloads = false;
-			this.backgroundTaskId = BackgroundTask.beforeExit(async () => {
-				const id = uuidv4();
-				offlineMapMetaData = await this.downloadMapTileArea(offlineMapMetaData, id);
-				console.log('BACKGROUND TASK ENDED:', id);
-
+			const taskId = BackgroundTask.beforeExit(async () => {
+				offlineMapMetaData = await this.downloadMapTileArea(offlineMapMetaData);
 				BackgroundTask.finish({
-					taskId: this.backgroundTaskId
+					taskId
 				});
 			});
 		}
@@ -111,7 +92,13 @@ export class MapService {
 	/**
 	 * startLat and startLng needs to be north west, while endLat and endLng needs to be south east.
 	 */
-	private async downloadMapTileArea(offlineMapMetaData: OfflineMapMetaData, taskId: string = undefined): Promise<OfflineMapMetaData> {
+	private async downloadMapTileArea(offlineMapMetaData: OfflineMapMetaData): Promise<OfflineMapMetaData> {
+
+		let stopDownloading = false;
+		App.addListener('appStateChange', () => {
+			stopDownloading = true;
+		});
+
 		const startPos = offlineMapMetaData.startPos;
 		const endPos = offlineMapMetaData.endPos;
 
@@ -122,28 +109,14 @@ export class MapService {
 			this.mapsUpdated$.next();
 		}
 
-		let stopIt = false;
-
-		App.addListener('appStateChange', (state) => {
-			if (state.isActive) {
-				stopIt = true;
-			} 
-		});
-
 		const mapId = offlineMapMetaData.id;
-
-		console.log('STARTING:', mapId);
-
 		const downloadProgressionData = this.downloads.getValue().find(d => d.offlineMapMetaData.id === mapId);
-
-		console.log('TOTAL TILES:', this.getTotalTiles(startPos, endPos));
 
 		if (downloadProgressionData) {
 			this.downloads.next([...this.downloads.getValue().map((d) => {
 				if (d.offlineMapMetaData.id === mapId) {
 					d.downloadedTiles = 0;
 				}
-
 				return d;
 			})]);
 		} else {
@@ -166,7 +139,7 @@ export class MapService {
 
 			for (let x = startX; x <= endX; x++) {
 				for (let y = startY; y <= endY; y++) {
-					if (this.stopDownloads || stopIt) {
+					if (stopDownloading) {
 						return offlineMapMetaData;
 					}
 
@@ -184,7 +157,6 @@ export class MapService {
 					this.downloads.next([...this.downloads.getValue().map((d) => {
 						if (d.offlineMapMetaData.id === mapId) {
 							d.downloadedTiles++;
-							console.log('ACTIVE:', this.appActive, d.downloadedTiles, d.totalTiles, taskId, this.stopDownloads, stopIt);
 						}
 						return d;
 					})]);
