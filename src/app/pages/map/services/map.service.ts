@@ -72,20 +72,12 @@ export class MapService {
 				await this.setOfflineMapId({lat: pos.coords.latitude, lng: pos.coords.longitude});
 			});
 		}
-		const img = this.readFile(`/${this.mapId}/mapTiles/${z}/${x}/${y}/${this.MAP_TILE_NAME}`);
+		const img = this.readFile(`maps/${this.mapId}/mapTiles/${z}/${x}/${y}/${this.MAP_TILE_NAME}`);
 
 		return img;
 	}
 
-	async startMapTileAreaDownload(startPos: Coordinate, endPos: Coordinate) {
-
-		let offlineMapMetaData: OfflineMapMetaData = {
-			startPos,
-			endPos,
-			downloadFinished: false,
-			deleted: false
-		};
-
+	async startMapTileAreaDownload(offlineMapMetaData: OfflineMapMetaData) {
 		this.stopDownloads = false;
 		offlineMapMetaData = await this.downloadMapTileArea(offlineMapMetaData);
 
@@ -113,20 +105,19 @@ export class MapService {
 			offlineMapMetaData.name = `Nytt kart - ${new Date().toLocaleDateString()}`;
 			offlineMapMetaData = await this.saveMapMetaData(offlineMapMetaData);
 			this.mapsUpdated$.next();
-
-			this.downloads.next([...this.downloads.getValue(), ({
-				totalTiles: this.getTotalTiles(startPos, endPos),
-				downloadedTiles: 0,
-				offlineMapMetaData
-			} as DownloadProgressionData)]);
 		}
+
+		this.downloads.next([...this.downloads.getValue(), ({
+			totalTiles: this.getTotalTiles(startPos, endPos),
+			downloadedTiles: 0,
+			offlineMapMetaData
+		} as DownloadProgressionData)]);
 
 		const mapId = offlineMapMetaData.id;
 
 		let currentUrl = 0;
 
 		for (const z of this.ZOOM_LEVELS) {
-
 			const startXY = this.getTileCoordinates(startPos, z);
 			const endXY = this.getTileCoordinates(endPos, z);
 			const startX = startXY[0];
@@ -139,25 +130,25 @@ export class MapService {
 					if (this.stopDownloads) {
 						return offlineMapMetaData;
 					}
+
 					if (!(await this.TileExists(mapId, z, x, y))) {
 						this.downloadTile(mapId, z, x, y, this.BASE_URLS[currentUrl]);
-						this.downloads.next([...this.downloads.getValue().map((d) => {
-							if (d.offlineMapMetaData.id === mapId) {
-								d.downloadedTiles++;
-							}
 
-							return d;
-						})]);
-					} else {
-						continue;
+						if (currentUrl < 2) {
+							currentUrl++;
+						} else {
+							currentUrl = 0;
+							await new Promise(r => setTimeout(r, this.DOWNLOAD_DELAY));
+						}
 					}
 
-					if (currentUrl < 2) {
-						currentUrl++;
-					} else {
-						currentUrl = 0;
-						await new Promise(r => setTimeout(r, this.DOWNLOAD_DELAY));
-					}
+					this.downloads.next([...this.downloads.getValue().map((d) => {
+						if (d.offlineMapMetaData.id === mapId) {
+							d.downloadedTiles++;
+						}
+
+						return d;
+					})]);
 				}
 			}
 		}
@@ -194,13 +185,14 @@ export class MapService {
 
 		await Filesystem.readdir({
 			directory: this.FILESYSTEM_DIRECTORY,
-			path: ''
+			path: 'maps/'
 		}).then(async res => {
+			offlineMapsMetaData = [];
 			if (res) {
 				for (const path of res.files) {
 					await Filesystem.readFile({
 						directory: this.FILESYSTEM_DIRECTORY,
-						path: `${path}/metaData`
+						path: `maps/${path}/metaData`
 					}).then(metaData => {
 						if (metaData) {
 							offlineMapsMetaData.push(metaData.data as unknown as OfflineMapMetaData);
@@ -218,7 +210,7 @@ export class MapService {
 	async getOfflineMapMetaData(mapId: string): Promise<OfflineMapMetaData> {
 		return await Filesystem.readFile({
 			directory: this.FILESYSTEM_DIRECTORY,
-			path: `${mapId}/metaData`
+			path: `maps/${mapId}/metaData`
 		}).then(metaData => {
 			if (metaData) {
 				return metaData.data as unknown as OfflineMapMetaData;
@@ -233,12 +225,12 @@ export class MapService {
 
 		return Filesystem.rmdir({
 			directory: this.FILESYSTEM_DIRECTORY,
-			path: `/${mapId}/mapTiles`,
+			path: `maps/${mapId}/mapTiles`,
 			recursive: true
 		}).then(() => {
 			return Filesystem.rmdir({
 				directory: this.FILESYSTEM_DIRECTORY,
-				path: `/${mapId}`,
+				path: `maps/${mapId}`,
 				recursive: true
 			});
 		});
@@ -252,7 +244,7 @@ export class MapService {
 		const data: any = offlineMapMetaData;
 
 		await Filesystem.writeFile({
-			path: `/${offlineMapMetaData.id}/metaData/`,
+			path: `maps/${offlineMapMetaData.id}/metaData/`,
 			data,
 			directory: this.FILESYSTEM_DIRECTORY,
 			encoding: FilesystemEncoding.UTF8,
@@ -326,10 +318,10 @@ export class MapService {
 	private async writeFile(mapId: string, data: any, z: number, x: number, y: number): Promise<void> {
 		await Filesystem.stat({
 			directory: this.FILESYSTEM_DIRECTORY,
-			path: `/${mapId}/mapTiles/${z}/${x}/${y}/${this.MAP_TILE_NAME}`
+			path: `maps/${mapId}/mapTiles/${z}/${x}/${y}/${this.MAP_TILE_NAME}`
 		}).catch(() => {
 			return Filesystem.writeFile({
-				path: `/${mapId}/mapTiles/${z}/${x}/${y}/${this.MAP_TILE_NAME}`,
+				path: `maps/${mapId}/mapTiles/${z}/${x}/${y}/${this.MAP_TILE_NAME}`,
 				data,
 				directory: this.FILESYSTEM_DIRECTORY,
 				encoding: FilesystemEncoding.UTF8,
@@ -389,7 +381,7 @@ export class MapService {
 		try {
 			stat = await Filesystem.stat({
 				directory: this.FILESYSTEM_DIRECTORY,
-				path: `/${mapId}/mapTiles/${z}/${x}/${y}/${this.MAP_TILE_NAME}`
+				path: `maps/${mapId}/mapTiles/${z}/${x}/${y}/${this.MAP_TILE_NAME}`
 			});
 		} catch (e) {
 			stat = null;
@@ -410,7 +402,7 @@ export class MapService {
 		const data: any = offlineMapMetaData;
 
 		return Filesystem.writeFile({
-			path: `/${mapId}/metaData/`,
+			path: `maps/${mapId}/metaData/`,
 			data,
 			directory: this.FILESYSTEM_DIRECTORY,
 			encoding: FilesystemEncoding.UTF8,
@@ -431,7 +423,7 @@ export class MapService {
 
 		if (depth === 0) {
 			mapIds = mapIds.map(mapId => {
-				return `${mapId}/mapTiles`;
+				return `maps/${mapId}/mapTiles`;
 			});
 		}
 
@@ -508,8 +500,8 @@ export class MapService {
 	private async finishDownloadingAndDeleting() {
 		await this.getOfflineMapsMetaData().then(async metaDatas => {
 			for (const metaData of metaDatas) {
-				if (!metaData.downloadFinished) {
-					await this.downloadMapTileArea(metaData);
+				if (!metaData.downloadFinished && !metaData.deleted) {
+					await this.startMapTileAreaDownload(metaData);
 				}
 
 				if (metaData.deleted) {

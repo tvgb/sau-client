@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import * as L from 'leaflet';
+import { OfflineMapMetaData } from 'src/app/shared/classes/OfflineMapMetaData';
 import { GpsService } from '../map/services/gps.service';
 import { MapService } from '../map/services/map.service';
 
@@ -33,7 +34,7 @@ export class DownloadMapPage implements AfterViewInit {
 		const startPos = this.map.containerPointToLatLng(L.point(offsetLeft, offsetTop));
 		const endPos = this.map.containerPointToLatLng(L.point(offsetWidth + offsetLeft, offsetTop + offsetHeight)) ;
 
-		this.mapService.startMapTileAreaDownload(startPos, endPos);
+		this.mapService.startMapTileAreaDownload({startPos, endPos, downloadFinished: false, deleted: false} as OfflineMapMetaData);
 		this.navController.navigateBack('/offline-maps');
 	}
 
