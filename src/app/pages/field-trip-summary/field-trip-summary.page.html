@@ -10,7 +10,14 @@
     <div class="summary-column-heading">
         <h2>TID BRUKT</h2>
     </div>
-    <div class="summary-element"><ion-text>{{hours}} timer, {{min}} minutter</ion-text></div>
+        <ng-container class="summary-element" *ngIf="hours && min || hours && !min then caseA; else caseB"></ng-container>
+        <ng-template #caseA><ion-text class="summary-registration">{{hours}} timer, {{min}} minutter</ion-text></ng-template>
+        <ng-template #caseB>
+            <div *ngIf="min else caseC">
+                <ion-text class="summary-registration">{{min}} minutter</ion-text>
+            </div>
+            <ng-template #caseC><ion-text class="summary-registration">Oppsynsturen har vart i under 1.minutt</ion-text></ng-template>
+        </ng-template>
  </div>
  <div id="summary-map"></div>
  <div class="summary-column">
