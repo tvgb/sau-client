@@ -21,7 +21,7 @@ const { StatusBar, App } = Plugins;
 export class MapPage implements AfterViewInit {
 	private registrationUrl = '/registration/register';
 	private map;
-	private readonly OFFLINE_MAP = true;
+	private readonly OFFLINE_MAP = false;
 	private currentMainCategory: MainCategory;
 	private trackedRouteSub: Subscription;
 
