@@ -108,13 +108,26 @@ export class MapService {
 			this.mapsUpdated$.next();
 		}
 
-		this.downloads.next([...this.downloads.getValue(), ({
-			totalTiles: this.getTotalTiles(startPos, endPos),
-			downloadedTiles: 0,
-			offlineMapMetaData
-		} as DownloadProgressionData)]);
-
 		const mapId = offlineMapMetaData.id;
+
+
+		const downloadProgressionData = this.downloads.getValue().find(d => d.offlineMapMetaData.id === mapId);
+
+		if (downloadProgressionData) {
+			this.downloads.next([...this.downloads.getValue().map((d) => {
+				if (d.offlineMapMetaData.id === mapId) {
+					d.downloadedTiles = 0;
+				}
+
+				return d;
+			})]);
+		} else {
+			this.downloads.next([...this.downloads.getValue(), ({
+				totalTiles: this.getTotalTiles(startPos, endPos),
+				downloadedTiles: 0,
+				offlineMapMetaData
+			} as DownloadProgressionData)]);
+		}
 
 		let currentUrl = 0;
 
@@ -129,12 +142,6 @@ export class MapService {
 			for (let x = startX; x <= endX; x++) {
 				for (let y = startY; y <= endY; y++) {
 					if (this.stopDownloads) {
-						this.downloads.next([...this.downloads.getValue().map((d) => {
-							if (d.offlineMapMetaData.id === mapId) {
-								d.downloadedTiles = 0;
-							}
-							return d;
-						})]);
 						return offlineMapMetaData;
 					}
 
