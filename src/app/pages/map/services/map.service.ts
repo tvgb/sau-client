@@ -37,10 +37,19 @@ export class MapService {
 	private readonly MAP_LAYER = 'norges_grunnkart';
 
 	constructor(private http: HttpClient, private gpsService: GpsService) {
+		
 		App.addListener('appStateChange', (state) => {
 			this.appActive = state.isActive;
 			this.stopDownloads = true;
 			this.mapsUpdated$.next();
+
+			// for (const d of this.downloads) {
+			// 	console.log(this.d.id)
+			// }
+
+			console.debug('HELLO', JSON.stringify(this.downloads.getValue()));
+
+			
 		});
 
 		LocalNotifications.requestPermission();
