@@ -16,7 +16,7 @@ const { LocalNotifications, BackgroundTask, App} = Plugins;
 	providedIn: 'root'
 })
 export class MapService {
-	private readonly ZOOM_LEVELS = [12];
+	private readonly ZOOM_LEVELS = [10, 11, 12, 13, 14];
 	private readonly DOWNLOAD_DELAY = 200;
 	private readonly FILESYSTEM_DIRECTORY = FilesystemDirectory.External;
 	private readonly MAX_HTTP_RETRIES = 5;
@@ -54,11 +54,13 @@ export class MapService {
 	}
 
 	getMaxZoom(): number {
-		return this.ZOOM_LEVELS.sort()[this.ZOOM_LEVELS.length - 1];
+		console.log(this.ZOOM_LEVELS.sort((a, b) => a - b)[this.ZOOM_LEVELS.length - 1]);
+		return this.ZOOM_LEVELS.sort((a, b) => a - b)[this.ZOOM_LEVELS.length - 1];
 	}
 
 	getMinZoom(): number {
-		return this.ZOOM_LEVELS.sort()[0];
+		console.log(this.ZOOM_LEVELS.sort((a, b) => a - b)[0]);
+		return this.ZOOM_LEVELS.sort((a, b) => a - b)[0];
 	}
 
 	getZoomLevels(): number[] {
@@ -144,15 +146,13 @@ export class MapService {
 					}
 
 					if (!(await this.TileExists(mapId, z, x, y))) {
-						this.downloadTile(mapId, z, x, y, this.BASE_URLS[currentUrl]);
 
 						if (currentUrl < 2) {
+							this.downloadTile(mapId, z, x, y, this.BASE_URLS[currentUrl]);
 							currentUrl++;
 						} else {
+							await this.downloadTile(mapId, z, x, y, this.BASE_URLS[currentUrl]);
 							currentUrl = 0;
-							if (inBackground || !inBackground) {
-								await new Promise(r => setTimeout(r, this.DOWNLOAD_DELAY));
-							}
 						}
 					}
 
@@ -344,9 +344,9 @@ export class MapService {
 		});
 	}
 
-	private downloadTile(mapId: string, z: number, x: number, y: number, baseUrl: string): void {
+	private async downloadTile(mapId: string, z: number, x: number, y: number, baseUrl: string): Promise<any> {
 
-		this.http.get(`${baseUrl}?layers=${this.MAP_LAYER}&zoom=${z}&x=${x}&y=${y}`,
+		return this.http.get(`${baseUrl}?layers=${this.MAP_LAYER}&zoom=${z}&x=${x}&y=${y}`,
 		{
 			responseType: 'blob'
 		}).pipe(
@@ -354,9 +354,9 @@ export class MapService {
 			catchError(err => {
 				console.log(err);
 				return EMPTY;
-			})
-		).subscribe(
-			(res) => {
+			}),
+			map(async res => {
+				console.log('YES IT IS DONE NOW:', z, x, y, baseUrl);
 				const reader = new FileReader();
 				reader.readAsDataURL(res);
 
@@ -377,8 +377,10 @@ export class MapService {
 						retries--;
 					}
 				};
-			}
-		);
+
+				return res;
+			})
+		).toPromise();
 	}
 
 	/**
