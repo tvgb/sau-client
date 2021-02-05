@@ -41,6 +41,11 @@ export class MapService {
 			this.appActive = state.isActive;
 			this.stopDownloads = true;
 			this.mapsUpdated$.next();
+
+			if (this.appActive) {
+				console.log('STARTING!!!!');
+				this.finishDownloadingAndDeleting();
+			}
 		});
 
 		LocalNotifications.requestPermission();
