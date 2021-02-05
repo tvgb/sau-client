@@ -150,6 +150,9 @@ export class MapService {
 							currentUrl++;
 						} else {
 							currentUrl = 0;
+							if (inBackground || !inBackground) {
+								await new Promise(r => setTimeout(r, this.DOWNLOAD_DELAY));
+							}
 						}
 					}
 
