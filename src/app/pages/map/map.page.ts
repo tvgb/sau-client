@@ -11,7 +11,6 @@ import { Plugins } from '@capacitor/core';
 import { NavController, Platform } from '@ionic/angular';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
-import { formatDate } from '@angular/common';
 import { RegistrationService } from '../registration/services/registration.service';
 import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
@@ -78,12 +77,6 @@ export class MapPage implements AfterViewInit {
 			}
 		});
 
-		setTimeout(_ => {
-			this.fieldTripInfoSub = this.fieldTripInfo$.subscribe((res) => {
-				console.log('FieldTripInfo: ', res);
-			});
-		}, 3000);
-
 		this.currentMainCategorySub = this.currentMainCategory$.subscribe(res => {
 			this.currentMainCategory = res;
 		});
@@ -104,7 +97,6 @@ export class MapPage implements AfterViewInit {
 
 	navigateToRegistration() {
 		this.regService.position = this.posistionMarker.getLatLng();
-		console.log('Position: ', this.regService.position);
 		this.regService.registrationType = RegistrationType.Sheep;
 		this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);
 		this.navController.navigateForward(this.registrationUrl);

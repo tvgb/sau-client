@@ -1,11 +1,10 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { StateReset, StateResetAll } from 'ngxs-reset-plugin';
+import { StateReset } from 'ngxs-reset-plugin';
 import { NavController } from '@ionic/angular';
 import { Store } from '@ngxs/store';
 import { VibrationService } from '../../services/vibration.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
-import { SheepInfo } from 'src/app/shared/classes/SheepInfo';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 

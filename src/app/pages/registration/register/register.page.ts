@@ -8,7 +8,7 @@ import { NavController, Platform } from '@ionic/angular';
 import { MainCategoryId } from 'src/app/shared/enums/MainCategoryId';
 import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 import { MainCategory, SubCategory } from 'src/app/shared/classes/Category';
-import { StateReset, StateResetAll } from 'ngxs-reset-plugin';
+import { StateReset } from 'ngxs-reset-plugin';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 
 @Component({

@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { Select, Store } from '@ngxs/store';
-import { StateResetAll } from 'ngxs-reset-plugin';
+import { Select } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { MainCategory } from 'src/app/shared/classes/Category';
 import { MainCategoryId } from 'src/app/shared/enums/MainCategoryId';
 import { SheepInfoModel } from 'src/app/shared/interfaces/SheepInfoModel';
 import { AlertService } from 'src/app/shared/services/alert.service';
-import { AddRegistration } from 'src/app/shared/store/fieldTripInfo.actions';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { RegistrationService } from '../services/registration.service';
 import { TextToSpeechService } from '../services/text-to-speech.service';
