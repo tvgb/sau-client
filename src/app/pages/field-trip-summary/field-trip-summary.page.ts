@@ -7,6 +7,7 @@ import { Select} from '@ngxs/store';
 import { FieldTripInfo } from 'src/app/shared/classes/FieldTripInfo';
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { MapService } from '../map/services/map.service';
+import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 
 @Component({
   selector: 'app-field-trip-summary',
@@ -21,7 +22,9 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	hours: number;
 	min: number;
 	sec: number;
-	registrations = [];
+	totalSheepCount = 0;
+	totalEweCount = 0;
+	totalLambCount = 0;
 	private fieldTripInfoSub: Subscription;
 	private startPos = [63.424, 10.3961];
 	private mapUrl = '/map';
@@ -30,15 +33,15 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
 
-	constructor(private navController: NavController, private statusBarService: StatusbarService, private mapService: MapService ) { }
+	constructor(private navController: NavController, private statusBarService: StatusbarService ) { }
 
 	ionViewWillEnter(): void {
 		this.statusBarService.changeStatusBar(false, true);
 		this.fieldTripInfoSub = this.fieldTripInfo$.subscribe((res) => {
 			this.fieldTripInfo = res;
 		});
-
 		this.getDateAndDuration();
+		this.getTotalSheep();
 	  }
 
 	getDateAndDuration(): void {
@@ -52,6 +55,16 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 		this.min = Math.floor(delta / 60) % 60;
 		delta -= this.min * 60;
+	}
+
+	getTotalSheep(): void {
+		this.fieldTripInfo.registrations.forEach((registration) => {
+			if (registration.registrationType === RegistrationType.Sheep) {
+				this.totalSheepCount += registration.sheepInfo.totalSheep.totalSheep.count;
+				this.totalEweCount += registration.sheepInfo.sheepType.ewe.count;
+				this.totalLambCount += registration.sheepInfo.sheepType.lamb.count;
+			}
+		});
 	}
 
 	ngAfterViewInit(): void {
@@ -86,7 +99,8 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 	completeSummary(): void {
 		this.navController.navigateBack(this.mainMenuUrl);
-		// Add in File!!
+
+		// Add To File!!
 	}
 
 	ionViewWillLeave(): void {

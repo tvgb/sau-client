@@ -16,7 +16,7 @@
             <div *ngIf="min else caseC">
                 <ion-text class="summary-registration">{{min}} minutter</ion-text>
             </div>
-            <ng-template #caseC><ion-text class="summary-registration">Oppsynsturen har vart i under 1.minutt</ion-text></ng-template>
+            <ng-template #caseC><ion-text class="summary-registration">Oppsynsturen har vart i under 1 minutt.</ion-text></ng-template>
         </ng-template>
  </div>
  <div id="summary-map"></div>
@@ -26,8 +26,15 @@
     </div>
     <div *ngIf="!fieldTripInfo?.registrations; else elseblock" > <ion-text class="summary-registration">Det er ingen registreringer. </ion-text> </div>
     <ng-template #elseblock >
-        <div *ngFor="let registration of fieldTripInfo.registrations, index as i">
-            <div class="summary-registration">{{registration.registrationType}} : {{registration.sheepInfo.totalSheep.totalSheep.count}}
+        <div class="summary-registrations">
+            <div>
+                SØYE: {{totalEweCount}}
+            </div>
+            <div>
+                LAM: {{totalLambCount}}
+            </div>
+            <div >
+                SAU TOTALT: {{totalSheepCount}}
             </div>
         </div>
     </ng-template>
