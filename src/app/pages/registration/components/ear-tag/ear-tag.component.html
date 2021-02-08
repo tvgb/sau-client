@@ -1,0 +1,81 @@
+<div class="ear-tag-container">
+	<div class="observed-ear-tags-container">
+		OBSERVERTE ØREMERKER
+
+		<div 
+			class="ear-tag-selector-container" 
+			*ngFor="let earTag of checkableEartags"
+			(click)="onCheckChange(earTag)">
+			<app-ear-tag-icon
+				[coloursPicked]="earTag.colours"
+				[smallVersion]="true">
+			</app-ear-tag-icon>
+			<div class="ear-tag-selector-text">
+				{{earTag.owner}}
+			</div>
+			<div class="radial-button">
+			</div>
+			<ion-checkbox mode="ios" [ngModel]="earTag.isChecked"></ion-checkbox>
+		</div>
+		<div class="no-ear-tags-registered" *ngIf="checkableEartags.length === 0">
+			Ingen øremerker lagt til.
+		</div>
+	</div>
+	<div class="add-new-ear-tag-container">
+		REGISTRER NYTT ØREMERKE
+		<form [formGroup]="newEarTagForm" class="add-new-ear-tag-form">
+			<ion-label> Eier: </ion-label>
+			<ion-item lines="full">
+				<ion-input formControlName="owner" required="true" type="text" placeholder="Ola Normann"></ion-input> 
+			</ion-item>
+
+			<div class="colour-picker-container">
+				<div class="label-text">
+					Farge:
+				</div>
+				
+				<div class="colours-picked-container">
+					<div 
+						*ngFor="let colour of coloursPicked" 
+						class="colour" 
+						[ngStyle]="{'background-color': colour}"
+						(click)="pickedColourClicked(colour)">
+					</div>
+					<div 
+						*ngIf="coloursPicked.length < 2"
+						class="add-new-colour-button colour"
+						[ngStyle]="{'background-color': colour}"
+						(click)="this.pickingColour = true">
+						<div *ngIf="!colour">
+							+
+						</div>
+					</div>
+				</div>
+
+				<app-ear-tag-icon 
+					[coloursPicked]="coloursPicked"
+					[colour]="colour">
+				</app-ear-tag-icon>
+			</div>
+
+			<app-colour-picker
+				class="colour-picker"
+				*ngIf="pickingColour"
+				(colour)="colour = $event"
+				(colourPicked)="onColourPicked()"
+				[height]="45"
+				[width]="formWidth">
+			</app-colour-picker>
+		</form>
+
+		<ion-button 
+			[ngStyle]="pickingColour ? '' : {'margin-top': '54px'}"
+			[disabled]="!(this.coloursPicked.length > 0 && this.newEarTagForm.controls.owner.value)" 
+			(click)="onSaveNewEarTagButtonClicked()" 
+			shape="round" 
+			class="save-new-ear-tag-button">
+
+			LAGRE
+		</ion-button>
+	</div>
+</div>

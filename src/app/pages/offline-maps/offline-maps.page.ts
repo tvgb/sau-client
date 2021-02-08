@@ -1,8 +1,10 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import { Plugins } from '@capacitor/core';
 import { AnimationController, Animation, ModalController, NavController } from '@ionic/angular';
 import { DownloadProgressionData } from 'src/app/shared/classes/DownloadProgressionData';
 import { OfflineMapMetaData } from 'src/app/shared/classes/OfflineMapMetaData';
 import { MapService } from '../map/services/map.service';
+const { App } = Plugins;
 
 @Component({
 	selector: 'app-offline-maps',
@@ -21,19 +23,26 @@ export class OfflineMapsPage {
 	@ViewChild('backdrop') backdrop: ElementRef;
 	@ViewChild('optionsMenu') optionsMenu: ElementRef;
 
-	constructor(private mapService: MapService, private navController: NavController, private animationCtrl: AnimationController) { }
+	constructor(private mapService: MapService, private navController: NavController, private animationCtrl: AnimationController, private cd: ChangeDetectorRef) {
+		// App.addListener('appStateChange', () => {
+		// 	cd.reattach();
+		// });
+	}
 
 	ionViewWillEnter() {
 		this.setOfflineMaps();
 
 		this.mapService.getCurrentlyDownloading().subscribe((res: DownloadProgressionData[]) => {
-			if (res) {
+			if (res) {	
 				this.downloadProgressions = res;
+				this.cd.detectChanges();
 			}
 		});
 
 		this.mapService.mapsUpdated().subscribe(() => {
-			this.setOfflineMaps();
+			this.setOfflineMaps().then(() => {
+				this.cd.detectChanges();
+			})
 		});
 	}
 
@@ -168,8 +177,8 @@ export class OfflineMapsPage {
 		this.newMapName = '';
 	}
 
-	private setOfflineMaps(): void {
-		this.mapService.getOfflineMapsMetaData().then(res => {
+	private async setOfflineMaps(): Promise<void> {
+		return this.mapService.getOfflineMapsMetaData().then(res => {
 			if (res) {
 				this.offlineMaps = res.filter(m => !m.deleted).sort(this.sortFunction);
 			}

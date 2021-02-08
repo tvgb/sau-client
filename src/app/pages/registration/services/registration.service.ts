@@ -26,7 +26,8 @@ export class RegistrationService {
 		MainCategoryId.TotalSheep,
 		MainCategoryId.SheepColour,
 		MainCategoryId.SheepType,
-		MainCategoryId.CollarColour
+		MainCategoryId.CollarColour,
+		MainCategoryId.EarTag
 	];
 
 	subCategoryIds: SubCategoryId[][] = [
@@ -48,6 +49,9 @@ export class RegistrationService {
 			SubCategoryId.YellowCollar,
 			SubCategoryId.RedCollar,
 			SubCategoryId.MissingCollar
+		],
+		[
+			SubCategoryId.EarTag
 		]
 	];
 
@@ -75,6 +79,7 @@ export class RegistrationService {
 	}
 
 	nextMainCategory(): boolean {
+
 		if (this.currentMainCategoryIndex + 1 >= this.mainCategoryIds.length) {
 			return false;
 		} else {
