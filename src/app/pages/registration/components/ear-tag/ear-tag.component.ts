@@ -59,11 +59,11 @@ export class EarTagComponent implements OnInit {
 		});
 	}
 
-	ionViewWillEnter() {
-		Keyboard.addListener('keyboardWillShow', () => {
-			Keyboard.setResizeMode('none');
-		  });
-	}
+	// ionViewWillEnter() {
+	// 	Keyboard.addListener('keyboardWillShow', () => {
+	// 		Keyboard.setResizeMode(options: 'none');
+	// 	  });
+	// }
 
 	onColourPicked(): void {
 		this.coloursPicked.push(this.colour);
