@@ -22,8 +22,6 @@
   },
   "server": {
     "url": "http://10.22.38.247:8100",
-    "cleartext": true,
-    "originalUrl": "http://10.22.37.254:8100",
-    "originalCleartext": true
+    "cleartext": true
   }
 }

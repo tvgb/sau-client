@@ -1,19 +1,16 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Filesystem, FilesystemDirectory, FilesystemEncoding, KeyboardInfo } from '@capacitor/core';
+import { Filesystem, FilesystemDirectory, FilesystemEncoding, KeyboardResize } from '@capacitor/core';
 import { Platform } from '@ionic/angular';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { CheckableEarTag, EarTagInfo } from 'src/app/shared/classes/EarTagInfo';
-import { FieldTripInfo } from 'src/app/shared/classes/FieldTripInfo';
 import { SetEarTagInfos } from 'src/app/shared/store/sheepInfo.actions';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
-import { pathToFileURL } from 'url';
 import { v4 as uuidv4 } from 'uuid';
-import { Plugins, Keyboard} from '@capacitor/core';
+import { Plugins} from '@capacitor/core';
 
 const {Keyboard} = Plugins;
-
 
 @Component({
 	selector: 'app-ear-tag',
@@ -59,11 +56,11 @@ export class EarTagComponent implements OnInit {
 		});
 	}
 
-	// ionViewWillEnter() {
-	// 	Keyboard.addListener('keyboardWillShow', () => {
-	// 		Keyboard.setResizeMode(options: 'none');
-	// 	  });
-	// }
+	ionViewWillEnter() {
+		Keyboard.addListener('keyboardWillShow', () => {
+			Keyboard.setResizeMode({mode: KeyboardResize.None});
+		});
+	}
 
 	onColourPicked(): void {
 		this.coloursPicked.push(this.colour);
