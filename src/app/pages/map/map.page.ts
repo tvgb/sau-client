@@ -137,7 +137,7 @@ export class MapPage implements AfterViewInit {
 
 				this.mapService.getTile(coords.z, coords.x, coords.y).then((base64Img) => {
 					tile.setAttribute(
-						'src', base64Img.data
+						'src', base64Img
 					);
 					done(null, tile);
 				}).catch((e) => {
