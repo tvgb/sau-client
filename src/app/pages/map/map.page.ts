@@ -10,7 +10,7 @@ import { MainCategory } from 'src/app/shared/classes/Category';
 import { Plugins, StatusBarStyle } from '@capacitor/core';
 import { NavController, Platform } from '@ionic/angular';
 
-const { StatusBar, App } = Plugins;
+const { StatusBar, App, Network } = Plugins;
 
 @Component({
 	selector: 'app-map',
@@ -21,7 +21,6 @@ const { StatusBar, App } = Plugins;
 export class MapPage implements AfterViewInit {
 	private registrationUrl = '/registration/register';
 	private map;
-	private readonly OFFLINE_MAP = false;
 	private currentMainCategory: MainCategory;
 	private trackedRouteSub: Subscription;
 
@@ -35,8 +34,6 @@ export class MapPage implements AfterViewInit {
 		shadowSize: [41, 41]
 	});
 
-
-
 	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
 
 	currentMainCategorySub: Subscription;
@@ -49,10 +46,17 @@ export class MapPage implements AfterViewInit {
 		private gpsService: GpsService,
 		private ttsService: TextToSpeechService,
 		private navController: NavController) {
-			this.platform.backButton.subscribeWithPriority(5, () => {
-				this.navController.navigateBack('/main-menu');
-			  });
-		}
+
+
+		this.platform.backButton.subscribeWithPriority(5, () => {
+			this.navController.navigateBack('/main-menu');
+		});
+
+		Network.addListener('networkStatusChange', (status) => {
+			console.log(status);
+			this.initMap();
+		});
+	}
 
 	changeStatusBar(): void {
 		StatusBar.setOverlaysWebView({
@@ -95,7 +99,6 @@ export class MapPage implements AfterViewInit {
 	}
 
 	initMap(): void {
-
 		this.gpsService.getCurrentPosition().then(async gpsPosition => {
 			this.map = L.map('map', {
 				center: [gpsPosition.coords.latitude, gpsPosition.coords.longitude],
@@ -117,15 +120,15 @@ export class MapPage implements AfterViewInit {
 				} else {
 					this.gpsService.setTracking(false);
 				}
-			  });
+			});
 
-			if (this.OFFLINE_MAP) {
-				this.initOfflineMap();
-			} else {
+			if ((await Network.getStatus()).connected) {
 				L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
 				{
 					attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
 				}).addTo(this.map);
+			} else {
+				this.initOfflineMap();
 			}
 		});
 	}
