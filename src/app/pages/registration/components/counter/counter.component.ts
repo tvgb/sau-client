@@ -18,39 +18,39 @@ export class CounterComponent {
 	@Output() subCategoryLeft = new EventEmitter();
 	@Output() holdForReadout = new EventEmitter();
 
-	@ViewChild("counterContainer") counterContainer: ElementRef;
+	@ViewChild('counterContainer') counterContainer: ElementRef;
 
 	constructor(private vibration: VibrationService) { }
 
 	onSwipeLeft(e): void {
 		if (this.subCategoryCount > 1) {
-			this.subCategoryLeft.emit(e);
 			this.vibration.vibrate();
+			this.subCategoryLeft.emit(e);
 		}
 	}
 
 	onSwipeRight(e): void {
 		if (this.subCategoryCount > 1) {
-			this.subCategoryRight.emit(e);
 			this.vibration.vibrate();
+			this.subCategoryRight.emit(e);
 		}
 	}
 
 	onSwipeUp(e): void {
-		this.increment.emit(e);
 		this.vibration.vibrate();
+		this.increment.emit(e);
 	}
 
 	onSwipeDown(e): void {
-		this.decrement.emit(e);
 		this.vibration.vibrate();
+		this.decrement.emit(e);
 	}
 
 	onTap(e): void {
 		const y = e.center.y;
 		const containerHeight = this.counterContainer.nativeElement.clientHeight;
 		const offsetTop = this.counterContainer.nativeElement.offsetTop;
-
+		this.vibration.vibrate();
 		if (y - (containerHeight / 2 + offsetTop) < 0) {
 			this.increment.emit(e);
 		} else {
