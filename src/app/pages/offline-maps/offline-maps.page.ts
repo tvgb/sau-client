@@ -23,17 +23,18 @@ export class OfflineMapsPage {
 	@ViewChild('backdrop') backdrop: ElementRef;
 	@ViewChild('optionsMenu') optionsMenu: ElementRef;
 
-	constructor(private mapService: MapService, private navController: NavController, private animationCtrl: AnimationController, private cd: ChangeDetectorRef) {
-		// App.addListener('appStateChange', () => {
-		// 	cd.reattach();
-		// });
+	constructor(
+		private mapService: MapService,
+		private navController: NavController,
+		private animationCtrl: AnimationController,
+		private cd: ChangeDetectorRef) {
 	}
 
 	ionViewWillEnter() {
 		this.setOfflineMaps();
 
 		this.mapService.getCurrentlyDownloading().subscribe((res: DownloadProgressionData[]) => {
-			if (res) {	
+			if (res) {
 				this.downloadProgressions = res;
 				this.cd.detectChanges();
 			}
@@ -42,7 +43,7 @@ export class OfflineMapsPage {
 		this.mapService.mapsUpdated().subscribe(() => {
 			this.setOfflineMaps().then(() => {
 				this.cd.detectChanges();
-			})
+			});
 		});
 	}
 
@@ -166,6 +167,20 @@ export class OfflineMapsPage {
 
 	plusButtonClicked(): void {
 		this.navController.navigateForward('/download-map');
+	}
+
+	getMapInfoText(mapId: string): string {
+		const downloadProgressionData = this.downloadProgressions.find(d => d.offlineMapMetaData.id === mapId);
+		const metaData = this.offlineMaps.find(m => m.id === mapId);
+
+		if (!downloadProgressionData) {
+			const date = new Date(metaData.downloadDate);
+			return `Oppdatert: ${date.toLocaleDateString('nb-NO')}`;
+		} else if (this.getDownloadCompletionRate(mapId) < 1) {
+			return 'Laster ned';
+		} else if (this.getDownloadCompletionRate(mapId) === 1) {
+			return 'Klargjør kart';
+		}
 	}
 
 	private setSelectedMapName(): void {

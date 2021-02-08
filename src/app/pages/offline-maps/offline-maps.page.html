@@ -8,12 +8,16 @@
 				<div class="map-info-container">
 					<div class="map-info"> {{ getMapFileSize(metaData.size) }} </div>
 					<div class="map-info"> | </div>
-					<div class="map-info"> Oppdatert: {{ metaData.downloadDate | date:'dd.MM.yyyy' }} </div>
+					<div class="map-info"> {{ getMapInfoText(metaData.id) }} </div>
 				</div>
 				<div class="map-options">
 					<div class="map-options-button" (click)="showOptionsMenu(metaData.id)">&middot;&middot;&middot;</div>
 				</div>
-				<ion-progress-bar [hidden]="hideProgressBar(metaData.id)" class="progress-bar" [value]="getDownloadCompletionRate(metaData.id)"></ion-progress-bar>
+				<ion-progress-bar 
+					[hidden]="hideProgressBar(metaData.id)"
+					class="progress-bar"
+					[value]="getDownloadCompletionRate(metaData.id)"
+					[type]="getDownloadCompletionRate(metaData.id) === 1 ? 'indeterminate' : 'determinate'"></ion-progress-bar>
 			</div>
 			<div class="no-maps" *ngIf="offlineMaps && offlineMaps.length === 0">
 				Ingen kartutsnitt har blitt lastet ned enda. Trykk på + for å laste ned et kartutsnitt!
