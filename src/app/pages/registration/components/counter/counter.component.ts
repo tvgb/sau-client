@@ -63,10 +63,4 @@ export class CounterComponent {
 		this.vibration.vibrate();
 		this.holdForReadout.emit(e);
 	}
-
-	// checkRequiredFields(input: string[]) {
-	// 	if (input === undefined) {
-	// 		throw new Error('Input directive "categories" is required.');
-	// 	}
-	// }
 }
