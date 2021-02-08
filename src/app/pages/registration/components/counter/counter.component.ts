@@ -56,7 +56,6 @@ export class CounterComponent {
 		} else {
 			this.decrement.emit(e);
 		}
-
 	}
 
 	onHold(e): void {
