@@ -28,12 +28,9 @@ export class MapPage implements AfterViewInit {
 	private posistionIcon =  new L.Icon({
 		iconUrl: 'assets/icon/current-pos-icon.png',
 		iconSize: [30, 30],
-
 		popupAnchor: [1, -34],
 		tooltipAnchor: [16, -28],
 	});
-
-
 
 	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
 
