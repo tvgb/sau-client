@@ -26,16 +26,11 @@ export class MapPage implements AfterViewInit {
 	private trackedRouteSub: Subscription;
 
 	private posistionIcon =  new L.Icon({
-		iconUrl: 'assets/icon/marker-icon.png',
-		shadowUrl: 'assets/icon/marker-shadow.png',
-		iconSize: [25, 41],
-		iconAnchor: [12, 41],
+		iconUrl: 'assets/icon/current-pos-icon.png',
+		iconSize: [30, 30],
 		popupAnchor: [1, -34],
 		tooltipAnchor: [16, -28],
-		shadowSize: [41, 41]
 	});
-
-
 
 	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
 
