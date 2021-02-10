@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
-import {Plugins, StatusBarStyle} from '@capacitor/core';
 import { NavController } from '@ionic/angular';
-
-const {StatusBar} = Plugins;
+import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 
 @Component({
 	selector: 'app-main-menu',
@@ -14,22 +12,10 @@ export class MainMenuPage {
 	private offlineMapUrl = '/offline-maps';
 	private newFieldTripUrl = '/new-field-trip';
 
-	constructor(private navController: NavController) { }
+	constructor(private navController: NavController, private statusBarService: StatusbarService) { }
 
 	ionViewWillEnter() {
-		this.changeStatusBarTextColor();
-	}
-
-	changeStatusBarTextColor(): void {
-		StatusBar.setOverlaysWebView({
-			overlay: false
-		});
-		StatusBar.setStyle({
-			style: StatusBarStyle.Dark
-		});
-		StatusBar.setBackgroundColor({
-			color: '#1C262F'
-		});
+		this.statusBarService.changeStatusBar(false, true);
 	}
 
 	newFieldTripButtonClicked(): void {

@@ -2,15 +2,23 @@ import { Component, AfterViewInit } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { GpsService } from './services/gps.service';
-import { Select } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { TextToSpeechService } from '../registration/services/text-to-speech.service';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
-import { Plugins, StatusBarStyle } from '@capacitor/core';
+import { Plugins } from '@capacitor/core';
 import { NavController, Platform } from '@ionic/angular';
+import { AlertService } from 'src/app/shared/services/alert.service';
+import { StatusbarService } from 'src/app/shared/services/statusbar.service';
+import { RegistrationService } from '../registration/services/registration.service';
+import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
+import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
+import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel';
+import { SetDateTimeEnded } from 'src/app/shared/store/fieldTripInfo.actions';
+import { UpdateFieldTripInfoObject } from 'src/app/shared/classes/FieldTripInfo';
 
-const { StatusBar, App } = Plugins;
+const { App } = Plugins;
 
 @Component({
 	selector: 'app-map',
@@ -24,6 +32,7 @@ export class MapPage implements AfterViewInit {
 	private readonly OFFLINE_MAP = false;
 	private currentMainCategory: MainCategory;
 	private trackedRouteSub: Subscription;
+	private trackedRoute = [];
 
 	private posistionIcon =  new L.Icon({
 		iconUrl: 'assets/icon/current-pos-icon.png',
@@ -32,6 +41,10 @@ export class MapPage implements AfterViewInit {
 		tooltipAnchor: [16, -28],
 	});
 
+	private alertHeader = 'Fullfør oppsynstur';
+	private alertMessage = 'Ønsker du å fullføre og lagre denne oppsynsturen?';
+
+	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfoModel>;
 	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
 
 	currentMainCategorySub: Subscription;
@@ -40,27 +53,23 @@ export class MapPage implements AfterViewInit {
 
 	constructor(
 		private platform: Platform,
+		private store: Store,
+		private regService: RegistrationService,
+		private statusBarService: StatusbarService,
 		private mapService: MapService,
 		private gpsService: GpsService,
 		private ttsService: TextToSpeechService,
+		private alertService: AlertService,
 		private navController: NavController) {
 			this.platform.backButton.subscribeWithPriority(5, () => {
 				this.navController.navigateBack('/main-menu');
 			  });
 		}
 
-	changeStatusBar(): void {
-		StatusBar.setOverlaysWebView({
-			overlay: true
-		});
-		StatusBar.setStyle({
-			style: StatusBarStyle.Light
-		});
-	}
-
 	ionViewWillEnter(): void {
-		this.changeStatusBar();
+		this.statusBarService.changeStatusBar(true, false);
 		this.trackedRouteSub =  this.gpsService.getTrackedRoute().subscribe((res) => {
+			this.trackedRoute = res;
 			if (this.map) {
 				L.polyline(res).addTo(this.map);
 				this.posistionMarker.setLatLng([res[res.length - 1].lat, res[res.length - 1].lng]);
@@ -71,9 +80,10 @@ export class MapPage implements AfterViewInit {
 			this.currentMainCategory = res;
 		});
 
+
 		if (!this.gpsService.getTracking()) {
 			this.gpsService.setTracking(true);
-			this.gpsService.startTrackingInterval(this.map);
+			this.gpsService.startTrackingInterval();
 		}
 	}
 
@@ -84,13 +94,19 @@ export class MapPage implements AfterViewInit {
 		});
 	}
 
-	navigateToRegistration() {
+	navigateToRegistration(): void {
+		this.regService.position = this.posistionMarker.getLatLng();
+		this.regService.registrationType = RegistrationType.Sheep;
 		this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);
 		this.navController.navigateForward(this.registrationUrl);
 	}
 
-	initMap(): void {
+	navigateToSummary(): void {
+		this.store.dispatch(new SetDateTimeEnded({dateTimeEnded: Date.now(), trackedRoute: this.trackedRoute} as UpdateFieldTripInfoObject));
+		this.navController.navigateForward('/field-trip-summary');
+	}
 
+	initMap(): void {
 		this.gpsService.getCurrentPosition().then(async gpsPosition => {
 			this.map = L.map('map', {
 				center: [gpsPosition.coords.latitude, gpsPosition.coords.longitude],
@@ -101,14 +117,13 @@ export class MapPage implements AfterViewInit {
 				attributionControl: false
 			});
 
-			this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude], {icon: this.posistionIcon}).addTo(this.map);
-
-	 	this.gpsService.startTrackingInterval(this.map);
+		 this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude], {icon: this.posistionIcon}).addTo(this.map);
+	 	this.gpsService.startTrackingInterval();
 
 			App.addListener('appStateChange', ({ isActive }) => {
 				if (isActive) {
 					this.gpsService.setTracking(true);
-					this.gpsService.recalibratePosition(this.map);
+					this.gpsService.recalibratePosition();
 				} else {
 					this.gpsService.setTracking(false);
 				}
@@ -137,6 +152,7 @@ export class MapPage implements AfterViewInit {
 					done(null, tile);
 				}).catch((e) => {
 					tile.innerHTML = 'Map not available offline.';
+					console.log(e);
 				});
 				return tile;
 			}
@@ -144,7 +160,11 @@ export class MapPage implements AfterViewInit {
 		L.gridLayer.offlineMap = (opts) => {
 			return new L.GridLayer.OfflineMap(opts);
 		};
-		this.map.addLayer( L.gridLayer.offlineMap() );
+		this.map.addLayer(L.gridLayer.offlineMap() );
+	}
+
+	showConfirmAlert() {
+		this.alertService.confirmAlert(this.alertHeader, this.alertMessage, this, this.navigateToSummary);
 	}
 
 	ionViewWillLeave(): void {

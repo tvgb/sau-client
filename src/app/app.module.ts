@@ -18,6 +18,7 @@ import { IonicGestureConfig } from './shared/classes/hammer-config';
 import { AppInfoState } from './shared/store/appInfo.state';
 import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
 import { SharedModule} from './shared/shared.module';
+import { FieldTripInfoState } from './shared/store/fieldTripInfo.state';
 
 @NgModule({
 	declarations: [AppComponent],
@@ -30,7 +31,8 @@ import { SharedModule} from './shared/shared.module';
 		ReactiveFormsModule,
 		NgxsModule.forRoot([
 			SheepInfoState,
-			AppInfoState
+			AppInfoState,
+			FieldTripInfoState,
 		], { developmentMode: true }),
 		HammerModule,
 		NgxsResetPluginModule.forRoot()

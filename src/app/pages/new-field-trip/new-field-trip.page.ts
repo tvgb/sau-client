@@ -7,14 +7,16 @@ import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { SetCurrentFieldTrip } from 'src/app/shared/store/fieldTripInfo.actions';
 import { NavController } from '@ionic/angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {Plugins, StatusBarStyle, KeyboardInfo} from '@capacitor/core';
+import { Plugins } from '@capacitor/core';
+import { StatusbarService } from 'src/app/shared/services/statusbar.service';
+import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel';
 
-const {StatusBar, Keyboard} = Plugins;
+const { Keyboard } = Plugins;
 
 @Component({
-  selector: 'app-new-field-trip',
-  templateUrl: './new-field-trip.page.html',
-  styleUrls: ['./new-field-trip.page.scss'],
+	selector: 'app-new-field-trip',
+	templateUrl: './new-field-trip.page.html',
+	styleUrls: ['./new-field-trip.page.scss'],
 })
 
 export class NewFieldTripPage {
@@ -31,9 +33,11 @@ export class NewFieldTripPage {
 
 	mapUrl = '/map';
 
-	@Select(FieldTripInfoState.getCurrentFieldTripInfo) currentFieldTripInfo$: Observable<FieldTripInfo>;
+	@Select(FieldTripInfoState.getCurrentFieldTripInfo) currentFieldTripInfo$: Observable<FieldTripInfoModel>;
 
-	constructor(private store: Store, private navController: NavController, private formbuilder: FormBuilder) {
+	constructor(private store: Store,
+				         private navController: NavController, private formbuilder: FormBuilder,
+		        private statusBarService: StatusbarService) {
 		this.newFieldTripForm = this.formbuilder.group({
 			overseerName: ['Kari Nordmann', Validators.required],
 			fNumber: ['22', Validators.required],
@@ -43,30 +47,10 @@ export class NewFieldTripPage {
 			weather: [''],
 			description: [''],
 		});
-
-	}
-
-
-
-	changeStatusBarTextColor(): void {
-		StatusBar.setOverlaysWebView({
-			overlay: false
-		});
-		StatusBar.setStyle({
-			style: StatusBarStyle.Dark
-		});
-		StatusBar.setBackgroundColor({
-			color: '#1C262F'
-		});
 	}
 
 	ionViewWillEnter() {
-		this.changeStatusBarTextColor();
-		this.currentFieldTripSub = this.currentFieldTripInfo$.subscribe((res: FieldTripInfo) => {
-			if (res) {
-				this.currentFieldTripInfo = res;
-			}
-		});
+		this.statusBarService.changeStatusBar(false, true);
 	}
 
 	createNewFieldTrip() {
@@ -75,19 +59,14 @@ export class NewFieldTripPage {
 			Keyboard.hide();
 			this.fieldTripId = uuidv4();
 			this.currentFieldTripInfo = new FieldTripInfo(
-				this.fieldTripId, this.newFieldTripForm.controls.overseerName.value, this.newFieldTripForm.controls.fNumber.value,
-				this.newFieldTripForm.controls.bNumber.value, this.newFieldTripForm.controls.municipality.value,
-				this.newFieldTripForm.controls.participants.value,
-				this.newFieldTripForm.controls.weather.value, this.newFieldTripForm.controls.description.value);
+				{fieldtripId: this.fieldTripId, overseerName: this.newFieldTripForm.controls.overseerName.value,
+					fNumber: this.newFieldTripForm.controls.fNumber.value, bNumber: this.newFieldTripForm.controls.bNumber.value,
+					municipality: this.newFieldTripForm.controls.municipality.value, participants: this.newFieldTripForm.controls.participants.value,
+					weather: this.newFieldTripForm.controls.weather.value, description: this.newFieldTripForm.controls.description.value,
+					dateTimeStarted: Date.now() });
 			console.log(JSON.stringify(this.currentFieldTripInfo));
 			this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
-
 			this.navController.navigateForward(this.mapUrl);
 		}
-
-	}
-
-	ionViewWillLeave(): void {
-		this.currentFieldTripSub.unsubscribe();
 	}
 }

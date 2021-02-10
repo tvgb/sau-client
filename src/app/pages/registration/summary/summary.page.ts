@@ -1,12 +1,11 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { AlertController, NavController } from '@ionic/angular';
-import { Select, Store } from '@ngxs/store';
-import { StateResetAll } from 'ngxs-reset-plugin';
+import { NavController } from '@ionic/angular';
+import { Select } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { MainCategory } from 'src/app/shared/classes/Category';
 import { MainCategoryId } from 'src/app/shared/enums/MainCategoryId';
 import { SheepInfoModel } from 'src/app/shared/interfaces/SheepInfoModel';
+import { AlertService } from 'src/app/shared/services/alert.service';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { RegistrationService } from '../services/registration.service';
 import { TextToSpeechService } from '../services/text-to-speech.service';
@@ -18,11 +17,16 @@ import { TextToSpeechService } from '../services/text-to-speech.service';
 })
 export class SummaryPage {
 
+
 	currentSheepInfo: SheepInfoModel;
 	currentMainCategory: MainCategory;
 	mainCategoryIds = MainCategoryId;
 	private totalSheep = 0;
 	missingLambText = '';
+
+	alertHeader = 'Fullfør registrering';
+	alertMessage = 'Ønsker du å fullføre registrering av sau?';
+	mapLink = '/map';
 
 	@Select(SheepInfoState.getSheepInfo) sheepInfo$: Observable<SheepInfoModel>;
 	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
@@ -31,17 +35,13 @@ export class SummaryPage {
 	currentMainCategorySub: Subscription;
 
   	constructor(
+		private alertService: AlertService,
 		private navController: NavController,
 		private tts: TextToSpeechService,
-		private store: Store,
-		private alertController: AlertController,
-		private router: Router,
 		private registrationService: RegistrationService) { }
 
 	ionViewWillEnter(): void {
 		this.tts.speak('Oppsummering');
-
-
 		this.sheepInfoSub = this.sheepInfo$.subscribe(res => {
 			this.currentSheepInfo = res;
 		});
@@ -89,38 +89,16 @@ export class SummaryPage {
 			this.missingLambText =  `Registrerte slips tilsier at det er ${missingLambs * -1} lam for mye.`;
 			return false;
 		}
-
 		return true;
 	}
 
-	completeRegistration() {
-		this.presentConfirmAlert();
+	onCompleteRegistration() {
+		this.alertService.confirmAlert(this.alertHeader, this.alertMessage, this, this.confirmHandler);
 	}
 
-	async presentConfirmAlert() {
-		const alert = await this.alertController.create({
-			cssClass: 'alertConfirm',
-			header: 'Fullfør registrering',
-			backdropDismiss: true,
-			message: 'Ønsker du å fullføre registrering av sau?',
-			buttons: [
-				{
-					text: 'Nei',
-					role: 'cancel',
-					handler: () => {}
-				}, {
-					text: 'Ja',
-					handler: () => {
-						this.store.dispatch(new StateResetAll());
-						this.registrationService.complete();
-
-
-						this.router.navigate(['/map']);
-					}
-				}
-			]
-		});
-		await alert.present();
+	confirmHandler() {
+		this.registrationService.completeRegistration(this.currentSheepInfo);
+		this.navController.navigateBack(this.mapLink);
 	}
 
 	ionViewWillLeave(): void {
