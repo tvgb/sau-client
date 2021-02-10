@@ -6,13 +6,12 @@ import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { Select} from '@ngxs/store';
 import { FieldTripInfo } from 'src/app/shared/classes/FieldTripInfo';
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
-import { MapService } from '../map/services/map.service';
 import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 
 @Component({
-  selector: 'app-field-trip-summary',
-  templateUrl: './field-trip-summary.page.html',
-  styleUrls: ['./field-trip-summary.page.scss'],
+	selector: 'app-field-trip-summary',
+	templateUrl: './field-trip-summary.page.html',
+	styleUrls: ['./field-trip-summary.page.scss'],
 })
 
 export class FieldTripSummaryPage implements AfterViewInit {
@@ -33,7 +32,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
 
-	constructor(private navController: NavController, private statusBarService: StatusbarService ) { }
+	constructor(private navController: NavController, private statusBarService: StatusbarService) { }
 
 	ionViewWillEnter(): void {
 		this.statusBarService.changeStatusBar(false, true);
@@ -42,7 +41,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		});
 		this.getDateAndDuration();
 		this.getTotalSheep();
-	  }
+	}
 
 	getDateAndDuration(): void {
 		this.date = this.fieldTripInfo.dateTimeStarted;

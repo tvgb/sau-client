@@ -120,7 +120,7 @@ export class MapPage implements AfterViewInit {
 				attributionControl: false
 			});
 
-			this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude], {icon: this.posistionIcon}).addTo(this.map);
+		 this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude], {icon: this.posistionIcon}).addTo(this.map);
 	 	this.gpsService.startTrackingInterval();
 
 			App.addListener('appStateChange', ({ isActive }) => {

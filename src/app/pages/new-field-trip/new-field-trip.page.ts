@@ -14,9 +14,9 @@ import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel
 const { Keyboard } = Plugins;
 
 @Component({
-  selector: 'app-new-field-trip',
-  templateUrl: './new-field-trip.page.html',
-  styleUrls: ['./new-field-trip.page.scss'],
+	selector: 'app-new-field-trip',
+	templateUrl: './new-field-trip.page.html',
+	styleUrls: ['./new-field-trip.page.scss'],
 })
 
 export class NewFieldTripPage {
@@ -51,11 +51,6 @@ export class NewFieldTripPage {
 
 	ionViewWillEnter() {
 		this.statusBarService.changeStatusBar(false, true);
-		// this.currentFieldTripSub = this.currentFieldTripInfo$.subscribe((res: FieldTripInfo) => {
-		// 	if (res) {
-		// 		this.currentFieldTripInfo = res;
-		// 	}
-		// });
 	}
 
 	createNewFieldTrip() {
@@ -73,9 +68,5 @@ export class NewFieldTripPage {
 			this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
 			this.navController.navigateForward(this.mapUrl);
 		}
-	}
-
-	ionViewWillLeave(): void {
-		//  this.currentFieldTripSub.unsubscribe();
 	}
 }

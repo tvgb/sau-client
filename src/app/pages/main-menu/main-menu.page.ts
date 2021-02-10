@@ -18,18 +18,6 @@ export class MainMenuPage {
 		this.statusBarService.changeStatusBar(false, true);
 	}
 
-	// changeStatusBarTextColor(): void {
-	// 	StatusBar.setOverlaysWebView({
-	// 		overlay: false
-	// 	});
-	// 	StatusBar.setStyle({
-	// 		style: StatusBarStyle.Dark
-	// 	});
-	// 	StatusBar.setBackgroundColor({
-	// 		color: '#1C262F'
-	// 	});
-	// }
-
 	newFieldTripButtonClicked(): void {
 		this.navController.navigateForward(this.newFieldTripUrl);
 	}

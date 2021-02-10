@@ -5,7 +5,7 @@ import { Platform } from '@ionic/angular';
 const { StatusBar} = Plugins;
 
 @Injectable({
-  providedIn: 'root'
+  	providedIn: 'root'
 })
 
 export class StatusbarService {

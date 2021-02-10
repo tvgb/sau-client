@@ -4,14 +4,15 @@ import { Routes, RouterModule } from '@angular/router';
 import { FieldTripSummaryPage } from './field-trip-summary.page';
 
 const routes: Routes = [
-  {
-    path: '',
-    component: FieldTripSummaryPage
-  }
+	{
+		path: '',
+		component: FieldTripSummaryPage
+	}
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+	imports: [RouterModule.forChild(routes)],
+	exports: [RouterModule],
 })
+
 export class FieldTripSummaryPageRoutingModule {}

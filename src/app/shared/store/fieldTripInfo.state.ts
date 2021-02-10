@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { State, Selector, Action, StateContext } from '@ngxs/store';
-import { FieldTripInfo } from '../classes/FieldTripInfo';
 import { FieldTripInfoModel } from '../interfaces/FieldTripInfoModel';
 import { AddRegistration, SetCurrentFieldTrip, SetDateTimeEnded } from './fieldTripInfo.actions';
 
@@ -33,13 +32,6 @@ export class FieldTripInfoState {
 		ctx.patchState({
 			fieldTripInfo
 		});
-		// ctx.setState({
-		// 	...state,
-		// 	fieldTripInfo: {
-		// 		...state.fieldTripInfo,
-		// 		action.changes
-		// 	}
-		// });
 	}
 
 	@Action(AddRegistration)
