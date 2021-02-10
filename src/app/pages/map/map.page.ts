@@ -101,11 +101,18 @@ export class MapPage implements AfterViewInit {
 		}
 	}
 
-	ngAfterViewInit(): void {
+	ionViewDidEnter(): void {
 		setTimeout(_ => {
 			this.gpsService.setTracking(true);
 			this.initMap();
 		});
+	}
+
+	ngAfterViewInit(): void {
+		// setTimeout(_ => {
+		// 	this.gpsService.setTracking(true);
+		// 	this.initMap();
+		// });
 	}
 
 	navigateToRegistration(): void {
