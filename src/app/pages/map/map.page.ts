@@ -35,13 +35,10 @@ export class MapPage implements AfterViewInit {
 	private trackedRoute = [];
 
 	private posistionIcon =  new L.Icon({
-		iconUrl: 'assets/icon/marker-icon.png',
-		shadowUrl: 'assets/icon/marker-shadow.png',
-		iconSize: [25, 41],
-		iconAnchor: [12, 41],
+		iconUrl: 'assets/icon/current-pos-icon.png',
+		iconSize: [30, 30],
 		popupAnchor: [1, -34],
 		tooltipAnchor: [16, -28],
-		shadowSize: [41, 41]
 	});
 
 	private alertHeader = 'Fullfør oppsynstur';
@@ -150,7 +147,7 @@ export class MapPage implements AfterViewInit {
 
 				this.mapService.getTile(coords.z, coords.x, coords.y).then((base64Img) => {
 					tile.setAttribute(
-						'src', base64Img.data
+						'src', base64Img
 					);
 					done(null, tile);
 				}).catch((e) => {
