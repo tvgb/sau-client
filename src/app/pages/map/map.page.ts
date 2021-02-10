@@ -27,7 +27,7 @@ const { App, Network } = Plugins;
 	styleUrls: ['./map.page.scss'],
 })
 
-export class MapPage implements AfterViewInit {
+export class MapPage {
 	private registrationUrl = '/registration/register';
 	private map;
 	private currentMainCategory: MainCategory;
@@ -106,13 +106,6 @@ export class MapPage implements AfterViewInit {
 			this.gpsService.setTracking(true);
 			this.initMap();
 		});
-	}
-
-	ngAfterViewInit(): void {
-		// setTimeout(_ => {
-		// 	this.gpsService.setTracking(true);
-		// 	this.initMap();
-		// });
 	}
 
 	navigateToRegistration(): void {
