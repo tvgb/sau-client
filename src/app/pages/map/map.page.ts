@@ -3,7 +3,7 @@ import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { GpsService } from './services/gps.service';
 import { Select, Store } from '@ngxs/store';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { TextToSpeechService } from '../registration/services/text-to-speech.service';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
@@ -17,6 +17,8 @@ import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel';
 import { SetDateTimeEnded } from 'src/app/shared/store/fieldTripInfo.actions';
 import { UpdateFieldTripInfoObject } from 'src/app/shared/classes/FieldTripInfo';
+import { takeUntil } from 'rxjs/operators';
+import { cordovaInstance } from '@ionic-native/core';
 
 const { App, Network } = Plugins;
 
@@ -53,6 +55,8 @@ export class MapPage {
 	posistionMarker: any;
 	addMarkerAgain: boolean;
 
+	private unsubscribe$: Subject<void> = new Subject<void>();
+
 	constructor(
 		private platform: Platform,
 		private store: Store,
@@ -82,7 +86,9 @@ export class MapPage {
 
 	ionViewWillEnter(): void {
 		this.statusBarService.changeStatusBar(true, false);
-		this.trackedRouteSub =  this.gpsService.getTrackedRoute().subscribe((res) => {
+		this.trackedRouteSub = this.gpsService.getTrackedRoute().pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe((res) => {
 			this.trackedRoute = res;
 			if (this.map) {
 				L.polyline(res).addTo(this.map);
@@ -90,10 +96,21 @@ export class MapPage {
 			}
 		});
 
-		this.currentMainCategorySub = this.currentMainCategory$.subscribe(res => {
-			this.currentMainCategory = res;
+		this.fieldTripInfo$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe((fieldTripInfo) => {
+			console.log(fieldTripInfo);
+
+			if (fieldTripInfo) {
+				// yes do stuff
+			}
 		});
 
+		this.currentMainCategorySub = this.currentMainCategory$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(res => {
+			this.currentMainCategory = res;
+		});
 
 		if (!this.gpsService.getTracking()) {
 			this.gpsService.setTracking(true);
@@ -104,7 +121,9 @@ export class MapPage {
 	ionViewDidEnter(): void {
 		setTimeout(_ => {
 			this.gpsService.setTracking(true);
-			this.initMap();
+			if (!this.map) {
+				this.initMap();
+			}
 		});
 	}
 
@@ -131,8 +150,8 @@ export class MapPage {
 				attributionControl: false
 			});
 
-		 this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude], {icon: this.posistionIcon}).addTo(this.map);
-	 	this.gpsService.startTrackingInterval();
+			this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude], {icon: this.posistionIcon}).addTo(this.map);
+			this.gpsService.startTrackingInterval();
 
 			App.addListener('appStateChange', ({ isActive }) => {
 				if (isActive) {
@@ -189,8 +208,7 @@ export class MapPage {
 	}
 
 	ionViewWillLeave(): void {
-		this.currentMainCategorySub.unsubscribe();
-		this.trackedRouteSub.unsubscribe();
+		this.unsubscribe$.next();
 		this.gpsService.setTracking(false);
 	}
 }
