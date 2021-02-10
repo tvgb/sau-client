@@ -37,7 +37,7 @@ export class MapPage {
 	private trackedRoute = [];
 
 	private posistionIcon =  new L.Icon({
-		iconUrl: 'assets/icon/current-pos-icon.png',
+		iconUrl: 'assets/icon/current_gps_pos_v2.png',
 		iconSize: [30, 30],
 		popupAnchor: [1, -34],
 		tooltipAnchor: [16, -28],
