@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
-import * as L from 'leaflet';
 import { Observable } from 'rxjs';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Coordinate } from 'src/app/shared/classes/Coordinate';
@@ -29,17 +28,17 @@ export class GpsService {
 		this.tracking = trackingStatus;
 	}
 
-	startTrackingInterval(map: L.Map) {
+	startTrackingInterval() {
 		// Gets position immediately first time app opens
 		if (this.getInitialPosistion) {
-			this.updateTrackAndPosition(map);
+			this.updateTrackAndPosition();
 			this.getInitialPosistion = false;
-			this.startTrackingInterval(map);
+			this.startTrackingInterval();
 			return;
 		} else if (this.tracking) {
 			setTimeout(() => {
-				this.updateTrackAndPosition(map);
-				this.startTrackingInterval(map);
+				this.updateTrackAndPosition();
+				this.startTrackingInterval();
 			}, this.TRACKING_INTERVAL);
 		} else {
 			return;
@@ -49,25 +48,25 @@ export class GpsService {
 	/**
 	 * Recalibrates position when app has been inactive, waits until stable position
 	 */
-	recalibratePosition(map: L.Map) {
+	recalibratePosition() {
 		this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
 			this.calibrationCoords.push({lat: data.coords.latitude, lng: data.coords.longitude});
 			if (this.calibrationCoords.length < 2) {
 				setTimeout(() => {
-					this.recalibratePosition(map);
+					this.recalibratePosition();
 				}, this.RECALIBRATION_INTERVAL);
 			} else {
 				const latDiff = Math.abs(this.calibrationCoords[0].lat - this.calibrationCoords[1].lat);
 				const lngDiff = Math.abs(this.calibrationCoords[0].lng - this.calibrationCoords[1].lng);
 
 				if (latDiff < this.CALIBRATION_THRESHOLD && lngDiff < this.CALIBRATION_THRESHOLD) {
-					this.updateTrackAndPosition(map);
-					this.startTrackingInterval(map);
+					this.updateTrackAndPosition();
+					this.startTrackingInterval();
 					this.calibrationCoords = [];
 				} else {
 					this.calibrationCoords = [];
 					setTimeout(() => {
-						this.recalibratePosition(map);
+						this.recalibratePosition();
 					}, this.RECALIBRATION_INTERVAL);
 				}
 			}
@@ -77,7 +76,7 @@ export class GpsService {
 	/**
 	 * Updates position on map with marker and line for tracked route
 	 */
-	updateTrackAndPosition(map: L.Map) {
+	updateTrackAndPosition(): void {
 		if (this.tracking) {
 			this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
 				this.trackedRoute$.next([...this.trackedRoute$.getValue(), new Coordinate(data.coords.latitude, data.coords.longitude)]);

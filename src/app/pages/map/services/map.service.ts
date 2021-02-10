@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, EMPTY, Observable, of, Subject, throwError } from 'rxjs';
 import { catchError, delay, map, mergeMap, retryWhen } from 'rxjs/operators';
-import { FilesystemDirectory, FilesystemEncoding, Filesystem, FileReadResult, StatResult, RmdirResult, FileWriteResult } from '@capacitor/core';
 import { OfflineMapMetaData } from 'src/app/shared/classes/OfflineMapMetaData';
 import { DownloadProgressionData } from 'src/app/shared/classes/DownloadProgressionData';
 import { v4 as uuidv4 } from 'uuid';
 import { Coordinate } from 'src/app/shared/classes/Coordinate';
 import { GpsService } from './gps.service';
-import { Plugins } from '@capacitor/core';
+import { Filesystem, FilesystemDirectory, FilesystemEncoding, FileWriteResult, Plugins, RmdirResult } from '@capacitor/core';
+import { FileSystemService } from 'src/app/shared/services/file-system.service';
 
 const { LocalNotifications, BackgroundTask, App} = Plugins;
 
@@ -17,8 +17,6 @@ const { LocalNotifications, BackgroundTask, App} = Plugins;
 })
 export class MapService {
 	private readonly ZOOM_LEVELS = [10, 11, 12, 13, 14];
-	private readonly DOWNLOAD_DELAY = 200;
-	private readonly FILESYSTEM_DIRECTORY = FilesystemDirectory.External;
 	private readonly MAX_HTTP_RETRIES = 5;
 	private readonly MAP_TILE_NAME = 'mapTile.b64';
 	private downloads: BehaviorSubject<DownloadProgressionData[]> = new BehaviorSubject([] as DownloadProgressionData[]);
@@ -34,7 +32,7 @@ export class MapService {
 
 	private readonly MAP_LAYER = 'norges_grunnkart';
 
-	constructor(private http: HttpClient, private gpsService: GpsService) {
+	constructor(private http: HttpClient, private gpsService: GpsService, private fsService: FileSystemService) {
 		App.addListener('appStateChange', (state) => {
 			if (state.isActive) {
 				this.finishDownloadingAndDeleting();
@@ -63,13 +61,13 @@ export class MapService {
 		return this.ZOOM_LEVELS;
 	}
 
-	async getTile(z: number, x: number, y: number): Promise<FileReadResult> {
+	async getTile(z: number, x: number, y: number): Promise<string> {
 		if (!this.mapId) {
 			await this.gpsService.getCurrentPosition().then(async (pos) => {
 				await this.setOfflineMapId({lat: pos.coords.latitude, lng: pos.coords.longitude});
 			});
 		}
-		const img = this.readFile(`maps/${this.mapId}/mapTiles/${z}/${x}/${y}/${this.MAP_TILE_NAME}`);
+		const img = this.fsService.readFile(`maps/${this.mapId}/mapTiles/${z}/${x}/${y}/${this.MAP_TILE_NAME}`);
 
 		return img;
 	}
@@ -90,7 +88,10 @@ export class MapService {
 	/**
 	 * startLat and startLng needs to be north west, while endLat and endLng needs to be south east.
 	 */
-	private async downloadMapTileArea(offlineMapMetaData: OfflineMapMetaData, inBackground: boolean = false): Promise<OfflineMapMetaData> {
+	private async downloadMapTileArea(
+		offlineMapMetaData: OfflineMapMetaData,
+		inBackground: boolean = false,
+		rewrite: boolean = false): Promise<OfflineMapMetaData> {
 
 		let stopDownloading = false;
 		App.addListener('appStateChange', () => {
@@ -102,6 +103,7 @@ export class MapService {
 
 		if (!offlineMapMetaData.id) {
 			offlineMapMetaData.id = uuidv4();
+			offlineMapMetaData.downloadDate = Date.now();
 			offlineMapMetaData.name = `Nytt kart - ${new Date().toLocaleDateString()}`;
 			offlineMapMetaData = await this.saveMapMetaData(offlineMapMetaData);
 			this.mapsUpdated$.next();
@@ -141,8 +143,7 @@ export class MapService {
 						return offlineMapMetaData;
 					}
 
-					if (!(await this.TileExists(mapId, z, x, y))) {
-
+					if (rewrite || !(await this.TileExists(mapId, z, x, y))) {
 						if (currentUrl < 2) {
 							this.downloadTile(mapId, z, x, y, this.BASE_URLS[currentUrl]);
 							currentUrl++;
@@ -182,8 +183,7 @@ export class MapService {
 
 	async updateOfflineMap(mapId: string) {
 		const offlineMapMetaData = await this.getOfflineMapMetaData(mapId);
-		await this.deleteOfflineMap(mapId);
-		await this.downloadMapTileArea(offlineMapMetaData);
+		await this.downloadMapTileArea(offlineMapMetaData, false, true);
 	}
 
 	mapsUpdated(): Observable<any> {
@@ -192,39 +192,31 @@ export class MapService {
 
 	async getOfflineMapsMetaData(): Promise<OfflineMapMetaData[]> {
 
-		let offlineMapsMetaData: OfflineMapMetaData[];
+		const offlineMapsMetaData: OfflineMapMetaData[] = [];
 
-		await Filesystem.readdir({
-			directory: this.FILESYSTEM_DIRECTORY,
-			path: 'maps/'
-		}).then(async res => {
-			offlineMapsMetaData = [];
+		if (!(await this.fsService.fileExists('maps/'))) {
+			await this.fsService.makeDirectory('maps/', false);
+		}
+
+		await this.fsService.readDirectory('maps/').then(async (res) => {
 			if (res) {
-				for (const path of res.files) {
-					await Filesystem.readFile({
-						directory: this.FILESYSTEM_DIRECTORY,
-						path: `maps/${path}/metaData`
-					}).then(metaData => {
+				for (const path of res) {
+					await this.fsService.readFile(`maps/${path}/metaData`).then((metaData) => {
 						if (metaData) {
-							offlineMapsMetaData.push(metaData.data as unknown as OfflineMapMetaData);
+							offlineMapsMetaData.push(metaData);
 						}
 					});
 				}
 			}
-		}).catch(() => {
-			offlineMapsMetaData = [];
 		});
 
 		return offlineMapsMetaData;
 	}
 
 	async getOfflineMapMetaData(mapId: string): Promise<OfflineMapMetaData> {
-		return await Filesystem.readFile({
-			directory: this.FILESYSTEM_DIRECTORY,
-			path: `maps/${mapId}/metaData`
-		}).then(metaData => {
+		return await this.fsService.readFile(`maps/${mapId}/metaData`).then((metaData) => {
 			if (metaData) {
-				return metaData.data as unknown as OfflineMapMetaData;
+				return metaData as unknown as OfflineMapMetaData;
 			}
 		});
 	}
@@ -234,34 +226,15 @@ export class MapService {
 		offlineMapMetaData.deleted = true;
 		await this.updateOfflineMapMetaData(mapId, offlineMapMetaData);
 
-		return Filesystem.rmdir({
-			directory: this.FILESYSTEM_DIRECTORY,
-			path: `maps/${mapId}/mapTiles`,
-			recursive: true
-		}).then(() => {
-			return Filesystem.rmdir({
-				directory: this.FILESYSTEM_DIRECTORY,
-				path: `maps/${mapId}`,
-				recursive: true
-			});
+		return this.fsService.removeDirectory(`maps/${mapId}/mapTiles`, true).then(() => {
+			return this.fsService.removeDirectory(`maps/${mapId}`, true);
 		});
 	}
 
 	async saveMapMetaData(offlineMapMetaData: OfflineMapMetaData, saveSize: boolean = false): Promise<OfflineMapMetaData> {
-
 		const mapSize = saveSize ? await this.getMapSize([offlineMapMetaData.id]) : 0;
 		offlineMapMetaData.size = mapSize;
-
-		const data: any = offlineMapMetaData;
-
-		await Filesystem.writeFile({
-			path: `maps/${offlineMapMetaData.id}/metaData/`,
-			data,
-			directory: this.FILESYSTEM_DIRECTORY,
-			encoding: FilesystemEncoding.UTF8,
-			recursive: true
-		});
-
+		await this.fsService.writeFile(`maps/${offlineMapMetaData.id}/metaData`, offlineMapMetaData, true);
 		return offlineMapMetaData;
 	}
 
@@ -317,28 +290,8 @@ export class MapService {
 		return {lat: verticalCentar, lng: horizontalCenter};
 	}
 
-	private async readFile(path: string): Promise<FileReadResult> {
-		const contents = await Filesystem.readFile({
-			path,
-			directory: this.FILESYSTEM_DIRECTORY,
-			encoding: FilesystemEncoding.UTF8
-		});
-		return contents;
-	}
-
-	private async writeFile(mapId: string, data: any, z: number, x: number, y: number): Promise<void> {
-		await Filesystem.stat({
-			directory: this.FILESYSTEM_DIRECTORY,
-			path: `maps/${mapId}/mapTiles/${z}/${x}/${y}/${this.MAP_TILE_NAME}`
-		}).catch(() => {
-			return Filesystem.writeFile({
-				path: `maps/${mapId}/mapTiles/${z}/${x}/${y}/${this.MAP_TILE_NAME}`,
-				data,
-				directory: this.FILESYSTEM_DIRECTORY,
-				encoding: FilesystemEncoding.UTF8,
-				recursive: true
-			});
-		});
+	private async writeTile(mapId: string, data: any, z: number, x: number, y: number): Promise<void> {
+		return this.fsService.writeFile(`maps/${mapId}/mapTiles/${z}/${x}/${y}/${this.MAP_TILE_NAME}`, data, true);
 	}
 
 	private async downloadTile(mapId: string, z: number, x: number, y: number, baseUrl: string): Promise<any> {
@@ -364,7 +317,7 @@ export class MapService {
 
 					// Retry incase of error
 					while (retries > 0) {
-						await this.writeFile(mapId, reader.result, z, x, y).then(() => {
+						await this.writeTile(mapId, reader.result, z, x, y).then(() => {
 							retries = 0;
 						}).catch((e) => {
 							// console.log('Failed while writing to file:', retries, z, x, y, e);
@@ -387,19 +340,7 @@ export class MapService {
 	 * @param y y pos of tile
 	 */
 	private async TileExists(mapId: string, z: number, x: number, y: number): Promise<boolean> {
-
-		let stat: StatResult;
-
-		try {
-			stat = await Filesystem.stat({
-				directory: this.FILESYSTEM_DIRECTORY,
-				path: `maps/${mapId}/mapTiles/${z}/${x}/${y}/${this.MAP_TILE_NAME}`
-			});
-		} catch (e) {
-			stat = null;
-		}
-
-		return stat === null ? false : true;
+		return this.fsService.fileExists(`maps/${mapId}/mapTiles/${z}/${x}/${y}/${this.MAP_TILE_NAME}`);
 	}
 
 	private getTileCoordinates(pos: Coordinate, zoom: number): [number, number] {
@@ -412,14 +353,7 @@ export class MapService {
 
 	private updateOfflineMapMetaData(mapId: string, offlineMapMetaData: OfflineMapMetaData): Promise<FileWriteResult> {
 		const data: any = offlineMapMetaData;
-
-		return Filesystem.writeFile({
-			path: `maps/${mapId}/metaData/`,
-			data,
-			directory: this.FILESYSTEM_DIRECTORY,
-			encoding: FilesystemEncoding.UTF8,
-			recursive: true
-		});
+		return this.fsService.writeFile(`maps/${mapId}/metaData/`, data, true);
 	}
 
 	/**
@@ -440,21 +374,15 @@ export class MapService {
 		}
 
 		for (const path of mapIds) {
-			await Filesystem.readdir({
-				directory: this.FILESYSTEM_DIRECTORY,
-				path: `${prevPath}/${path}`
-			}).then(async (res) => {
+			await this.fsService.readDirectory(`${prevPath}/${path}`).then(async (res) => {
 				if (depth >= maxDepth) {
-					await Filesystem.stat({
-						directory: this.FILESYSTEM_DIRECTORY,
-						path: `${prevPath}/${path}/${this.MAP_TILE_NAME}`
-					}).then(stat => {
+					await this.fsService.getFileStat(`${prevPath}/${path}/${this.MAP_TILE_NAME}`).then((stat) => {
 						if (stat) {
 							fileSize += stat.size;
 						}
 					});
 				} else if (res) {
-					fileSize += await this.getMapSize(res.files, depth + 1, `${prevPath}/${path}`);
+					fileSize += await this.getMapSize(res, depth + 1, `${prevPath}/${path}`);
 				}
 			});
 		}

@@ -1,0 +1,52 @@
+<ion-content id="summary-content">
+ <h1 class="summary-heading"> OPPSUMMERING</h1>
+ <div class="summary-column">
+    <div class="summary-column-heading">
+        <h2>DATO</h2>
+    </div>
+    <div class="summary-element"><ion-text>{{date | date:"dd/MM/yyyy"}}</ion-text></div>
+ </div>
+ <div class="summary-column">
+    <div class="summary-column-heading">
+        <h2>TID BRUKT</h2>
+    </div>
+        <ng-container class="summary-element" *ngIf="hours && min || hours && !min then caseA; else caseB"></ng-container>
+        <ng-template #caseA><ion-text class="summary-registration">{{hours}} timer, {{min}} minutter</ion-text></ng-template>
+        <ng-template #caseB>
+            <div *ngIf="min else caseC">
+                <ion-text class="summary-registration">{{min}} minutter</ion-text>
+            </div>
+            <ng-template #caseC><ion-text class="summary-registration">Oppsynsturen har vart i under 1 minutt.</ion-text></ng-template>
+        </ng-template>
+ </div>
+ <div id="summary-map"></div>
+ <div class="summary-column">
+    <div class="summary-column-heading">
+        <h2>REGISTRERINGER</h2>
+    </div>
+    <div *ngIf="!fieldTripInfo?.registrations; else elseblock" > <ion-text class="summary-registration">Det er ingen registreringer. </ion-text> </div>
+    <ng-template #elseblock >
+        <div class="summary-registrations">
+            <div>
+                SØYE: {{totalEweCount}}
+            </div>
+            <div>
+                LAM: {{totalLambCount}}
+            </div>
+            <div >
+                SAU TOTALT: {{totalSheepCount}}
+            </div>
+        </div>
+    </ng-template>
+ </div>
+</ion-content>
+<ion-footer>
+	<ion-row>
+		<ion-col class="ion-no-padding">
+			<ion-button (click)="navigateBack()" id="back-button" color="tertiary" class="ion-no-margin" expand="full" size="large">TILBAKE</ion-button>
+		</ion-col>
+		<ion-col class="ion-no-padding">
+			<ion-button (click)="completeSummary()" color="primary" id="complete-button" class="ion-no-margin" expand="full" size="large">FULLFØR</ion-button>
+		</ion-col>
+	</ion-row>
+</ion-footer>
