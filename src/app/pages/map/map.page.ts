@@ -55,7 +55,6 @@ export class MapPage implements AfterViewInit {
 		});
 
 		Network.addListener('networkStatusChange', (status) => {
-			console.log(status);
 			if (status.connected) {
 				this.map.removeLayer(this.offlineTileLayer);
 				this.map.addLayer(this.onlineTileLayer);
