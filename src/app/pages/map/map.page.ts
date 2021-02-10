@@ -23,6 +23,8 @@ export class MapPage implements AfterViewInit {
 	private map;
 	private currentMainCategory: MainCategory;
 	private trackedRouteSub: Subscription;
+	private onlineTileLayer: any;
+	private offlineTileLayer: any;
 
 	private posistionIcon =  new L.Icon({
 		iconUrl: 'assets/icon/marker-icon.png',
@@ -54,7 +56,13 @@ export class MapPage implements AfterViewInit {
 
 		Network.addListener('networkStatusChange', (status) => {
 			console.log(status);
-			this.initMap();
+			if (status.connected) {
+				this.map.removeLayer(this.offlineTileLayer);
+				this.map.addLayer(this.onlineTileLayer);
+			} else {
+				this.map.removeLayer(this.onlineTileLayer);
+				this.map.addLayer(this.offlineTileLayer);
+			}
 		});
 	}
 
@@ -122,18 +130,25 @@ export class MapPage implements AfterViewInit {
 				}
 			});
 
+			this.setOnlineTileLayer();
+			this.setOfflineTileLayer();
+
 			if ((await Network.getStatus()).connected) {
-				L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
-				{
-					attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
-				}).addTo(this.map);
+				this.map.addLayer(this.onlineTileLayer);
 			} else {
-				this.initOfflineMap();
+				this.map.addLayer(this.offlineTileLayer);
 			}
 		});
 	}
 
-	initOfflineMap(): void {
+	private setOnlineTileLayer(): void {
+		this.onlineTileLayer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
+								{
+									attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
+								});
+	}
+
+	private setOfflineTileLayer(): void {
 		L.GridLayer.OfflineMap = L.GridLayer.extend({
 			createTile: (coords, done) => {
 				const tile = document.createElement('img');
@@ -152,7 +167,7 @@ export class MapPage implements AfterViewInit {
 		L.gridLayer.offlineMap = (opts) => {
 			return new L.GridLayer.OfflineMap(opts);
 		};
-		this.map.addLayer( L.gridLayer.offlineMap() );
+		this.offlineTileLayer = L.gridLayer.offlineMap();
 	}
 
 	ionViewWillLeave(): void {
