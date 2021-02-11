@@ -1,4 +1,6 @@
 export enum RegistrationType {
 	Sheep = 'SAU',
-	Predator = 'ROVDYR'
+	Predator = 'ROVDYR',
+	Injured = 'SKADET',
+	Dead = 'DØD'
 }

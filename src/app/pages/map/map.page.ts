@@ -1,9 +1,9 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { GpsService } from './services/gps.service';
 import { Select, Store } from '@ngxs/store';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { TextToSpeechService } from '../registration/services/text-to-speech.service';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
@@ -14,12 +14,12 @@ import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { RegistrationService } from '../registration/services/registration.service';
 import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
-import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel';
 import { SetDateTimeEnded } from 'src/app/shared/store/fieldTripInfo.actions';
-import { UpdateFieldTripInfoObject } from 'src/app/shared/classes/FieldTripInfo';
+import { FieldTripInfo, UpdateFieldTripInfoObject } from 'src/app/shared/classes/FieldTripInfo';
+import { takeUntil } from 'rxjs/operators';
+import { MapUIService } from 'src/app/shared/services/map-ui.service';
 
 const { App, Network } = Plugins;
-
 
 @Component({
 	selector: 'app-map',
@@ -37,21 +37,31 @@ export class MapPage {
 	private trackedRoute = [];
 
 	private posistionIcon =  new L.Icon({
-		iconUrl: 'assets/icon/current-pos-icon.png',
+		iconUrl: 'assets/icon/current_gps_pos.png',
 		iconSize: [30, 30],
 		popupAnchor: [1, -34],
 		tooltipAnchor: [16, -28],
 	});
 
+	private iconPath = 'assets/icon';
+	addSheepBtnPath = `${this.iconPath}/add_sheep_btn.png`;
+	addPredatorBtnPath = `${this.iconPath}/add_predator_btn.png`;
+	addInjuredSheepBtnPath = `${this.iconPath}/add_injured_sheep_btn.png`;
+	addDeadSheepBtnPath = `${this.iconPath}/add_dead_sheep_btn.png`;
+
+	registrationType = RegistrationType;
+
 	private alertHeader = 'Fullfør oppsynstur';
 	private alertMessage = 'Ønsker du å fullføre og lagre denne oppsynsturen?';
 
-	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfoModel>;
+	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
 	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
 
 	currentMainCategorySub: Subscription;
 	posistionMarker: any;
 	addMarkerAgain: boolean;
+
+	private unsubscribe$: Subject<void> = new Subject<void>();
 
 	constructor(
 		private platform: Platform,
@@ -62,7 +72,8 @@ export class MapPage {
 		private gpsService: GpsService,
 		private ttsService: TextToSpeechService,
 		private alertService: AlertService,
-		private navController: NavController) {
+		private navController: NavController,
+		private mapUiService: MapUIService) {
 
 
 		this.platform.backButton.subscribeWithPriority(5, () => {
@@ -82,7 +93,9 @@ export class MapPage {
 
 	ionViewWillEnter(): void {
 		this.statusBarService.changeStatusBar(true, false);
-		this.trackedRouteSub =  this.gpsService.getTrackedRoute().subscribe((res) => {
+		this.trackedRouteSub = this.gpsService.getTrackedRoute().pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe((res) => {
 			this.trackedRoute = res;
 			if (this.map) {
 				L.polyline(res).addTo(this.map);
@@ -90,10 +103,27 @@ export class MapPage {
 			}
 		});
 
-		this.currentMainCategorySub = this.currentMainCategory$.subscribe(res => {
-			this.currentMainCategory = res;
+		this.fieldTripInfo$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe((fieldTripInfo) => {
+			if (fieldTripInfo?.registrations?.length > 0 && !fieldTripInfo.dateTimeEnded) {
+				const lastRegistration = fieldTripInfo.registrations[fieldTripInfo.registrations.length - 1];
+				const {pin, polyline} = this.mapUiService.createRegistrationPin(
+					lastRegistration.registrationPos,
+					lastRegistration.gpsPos,
+					lastRegistration.registrationType
+				);
+
+				pin.addTo(this.map);
+				polyline.addTo(this.map);
+			}
 		});
 
+		this.currentMainCategorySub = this.currentMainCategory$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(res => {
+			this.currentMainCategory = res;
+		});
 
 		if (!this.gpsService.getTracking()) {
 			this.gpsService.setTracking(true);
@@ -104,12 +134,22 @@ export class MapPage {
 	ionViewDidEnter(): void {
 		setTimeout(_ => {
 			this.gpsService.setTracking(true);
-			this.initMap();
+			if (!this.map) {
+				this.initMap();
+			}
 		});
 	}
 
+	addRegistration(type: RegistrationType) {
+		this.regService.registrationPosition = this.map.getCenter();
+		this.regService.gpsPosition = this.posistionMarker.getLatLng();
+		this.regService.registrationType = type;
+		this.regService.addRegistration();
+	}
+
 	navigateToRegistration(): void {
-		this.regService.position = this.posistionMarker.getLatLng();
+		this.regService.gpsPosition = this.posistionMarker.getLatLng();
+		this.regService.registrationPosition = this.map.getCenter();
 		this.regService.registrationType = RegistrationType.Sheep;
 		this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);
 		this.navController.navigateForward(this.registrationUrl);
@@ -131,8 +171,8 @@ export class MapPage {
 				attributionControl: false
 			});
 
-		 this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude], {icon: this.posistionIcon}).addTo(this.map);
-	 	this.gpsService.startTrackingInterval();
+			this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude], {icon: this.posistionIcon}).addTo(this.map);
+			this.gpsService.startTrackingInterval();
 
 			App.addListener('appStateChange', ({ isActive }) => {
 				if (isActive) {
@@ -189,8 +229,7 @@ export class MapPage {
 	}
 
 	ionViewWillLeave(): void {
-		this.currentMainCategorySub.unsubscribe();
-		this.trackedRouteSub.unsubscribe();
+		this.unsubscribe$.next();
 		this.gpsService.setTracking(false);
 	}
 }
