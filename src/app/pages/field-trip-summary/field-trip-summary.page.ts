@@ -3,13 +3,14 @@ import { NavController } from '@ionic/angular';
 import { Observable, Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
-import { Select} from '@ngxs/store';
-import { FieldTripInfo } from 'src/app/shared/classes/FieldTripInfo';
+import { Select, Store} from '@ngxs/store';
+import { FieldTripInfo, UpdateFieldTripInfoObject } from 'src/app/shared/classes/FieldTripInfo';
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 import { Coordinate } from 'src/app/shared/classes/Coordinate';
 import { SheepRegistration } from 'src/app/shared/classes/Registration';
 import { MapUIService } from 'src/app/shared/services/map-ui.service';
+import { SetDateTimeEnded } from 'src/app/shared/store/fieldTripInfo.actions';
 
 @Component({
 	selector: 'app-field-trip-summary',
@@ -35,7 +36,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
 
-	constructor(private navController: NavController, private statusBarService: StatusbarService, private mapUiService: MapUIService) { }
+	constructor(private navController: NavController, private statusBarService: StatusbarService, private mapUiService: MapUIService, private store: Store) { }
 
 	ionViewWillEnter(): void {
 		this.statusBarService.changeStatusBar(false, true);
@@ -114,6 +115,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	}
 
 	navigateBack(): void {
+		this.store.dispatch(new SetDateTimeEnded({dateTimeEnded: undefined} as UpdateFieldTripInfoObject));
 		this.navController.navigateBack(this.mapUrl);
 	}
 
