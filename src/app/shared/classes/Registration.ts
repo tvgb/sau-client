@@ -3,15 +3,24 @@ import { Coordinate } from './Coordinate';
 import { SheepInfo } from './SheepInfo';
 
 export class Registration {
-	dateTime: Date;
-	pos: Coordinate;
-	sheepInfo: SheepInfo;
+	dateTime: number;
+	gpsPos: Coordinate;
+	registrationPos: Coordinate;
 	registrationType: RegistrationType;
+}
 
-	constructor(dateTime: Date, pos: Coordinate, sheepInfo: SheepInfo, registrationType: RegistrationType) {
-		this.dateTime = dateTime;
-		this.pos = pos;
-		this.sheepInfo = sheepInfo;
-		this.registrationType = registrationType;
-	}
+export class SheepRegistration extends Registration {
+	sheepInfo: SheepInfo;
+}
+
+export class PredatorRegistration extends Registration {
+	// Eventuelle ting som trengs her
+}
+
+export class InjuredSheepRegistration extends Registration {
+	// Eventuelle ting som trengs her
+}
+
+export class DeadSheepRegistration extends Registration {
+	// Eventuelle ting som trengs her
 }
