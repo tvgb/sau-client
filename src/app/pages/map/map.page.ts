@@ -17,6 +17,7 @@ import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel';
 import { SetDateTimeEnded } from 'src/app/shared/store/fieldTripInfo.actions';
 import { UpdateFieldTripInfoObject } from 'src/app/shared/classes/FieldTripInfo';
+import { map } from 'rxjs/operators';
 
 const { App, Network } = Plugins;
 
@@ -43,6 +44,12 @@ export class MapPage {
 		tooltipAnchor: [16, -28],
 	});
 
+	private crosshairIcon = new L.Icon({
+		iconUrl: 'assets/icon/crosshair_icon.png',
+		iconSize: [20, 20],
+		tooltipAnchor: [16, -28],
+	});
+
 	private alertHeader = 'Fullfør oppsynstur';
 	private alertMessage = 'Ønsker du å fullføre og lagre denne oppsynsturen?';
 
@@ -51,6 +58,7 @@ export class MapPage {
 
 	currentMainCategorySub: Subscription;
 	posistionMarker: any;
+	crosshairMarker: any;
 	addMarkerAgain: boolean;
 
 	constructor(
@@ -131,7 +139,16 @@ export class MapPage {
 				attributionControl: false
 			});
 
-		 this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude], {icon: this.posistionIcon}).addTo(this.map);
+			this.crosshairMarker = L.marker([this.map.getCenter().lat, this.map.getCenter().lng],
+			{icon: this.crosshairIcon,  interactive: false}).addTo(this.map);
+
+			this.map.on('move', () => {
+				this.crosshairMarker.setLatLng([this.map.getCenter().lat, this.map.getCenter().lng]);
+			});
+
+			this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude],
+				{icon: this.posistionIcon}).addTo(this.map);
+
 	 	this.gpsService.startTrackingInterval();
 
 			App.addListener('appStateChange', ({ isActive }) => {
