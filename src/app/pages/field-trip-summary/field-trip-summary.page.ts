@@ -8,9 +8,12 @@ import { FieldTripInfo, UpdateFieldTripInfoObject } from 'src/app/shared/classes
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 import { Coordinate } from 'src/app/shared/classes/Coordinate';
-import { SheepRegistration } from 'src/app/shared/classes/Registration';
+import { InjuredSheepRegistration, SheepRegistration } from 'src/app/shared/classes/Registration';
 import { MapUIService } from 'src/app/shared/services/map-ui.service';
 import { SetDateTimeEnded } from 'src/app/shared/store/fieldTripInfo.actions';
+import { registerLocaleData } from '@angular/common';
+import { Network } from '@capacitor/core';
+import { MapService } from '../map/services/map.service';
 
 @Component({
 	selector: 'app-field-trip-summary',
@@ -26,17 +29,20 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	min: number;
 	sec: number;
 	totalSheepCount = 0;
-	totalEweCount = 0;
-	totalLambCount = 0;
+	injuredCount = 0;
+	deadCount = 0;
 	private fieldTripInfoSub: Subscription;
 	private startPos = [63.424, 10.3961];
 	private mapUrl = '/map';
 	private mainMenuUrl = '/main-menu';
 	private map;
+	private onlineTileLayer: any;
+	private offlineTileLayer: any;
 
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
 
-	constructor(private navController: NavController, private statusBarService: StatusbarService, private mapUiService: MapUIService, private store: Store) { }
+	constructor(private navController: NavController, private statusBarService: StatusbarService,
+		           private mapUiService: MapUIService, private store: Store, private mapService: MapService) { }
 
 	ionViewWillEnter(): void {
 		this.statusBarService.changeStatusBar(false, true);
@@ -45,6 +51,8 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		});
 		this.getDateAndDuration();
 		this.getTotalSheep();
+		this.getInjuredSheep();
+		this.getDeadSheep();
 	}
 
 	getDateAndDuration(): void {
@@ -66,8 +74,24 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 		sheepRegistrations.forEach((registration) => {
 			this.totalSheepCount += registration.sheepInfo.totalSheep.totalSheep.count;
-			this.totalEweCount += registration.sheepInfo.sheepType.ewe.count;
-			this.totalLambCount += registration.sheepInfo.sheepType.lamb.count;
+		});
+	}
+
+	getInjuredSheep(): void {
+		const injuredRegistrations = this.fieldTripInfo.registrations
+		.filter(reg => reg.registrationType === RegistrationType.Injured) as InjuredSheepRegistration[];
+
+		injuredRegistrations.forEach((registration) => {
+			this.injuredCount += registration.count;
+		});
+	}
+
+	getDeadSheep(): void {
+		const deadRegistrations = this.fieldTripInfo.registrations
+		.filter(reg => reg.registrationType === RegistrationType.Dead) as InjuredSheepRegistration[];
+
+		deadRegistrations.forEach((registration) => {
+			this.deadCount += registration.count;
 		});
 	}
 
@@ -77,7 +101,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		});
 	}
 
-	initMap(): void {
+	async initMap(): Promise<void> {
 		this.map = L.map('summary-map', {
 			zoomControl: false,
 			attributionControl: false,
@@ -104,15 +128,52 @@ export class FieldTripSummaryPage implements AfterViewInit {
 			}
 
 			this.map.fitBounds(L.polyline(fitBoundsCoords).getBounds());
+
 		} else {
 			this.map.setView(this.startPos, 12);
 		}
 
-		L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
-		{
-			attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
-		}).addTo(this.map);
+		this.setOnlineTileLayer();
+		this.setOfflineTileLayer();
+
+		if ((await Network.getStatus()).connected) {
+			this.map.addLayer(this.onlineTileLayer);
+		} else {
+			this.map.addLayer(this.offlineTileLayer);
+			this.map.setZoom(this.mapService.getMaxZoom());
+		}
 	}
+
+	private setOnlineTileLayer(): void {
+		this.onlineTileLayer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
+								{
+									attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
+								});
+	}
+
+	private setOfflineTileLayer(): void {
+		L.GridLayer.OfflineMap = L.GridLayer.extend({
+			createTile: (coords, done) => {
+				const tile = document.createElement('img');
+
+				this.mapService.getTile(coords.z, coords.x, coords.y).then((base64Img) => {
+					tile.setAttribute(
+						'src', base64Img
+					);
+					done(null, tile);
+				}).catch((e) => {
+					tile.innerHTML = 'Map not available offline.';
+					console.log(e);
+				});
+				return tile;
+			}
+		});
+		L.gridLayer.offlineMap = (opts) => {
+			return new L.GridLayer.OfflineMap(opts);
+		};
+		this.offlineTileLayer = L.gridLayer.offlineMap();
+	}
+
 
 	navigateBack(): void {
 		this.store.dispatch(new SetDateTimeEnded({dateTimeEnded: undefined} as UpdateFieldTripInfoObject));
