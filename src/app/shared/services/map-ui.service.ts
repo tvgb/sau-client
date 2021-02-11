@@ -10,10 +10,10 @@ import { RegistrationType } from '../enums/RegistrationType';
 export class MapUIService {
 
 	private iconPath = 'assets/icon';
-	private sheepPinPath = 'sheep_pin_v5.png';
-	private predatorPinPath = 'predator_pin_v3.png';
-	private InjuredSheepPinPath = 'injured_sheep_pin_v3.png';
-	private deadSheepPinPath = 'dead_sheep_pin_v3.png';
+	private sheepPinPath = 'sheep_pin.png';
+	private predatorPinPath = 'predator_pin.png';
+	private InjuredSheepPinPath = 'injured_sheep_pin.png';
+	private deadSheepPinPath = 'dead_sheep_pin.png';
 
 	private sheepPinColour = '#719AAB';
 	private predatorPinColour = '#C26B69';
