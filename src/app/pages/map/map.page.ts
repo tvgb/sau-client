@@ -188,7 +188,7 @@ export class MapPage {
 			this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude],
 				{icon: this.posistionIcon}).addTo(this.map);
 
-	 	this.gpsService.startTrackingInterval();
+			this.gpsService.startTrackingInterval();
 
 			App.addListener('appStateChange', ({ isActive }) => {
 				if (isActive) {
