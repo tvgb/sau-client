@@ -179,7 +179,7 @@ export class MapPage {
 			});
 
 			this.crosshairMarker = L.marker([this.map.getCenter().lat, this.map.getCenter().lng],
-			{icon: this.crosshairIcon,  interactive: false}).addTo(this.map);
+			{icon: this.crosshairIcon,  interactive: false, zIndexOffset: 100}).addTo(this.map);
 
 			this.map.on('move', () => {
 				this.crosshairMarker.setLatLng([this.map.getCenter().lat, this.map.getCenter().lng]);
