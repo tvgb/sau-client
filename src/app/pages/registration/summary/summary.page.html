@@ -64,14 +64,10 @@
 				]">
 			</app-count-overview>
         </div>
-    <div>
-        <div *ngIf="!checkTotalSheep()" class="warning-container">
+    <div class="warnings-container">
+        <div *ngFor="let inconcistency of inconsistencies" class="warning-container">
             <ion-icon class="warning-icon" src="/assets/warning.svg"></ion-icon>
-            <div class="warning-text">Antall registrerte søyer og lam samsvarer ikke med totalt antall registrerte sauer</div>
-        </div>
-        <div *ngIf="!checkCollarNumber()" class="warning-container">
-            <ion-icon class="warning-icon" src="/assets/warning.svg"></ion-icon>
-            <div class="warning-text">{{missingLambText}}</div>
+            <div class="warning-text">{{inconcistency}}</div>
         </div>
     </div>
 </div>

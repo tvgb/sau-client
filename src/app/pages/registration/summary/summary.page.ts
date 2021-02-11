@@ -17,12 +17,11 @@ import { TextToSpeechService } from '../services/text-to-speech.service';
 })
 export class SummaryPage {
 
-
 	currentSheepInfo: SheepInfoModel;
 	currentMainCategory: MainCategory;
 	mainCategoryIds = MainCategoryId;
-	private totalSheep = 0;
 	missingLambText = '';
+	inconsistencies: string[] = [];
 
 	alertHeader = 'Fullfør registrering';
 	alertMessage = 'Ønsker du å fullføre registrering av sau?';
@@ -44,6 +43,7 @@ export class SummaryPage {
 		this.tts.speak('Oppsummering');
 		this.sheepInfoSub = this.sheepInfo$.subscribe(res => {
 			this.currentSheepInfo = res;
+			this.checkForInconsistencies();
 		});
 
 		this.currentMainCategorySub = this.currentMainCategory$.subscribe(res => {
@@ -58,18 +58,17 @@ export class SummaryPage {
 		this.navController.back();
 	}
 
-	checkTotalSheep(): boolean {
-		this.totalSheep = this.currentSheepInfo.sheepType.ewe.count + this.currentSheepInfo.sheepType.lamb.count;
-		if (this.totalSheep === this.currentSheepInfo.totalSheep.totalSheep.count) {
-			return true;
-		}
-		return false;
-	}
+	checkForInconsistencies(): void {
+		this.inconsistencies = [];
 
-	checkCollarNumber(): boolean {
-		const totalLambs = this.currentSheepInfo.collarColour.greenCollar.count +
-		this.currentSheepInfo.collarColour.yellowCollar.count * 2 + this.currentSheepInfo.collarColour.redCollar.count * 3;
-		const missingLambs = totalLambs - this.currentSheepInfo.sheepType.lamb.count;
+		const totalLambsFromCollars =
+			this.currentSheepInfo.collarColour.greenCollar.count +
+			this.currentSheepInfo.collarColour.yellowCollar.count * 2 +
+			this.currentSheepInfo.collarColour.redCollar.count * 3;
+
+		const missingLambs = totalLambsFromCollars - this.currentSheepInfo.sheepType.lamb.count;
+		const totalEwes = this.currentSheepInfo.sheepType.ewe.count;
+		const totalLambs = this.currentSheepInfo.sheepType.lamb.count;
 
 		const registeredCollars =
 			this.currentSheepInfo.collarColour.blueCollar.count +
@@ -78,18 +77,30 @@ export class SummaryPage {
 			this.currentSheepInfo.collarColour.redCollar.count +
 			this.currentSheepInfo.collarColour.missingCollar.count;
 
-		if (registeredCollars === 0) {
-			return true;
+		const registeredColours =
+			this.currentSheepInfo.sheepColour.blackSheep.count +
+			this.currentSheepInfo.sheepColour.brownSheep.count +
+			this.currentSheepInfo.sheepColour.whiteSheep.count;
+
+		const totalSheep = this.currentSheepInfo.totalSheep.totalSheep.count;
+
+		if (registeredColours !== 0 && totalSheep !== registeredColours) {
+			this.inconsistencies.push(`Antall registrerte farger (${registeredColours}) samsvarer ikke med totalt antall registrerte sau (${totalSheep}).`);
 		}
-		if (missingLambs > 0) {
-			this.missingLambText = `Registrerte slips tilsier at det mangler ${missingLambs} lam.`;
-			return false;
+
+		if (totalLambs + totalEwes !== 0 && totalSheep !== totalLambs + totalEwes) {
+			this.inconsistencies.push(`Antall registrerte søyer og lam (${totalLambs + totalEwes}) samsvarer ikke med totalt antall registrerte sau (${totalSheep}).`);
 		}
-		else if (missingLambs < 0) {
-			this.missingLambText =  `Registrerte slips tilsier at det er ${missingLambs * -1} lam for mye.`;
-			return false;
+
+		if (registeredCollars !== 0 && registeredCollars !== totalEwes) {
+			this.inconsistencies.push(`Registrerte slips (${registeredCollars}) samsvarer ikke med antall søyer (${totalEwes}).`);
 		}
-		return true;
+
+		if (registeredCollars !== 0 && missingLambs > 0) {
+			this.inconsistencies.push(`Registrerte slips tilsier at det mangler ${missingLambs} lam.`);
+		} else if (registeredCollars !== 0 && missingLambs < 0) {
+			this.inconsistencies.push(`Registrerte slips tilsier at det er ${missingLambs * -1} lam for mye.`);
+		}
 	}
 
 	onCompleteRegistration() {
