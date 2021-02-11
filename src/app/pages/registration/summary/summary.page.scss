@@ -43,22 +43,27 @@
     margin-bottom: 5px;
 }
 
+.warnings-container {
+	margin-top: 10px;
+	margin-bottom: 20px;
+}
+
 .warning-container {
-    margin-top: 40px;
+    margin-top: 10px;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 }
 
 .warning-icon {
     fill: #B02525;
-    font-size: 30px;
-    margin-left: 10px;
+    font-size: 20px;
 }
 
 .warning-text {
-    width: 80%;
+	font-size: 14px;
+	width: 90%;
 }
 
 #back-button {
