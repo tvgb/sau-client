@@ -17,7 +17,6 @@ import { TextToSpeechService } from '../services/text-to-speech.service';
 })
 export class SummaryPage {
 
-
 	currentSheepInfo: SheepInfoModel;
 	currentMainCategory: MainCategory;
 	mainCategoryIds = MainCategoryId;
