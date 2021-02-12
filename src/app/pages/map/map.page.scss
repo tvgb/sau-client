@@ -14,12 +14,16 @@
 	height: 100%;
 }
 
-#add-registration-fab {
-	margin-bottom: 10px;
-	margin-right: 10px;
+ion-fab {
+    margin-bottom: 10px;
+	margin: 10px;
 }
 
-#add-registration-btn {
-	--background: #1C262F;
+ion-fab-button {
+    --background: #1C262F;
 	--background-activated: #1C262F;
+}
+
+.add-registration-button {
+	--background: transparent;
 }

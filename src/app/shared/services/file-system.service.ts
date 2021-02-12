@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FilesystemDirectory, FilesystemEncoding, Plugins, StatResult } from '@capacitor/core';
+import { OfflineMapMetaData } from '../classes/OfflineMapMetaData';
 
 const { Filesystem } = Plugins;
 
@@ -20,7 +21,7 @@ export class FileSystemService {
 				path,
 				encoding: this.FILESYSTEM_ENCODING
 			}).then((res) => {
-				resolve(res.data);
+				resolve(JSON.parse(res.data) as OfflineMapMetaData);
 			}).catch((err) => {
 				reject(`Error while reading file: ${path}. ${err}`);
 			});
@@ -49,7 +50,7 @@ export class FileSystemService {
 			Filesystem.writeFile({
 				directory: this.FILESYSTEM_DIRECTORY,
 				path,
-				data,
+				data: JSON.stringify(data),
 				recursive,
 				encoding: this.FILESYSTEM_ENCODING
 			}).then((res) => {
