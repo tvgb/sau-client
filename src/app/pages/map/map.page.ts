@@ -147,13 +147,33 @@ export class MapPage {
 		this.regService.addRegistration();
 	}
 
-	navigateToRegistration(): void {
-		this.regService.gpsPosition = this.posistionMarker.getLatLng();
+	navigateToRegistration(type: RegistrationType) {
 		this.regService.registrationPosition = this.map.getCenter();
-		this.regService.registrationType = RegistrationType.Sheep;
-		this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);
-		this.navController.navigateForward(this.registrationUrl);
+		this.regService.gpsPosition = this.posistionMarker.getLatLng();
+		this.regService.registrationType = type;
+		switch (type) {
+			case RegistrationType.Sheep:
+				this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);
+				this.navController.navigateForward(this.registrationUrl);
+				break;
+
+			case RegistrationType.Injured:
+				this.navController.navigateForward('/registration/register-injured');
+				break;
+
+			case RegistrationType.Dead:
+				this.navController.navigateForward('/registration/register-dead');
+				break;
+		}
 	}
+
+	// navigateToRegistration(): void {
+	// 	this.regService.gpsPosition = this.posistionMarker.getLatLng();
+	// 	this.regService.registrationPosition = this.map.getCenter();
+	// 	this.regService.registrationType = RegistrationType.Sheep;
+	// 	this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);
+	// 	this.navController.navigateForward(this.registrationUrl);
+	// }
 
 	navigateToSummary(): void {
 		this.store.dispatch(new SetDateTimeEnded({dateTimeEnded: Date.now(), trackedRoute: this.trackedRoute} as UpdateFieldTripInfoObject));

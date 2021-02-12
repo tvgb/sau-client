@@ -22,6 +22,8 @@ export class RegistrationService {
 	gpsPosition: Coordinate;
 	registrationPosition: Coordinate;
 	registrationType;
+	count: number;
+	comment: string;
 
 	mainCategoryIds: MainCategoryId[] = [
 		MainCategoryId.TotalSheep,
@@ -148,11 +150,13 @@ export class RegistrationService {
 		this.registrationType = undefined;
 	}
 
-	completeRegistration(sheepInfo: SheepInfo): void {
-		const reg = this.createRegistraion(this.registrationType, this.gpsPosition, this.registrationPosition, sheepInfo);
+	completeRegistration(sheepInfo: SheepInfo, count: number, comment: string): void {
+		const reg = this.createRegistraion(this.registrationType, this.gpsPosition, this.registrationPosition, sheepInfo, count, comment);
 		this.registrationPosition = undefined;
 		this.gpsPosition = undefined;
 		this.registrationType = undefined;
+		this.count = undefined;
+		this.comment = undefined;
 		this.store.dispatch(new AddRegistration(reg));
 		this.store.dispatch(new StateReset(SheepInfoState, AppInfoState));
 		this.complete();
@@ -162,7 +166,9 @@ export class RegistrationService {
 		registrationType: RegistrationType,
 		gpsPos: Coordinate,
 		registrationPos: Coordinate,
-		sheepInfo: SheepInfo = null): Registration
+		sheepInfo: SheepInfo = null,
+		count?: number,
+		comment?: string): Registration
 	{
 		switch (registrationType) {
 			case RegistrationType.Sheep:
@@ -172,10 +178,10 @@ export class RegistrationService {
 				return {dateTime: Date.now(), gpsPos, registrationPos, registrationType} as PredatorRegistration;
 
 			case RegistrationType.Injured:
-				return {dateTime: Date.now(), gpsPos, registrationPos, registrationType} as InjuredSheepRegistration;
+				return {dateTime: Date.now(), gpsPos, registrationPos, registrationType, count, comment} as InjuredSheepRegistration;
 
 			case RegistrationType.Dead:
-				return {dateTime: Date.now(), gpsPos, registrationPos, registrationType} as DeadSheepRegistration;
+				return {dateTime: Date.now(), gpsPos, registrationPos, registrationType, count, comment} as DeadSheepRegistration;
 		}
 	}
 

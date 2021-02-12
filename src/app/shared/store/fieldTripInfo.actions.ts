@@ -15,4 +15,3 @@ export class AddRegistration {
 	static readonly type = '[Summary Page] addRegistration';
 	constructor(public registration: Registration) {}
 }
-

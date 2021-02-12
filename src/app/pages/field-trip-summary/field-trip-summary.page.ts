@@ -49,6 +49,16 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		this.fieldTripInfoSub = this.fieldTripInfo$.subscribe((res) => {
 			this.fieldTripInfo = res;
 		});
+		Network.addListener('networkStatusChange', (status) => {
+			if (status.connected) {
+				this.map.removeLayer(this.offlineTileLayer);
+				this.map.addLayer(this.onlineTileLayer);
+			} else {
+				this.map.removeLayer(this.onlineTileLayer);
+				this.map.addLayer(this.offlineTileLayer);
+			}
+		});
+
 		this.getDateAndDuration();
 		this.getTotalSheep();
 		this.getInjuredSheep();
