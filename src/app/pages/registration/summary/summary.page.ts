@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { Select } from '@ngxs/store';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { MainCategory } from 'src/app/shared/classes/Category';
 import { MainCategoryId } from 'src/app/shared/enums/MainCategoryId';
 import { SheepInfoModel } from 'src/app/shared/interfaces/SheepInfoModel';
@@ -33,6 +34,8 @@ export class SummaryPage {
 	sheepInfoSub: Subscription;
 	currentMainCategorySub: Subscription;
 
+	private unsubscribe$: Subject<void> = new Subject();
+
   	constructor(
 		private alertService: AlertService,
 		private navController: NavController,
@@ -41,12 +44,16 @@ export class SummaryPage {
 
 	ionViewWillEnter(): void {
 		this.tts.speak('Oppsummering');
-		this.sheepInfoSub = this.sheepInfo$.subscribe(res => {
+		this.sheepInfoSub = this.sheepInfo$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(res => {
 			this.currentSheepInfo = res;
 			this.checkForInconsistencies();
 		});
 
-		this.currentMainCategorySub = this.currentMainCategory$.subscribe(res => {
+		this.currentMainCategorySub = this.currentMainCategory$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(res => {
 			if (res) {
 				this.currentMainCategory = res;
 			}
@@ -113,7 +120,6 @@ export class SummaryPage {
 	}
 
 	ionViewWillLeave(): void {
-		this.sheepInfoSub.unsubscribe();
-		this.currentMainCategorySub.unsubscribe();
+		this.unsubscribe$.next();
 	}
 }
