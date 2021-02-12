@@ -11,7 +11,6 @@ import { Coordinate } from 'src/app/shared/classes/Coordinate';
 import { InjuredSheepRegistration, SheepRegistration } from 'src/app/shared/classes/Registration';
 import { MapUIService } from 'src/app/shared/services/map-ui.service';
 import { SetDateTimeEnded } from 'src/app/shared/store/fieldTripInfo.actions';
-import { registerLocaleData } from '@angular/common';
 import { Network } from '@capacitor/core';
 import { MapService } from '../map/services/map.service';
 
@@ -42,13 +41,16 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
 
 	constructor(private navController: NavController, private statusBarService: StatusbarService,
-		           private mapUiService: MapUIService, private store: Store, private mapService: MapService) { }
+		        private mapUiService: MapUIService,
+				         private store: Store,
+				         private mapService: MapService) { }
 
 	ionViewWillEnter(): void {
 		this.statusBarService.changeStatusBar(false, true);
 		this.fieldTripInfoSub = this.fieldTripInfo$.subscribe((res) => {
 			this.fieldTripInfo = res;
 		});
+
 		Network.addListener('networkStatusChange', (status) => {
 			if (status.connected) {
 				this.map.removeLayer(this.offlineTileLayer);
@@ -58,7 +60,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 				this.map.addLayer(this.offlineTileLayer);
 			}
 		});
-
 		this.getDateAndDuration();
 		this.getTotalSheep();
 		this.getInjuredSheep();
@@ -183,7 +184,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		};
 		this.offlineTileLayer = L.gridLayer.offlineMap();
 	}
-
 
 	navigateBack(): void {
 		this.store.dispatch(new SetDateTimeEnded({dateTimeEnded: undefined} as UpdateFieldTripInfoObject));

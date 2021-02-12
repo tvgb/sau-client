@@ -142,27 +142,17 @@ export class RegistrationService {
 		return this.subCategoryCountInCurrentMainCategory.asObservable();
 	}
 
-	addRegistration() {
-		const reg = this.createRegistraion(this.registrationType, this.gpsPosition, this.registrationPosition);
-		this.store.dispatch(new AddRegistration(reg));
+	completeRegistration(sheepInfo?: SheepInfo, count?: number, comment?: string): void {
+		const reg = this.createRegistration(this.registrationType, this.gpsPosition, this.registrationPosition, sheepInfo, count, comment);
 		this.registrationPosition = undefined;
 		this.gpsPosition = undefined;
 		this.registrationType = undefined;
-	}
-
-	completeRegistration(sheepInfo: SheepInfo, count: number, comment: string): void {
-		const reg = this.createRegistraion(this.registrationType, this.gpsPosition, this.registrationPosition, sheepInfo, count, comment);
-		this.registrationPosition = undefined;
-		this.gpsPosition = undefined;
-		this.registrationType = undefined;
-		this.count = undefined;
-		this.comment = undefined;
 		this.store.dispatch(new AddRegistration(reg));
 		this.store.dispatch(new StateReset(SheepInfoState, AppInfoState));
 		this.complete();
 	}
 
-	createRegistraion(
+	createRegistration(
 		registrationType: RegistrationType,
 		gpsPos: Coordinate,
 		registrationPos: Coordinate,
