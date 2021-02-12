@@ -32,6 +32,7 @@ export class EarTagComponent implements OnInit {
 	pickingColour = false;
 	coloursPicked: string[] = [];
 	newEarTagForm: FormGroup;
+	createNewEarTag = false;
 
 	checkableEartags: CheckableEarTag[] = [];
 	earTagsInfos: EarTagInfo[] = [];
@@ -90,6 +91,7 @@ export class EarTagComponent implements OnInit {
 
 			this.coloursPicked = [];
 			this.newEarTagForm.reset();
+			this.createNewEarTag = false;
 		}
 	}
 

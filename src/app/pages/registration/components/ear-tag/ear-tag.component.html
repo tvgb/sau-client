@@ -1,27 +1,30 @@
 <div class="ear-tag-container">
-	<div class="observed-ear-tags-container">
+	<div *ngIf="!createNewEarTag" class="observed-ear-tags-container">
 		OBSERVERTE ØREMERKER
+		<div class="ear-tags">
+			<div 
+				class="ear-tag-selector-container" 
+				*ngFor="let earTag of checkableEartags"
+				(click)="onCheckChange(earTag)">
+				<app-ear-tag-icon
+					[coloursPicked]="earTag.colours"
+					[smallVersion]="true">
+				</app-ear-tag-icon>
+				<div class="ear-tag-selector-text">
+					{{earTag.owner}}
+				</div>
+				<div class="radial-button">
+				</div>
+				<ion-checkbox mode="ios" [ngModel]="earTag.isChecked"></ion-checkbox>
+			</div>
+			<div class="no-ear-tags-registered" *ngIf="checkableEartags.length === 0">
+				Ingen øremerker lagt til.
+			</div>
+		</div>
 
-		<div 
-			class="ear-tag-selector-container" 
-			*ngFor="let earTag of checkableEartags"
-			(click)="onCheckChange(earTag)">
-			<app-ear-tag-icon
-				[coloursPicked]="earTag.colours"
-				[smallVersion]="true">
-			</app-ear-tag-icon>
-			<div class="ear-tag-selector-text">
-				{{earTag.owner}}
-			</div>
-			<div class="radial-button">
-			</div>
-			<ion-checkbox mode="ios" [ngModel]="earTag.isChecked"></ion-checkbox>
-		</div>
-		<div class="no-ear-tags-registered" *ngIf="checkableEartags.length === 0">
-			Ingen øremerker lagt til.
-		</div>
+		<ion-button (click)="this.createNewEarTag = true">Registrer nytt øremerke</ion-button>
 	</div>
-	<div class="add-new-ear-tag-container">
+	<div *ngIf="createNewEarTag" class="add-new-ear-tag-container">
 		REGISTRER NYTT ØREMERKE
 		<form [formGroup]="newEarTagForm" class="add-new-ear-tag-form">
 			<ion-label> Eier: </ion-label>
