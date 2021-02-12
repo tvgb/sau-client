@@ -43,6 +43,12 @@ export class MapPage {
 		tooltipAnchor: [16, -28],
 	});
 
+	private crosshairIcon = new L.Icon({
+		iconUrl: 'assets/icon/crosshair_icon.png',
+		iconSize: [20, 20],
+		tooltipAnchor: [16, -28],
+	});
+
 	private iconPath = 'assets/icon';
 	addSheepBtnPath = `${this.iconPath}/add_sheep_btn.png`;
 	addPredatorBtnPath = `${this.iconPath}/add_predator_btn.png`;
@@ -59,6 +65,7 @@ export class MapPage {
 
 	currentMainCategorySub: Subscription;
 	posistionMarker: any;
+	crosshairMarker: any;
 	addMarkerAgain: boolean;
 
 	private unsubscribe$: Subject<void> = new Subject<void>();
@@ -171,7 +178,16 @@ export class MapPage {
 				attributionControl: false
 			});
 
-			this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude], {icon: this.posistionIcon}).addTo(this.map);
+			this.crosshairMarker = L.marker([this.map.getCenter().lat, this.map.getCenter().lng],
+			{icon: this.crosshairIcon,  interactive: false, zIndexOffset: 100}).addTo(this.map);
+
+			this.map.on('move', () => {
+				this.crosshairMarker.setLatLng([this.map.getCenter().lat, this.map.getCenter().lng]);
+			});
+
+			this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude],
+				{icon: this.posistionIcon}).addTo(this.map);
+
 			this.gpsService.startTrackingInterval();
 
 			App.addListener('appStateChange', ({ isActive }) => {
