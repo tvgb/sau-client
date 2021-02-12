@@ -16,7 +16,9 @@ import { RegistrationService } from '../services/registration.service';
 
 export class RegisterInjuredPage {
 
+	submitAttempt = false;
 	registerInjuredForm: FormGroup;
+	invalidText = 'Obligatorisk felt';
 
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
 
@@ -41,10 +43,13 @@ export class RegisterInjuredPage {
 	}
 
 	onCompleteRegistration() {
-		this.regService.completeRegistration(undefined,
+		this.submitAttempt = true;
+		if (this.registerInjuredForm.valid) {
+			this.regService.completeRegistration(undefined,
 			this.registerInjuredForm.controls.injuredCount.value,
 			this.registerInjuredForm.controls.comment.value);
-		this.navController.back();
+			this.navController.back();
+		}
 	}
 
 	ionViewWillLeave(): void {

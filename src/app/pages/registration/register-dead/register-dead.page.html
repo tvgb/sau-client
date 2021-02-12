@@ -7,6 +7,11 @@
                 <ion-item lines="full">
                     <ion-input formControlName="deadCount" required="true" type="number"></ion-input>
                 </ion-item>
+                <div *ngIf="!registerDeadForm.controls.deadCount.valid && (registerDeadForm.controls.deadCount.dirty || submitAttempt)">
+                    <p class="invalid">
+                        {{invalidText}}
+                        </p>
+                </div>
                 <ion-label>Kommentar</ion-label>
                 <ion-textarea formControlName="comment" placeholder="Skriv her..."></ion-textarea>
             </form>
