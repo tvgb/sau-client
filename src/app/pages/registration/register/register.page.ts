@@ -1,6 +1,6 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { RegistrationService } from '../services/registration.service';
 import { TextToSpeechService } from '../services/text-to-speech.service';
@@ -8,9 +8,9 @@ import { NavController, Platform } from '@ionic/angular';
 import { MainCategoryId } from 'src/app/shared/enums/MainCategoryId';
 import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 import { MainCategory, SubCategory } from 'src/app/shared/classes/Category';
-import { EarTagInfo } from 'src/app/shared/classes/EarTagInfo';
 import { StateReset } from 'ngxs-reset-plugin';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-register',
@@ -43,6 +43,8 @@ export class RegisterPage {
 	currentMainCategoryIdSub: Subscription;
 	subCategoryCountInCurrentMainCategorySub: Subscription;
 
+	private unsubscribe$: Subject<void> = new Subject();
+
 	constructor(
 		private store: Store,
 		private statusBarService: StatusbarService,
@@ -58,26 +60,34 @@ export class RegisterPage {
 
 	ionViewWillEnter() {
 		this.statusBarService.changeStatusBar(false, true);
-		this.currentSubCategorySub = this.currentSubCategory$.subscribe((res: SubCategory) => {
+		this.currentSubCategorySub = this.currentSubCategory$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe((res: SubCategory) => {
 			if (res) {
 				this.currentSubCategory = res;
 			}
 		});
 
-		this.subCategoryCountInCurrentMainCategorySub = this.registrationService.getSubCategoryCountInCurrentMainCategory().subscribe(
+		this.subCategoryCountInCurrentMainCategorySub = this.registrationService.getSubCategoryCountInCurrentMainCategory().pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(
 			(res: number) => {
 				if (res) {
 					this.subCategoryCountInCurrentMainCategory = res;
 				}
 		});
 
-		this.currentMainCategorySub = this.currentMainCategory$.subscribe((res: MainCategory) => {
+		this.currentMainCategorySub = this.currentMainCategory$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe((res: MainCategory) => {
 			if (res) {
 				this.currentMainCategory = res;
 			}
 		});
 
-		this.currentMainCategoryIdSub = this.currentCategory$.subscribe((res: MainCategoryId) => {
+		this.currentMainCategoryIdSub = this.currentCategory$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe((res: MainCategoryId) => {
 			if (res) {
 				this.currentMainCategoryId = res;
 			}
@@ -145,9 +155,6 @@ export class RegisterPage {
 	}
 
 	ionViewWillLeave(): void {
-		this.currentSubCategorySub.unsubscribe();
-		this.subCategoryCountInCurrentMainCategorySub.unsubscribe();
-		this.currentMainCategorySub.unsubscribe();
-		this.currentMainCategoryIdSub.unsubscribe();
+		this.unsubscribe$.next();
 	}
 }

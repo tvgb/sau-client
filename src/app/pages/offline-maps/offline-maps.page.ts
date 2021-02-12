@@ -1,10 +1,10 @@
 import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
-import { Plugins } from '@capacitor/core';
-import { AnimationController, Animation, ModalController, NavController } from '@ionic/angular';
+import { AnimationController, Animation, NavController } from '@ionic/angular';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { DownloadProgressionData } from 'src/app/shared/classes/DownloadProgressionData';
 import { OfflineMapMetaData } from 'src/app/shared/classes/OfflineMapMetaData';
 import { MapService } from '../map/services/map.service';
-const { App } = Plugins;
 
 @Component({
 	selector: 'app-offline-maps',
@@ -20,6 +20,8 @@ export class OfflineMapsPage {
 	selectedMapId: string;
 	newMapName: string;
 
+	private unsubscribe$: Subject<void> = new Subject();
+
 	@ViewChild('backdrop') backdrop: ElementRef;
 	@ViewChild('optionsMenu') optionsMenu: ElementRef;
 
@@ -33,14 +35,18 @@ export class OfflineMapsPage {
 	ionViewWillEnter() {
 		this.setOfflineMaps();
 
-		this.mapService.getCurrentlyDownloading().subscribe((res: DownloadProgressionData[]) => {
+		this.mapService.getCurrentlyDownloading().pipe(
+			takeUntil(this.unsubscribe$)
+			).subscribe((res: DownloadProgressionData[]) => {
 			if (res) {
 				this.downloadProgressions = res;
 				this.cd.detectChanges();
 			}
 		});
 
-		this.mapService.mapsUpdated().subscribe(() => {
+		this.mapService.mapsUpdated().pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(() => {
 			this.setOfflineMaps().then(() => {
 				this.cd.detectChanges();
 			});
@@ -208,5 +214,9 @@ export class OfflineMapsPage {
 			return 1;
 		}
 		return 0;
+	}
+
+	ionViewWillLeave(): void {
+		this.unsubscribe$.next();
 	}
 }

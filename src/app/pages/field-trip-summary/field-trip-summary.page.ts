@@ -1,6 +1,6 @@
 import { AfterViewInit, Component} from '@angular/core';
 import { NavController } from '@ionic/angular';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subject, Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { Select, Store} from '@ngxs/store';
@@ -11,6 +11,7 @@ import { Coordinate } from 'src/app/shared/classes/Coordinate';
 import { SheepRegistration } from 'src/app/shared/classes/Registration';
 import { MapUIService } from 'src/app/shared/services/map-ui.service';
 import { SetDateTimeEnded } from 'src/app/shared/store/fieldTripInfo.actions';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-field-trip-summary',
@@ -33,14 +34,21 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	private mapUrl = '/map';
 	private mainMenuUrl = '/main-menu';
 	private map;
+	private unsubscribe$: Subject<void> = new Subject();
 
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
 
-	constructor(private navController: NavController, private statusBarService: StatusbarService, private mapUiService: MapUIService, private store: Store) { }
+	constructor(
+		private navController: NavController,
+		private statusBarService: StatusbarService,
+		private mapUiService: MapUIService,
+		private store: Store) { }
 
 	ionViewWillEnter(): void {
 		this.statusBarService.changeStatusBar(false, true);
-		this.fieldTripInfoSub = this.fieldTripInfo$.subscribe((res) => {
+		this.fieldTripInfoSub = this.fieldTripInfo$.pipe(
+			takeUntil(this.unsubscribe$)
+		) .subscribe((res) => {
 			this.fieldTripInfo = res;
 		});
 		this.getDateAndDuration();
@@ -126,6 +134,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	}
 
 	ionViewWillLeave(): void {
-	this.fieldTripInfoSub.unsubscribe();
+		this.unsubscribe$.next();
 	}
 }
