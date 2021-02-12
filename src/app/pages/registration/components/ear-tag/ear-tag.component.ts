@@ -1,15 +1,16 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Filesystem, FilesystemDirectory, FilesystemEncoding } from '@capacitor/core';
+import { Filesystem, FilesystemDirectory, FilesystemEncoding, KeyboardResize } from '@capacitor/core';
+import { Platform } from '@ionic/angular';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { CheckableEarTag, EarTagInfo } from 'src/app/shared/classes/EarTagInfo';
-import { FieldTripInfo } from 'src/app/shared/classes/FieldTripInfo';
 import { SetEarTagInfos } from 'src/app/shared/store/sheepInfo.actions';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
-import { pathToFileURL } from 'url';
 import { v4 as uuidv4 } from 'uuid';
+import { Plugins} from '@capacitor/core';
 
+const {Keyboard} = Plugins;
 
 @Component({
 	selector: 'app-ear-tag',
@@ -18,7 +19,7 @@ import { v4 as uuidv4 } from 'uuid';
 })
 export class EarTagComponent implements OnInit {
 
-	constructor(private formBuilder: FormBuilder, private store: Store) {
+	constructor(private formBuilder: FormBuilder, private store: Store, private platform: Platform) {
 		this.newEarTagForm = this.formBuilder.group({
 			owner: ['', Validators.required],
 		});
@@ -52,6 +53,12 @@ export class EarTagComponent implements OnInit {
 		}).catch(_ => {
 			this.checkableEartags = [];
 			this.earTagsInfos = [];
+		});
+	}
+
+	ionViewWillEnter() {
+		Keyboard.addListener('keyboardWillShow', () => {
+			Keyboard.setResizeMode({mode: KeyboardResize.None});
 		});
 	}
 
