@@ -24,6 +24,14 @@ const routes: Routes = [
 		loadChildren: () => import('./pages/registration/register/register.module').then( m => m.RegisterPageModule)
 	},
 	{
+		path: 'registration/register-injured',
+		loadChildren: () => import('./pages/registration/register-injured/register-injured.module').then( m => m.RegisterInjuredPageModule)
+	},
+	{
+		path: 'registration/register-dead',
+		loadChildren: () => import('./pages/registration/register-dead/register-dead.module').then( m => m.RegisterDeadPageModule)
+	},
+	{
 		path: 'offline-maps',
 		loadChildren: () => import('./pages/offline-maps/offline-maps.module').then( m => m.OfflineMapsPageModule)
 	},
@@ -38,7 +46,7 @@ const routes: Routes = [
   	{
 		path: 'field-trip-summary',
 		loadChildren: () => import('./pages/field-trip-summary/field-trip-summary.module').then( m => m.FieldTripSummaryPageModule)
-  	}
+  	},
 ];
 
 @NgModule({

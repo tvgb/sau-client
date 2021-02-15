@@ -18,9 +18,13 @@ export class PredatorRegistration extends Registration {
 }
 
 export class InjuredSheepRegistration extends Registration {
+	count: number;
+	comment: string;
 	// Eventuelle ting som trengs her
 }
 
 export class DeadSheepRegistration extends Registration {
+	count: number;
+	comment: string;
 	// Eventuelle ting som trengs her
 }

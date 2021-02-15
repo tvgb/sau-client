@@ -29,6 +29,8 @@ const { App, Network } = Plugins;
 
 export class MapPage {
 	private registrationUrl = '/registration/register';
+	private registrationDeadUrl = 'registration/register-dead';
+	private registrationInjuredUrl = '/registration/register-injured';
 	private map;
 	private currentMainCategory: MainCategory;
 	private trackedRouteSub: Subscription;
@@ -147,19 +149,24 @@ export class MapPage {
 		});
 	}
 
-	addRegistration(type: RegistrationType) {
+	navigateToRegistration(type: RegistrationType) {
 		this.regService.registrationPosition = this.map.getCenter();
 		this.regService.gpsPosition = this.posistionMarker.getLatLng();
 		this.regService.registrationType = type;
-		this.regService.addRegistration();
-	}
+		switch (type) {
+			case RegistrationType.Sheep:
+				this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);
+				this.navController.navigateForward(this.registrationUrl);
+				break;
 
-	navigateToRegistration(): void {
-		this.regService.gpsPosition = this.posistionMarker.getLatLng();
-		this.regService.registrationPosition = this.map.getCenter();
-		this.regService.registrationType = RegistrationType.Sheep;
-		this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);
-		this.navController.navigateForward(this.registrationUrl);
+			case RegistrationType.Injured:
+				this.navController.navigateForward(this.registrationInjuredUrl);
+				break;
+
+			case RegistrationType.Dead:
+				this.navController.navigateForward(this.registrationDeadUrl);
+				break;
+		}
 	}
 
 	navigateToSummary(): void {

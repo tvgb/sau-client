@@ -8,9 +8,11 @@ import { FieldTripInfo, UpdateFieldTripInfoObject } from 'src/app/shared/classes
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 import { Coordinate } from 'src/app/shared/classes/Coordinate';
-import { SheepRegistration } from 'src/app/shared/classes/Registration';
+import { InjuredSheepRegistration, SheepRegistration } from 'src/app/shared/classes/Registration';
 import { MapUIService } from 'src/app/shared/services/map-ui.service';
 import { SetDateTimeEnded } from 'src/app/shared/store/fieldTripInfo.actions';
+import { Network } from '@capacitor/core';
+import { MapService } from '../map/services/map.service';
 import { takeUntil } from 'rxjs/operators';
 
 @Component({
@@ -27,13 +29,15 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	min: number;
 	sec: number;
 	totalSheepCount = 0;
-	totalEweCount = 0;
-	totalLambCount = 0;
+	injuredCount = 0;
+	deadCount = 0;
 	private fieldTripInfoSub: Subscription;
 	private startPos = [63.424, 10.3961];
 	private mapUrl = '/map';
 	private mainMenuUrl = '/main-menu';
 	private map;
+	private onlineTileLayer: any;
+	private offlineTileLayer: any;
 	private unsubscribe$: Subject<void> = new Subject();
 
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
@@ -51,8 +55,20 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		) .subscribe((res) => {
 			this.fieldTripInfo = res;
 		});
+
+		Network.addListener('networkStatusChange', (status) => {
+			if (status.connected) {
+				this.map.removeLayer(this.offlineTileLayer);
+				this.map.addLayer(this.onlineTileLayer);
+			} else {
+				this.map.removeLayer(this.onlineTileLayer);
+				this.map.addLayer(this.offlineTileLayer);
+			}
+		});
 		this.getDateAndDuration();
 		this.getTotalSheep();
+		this.getInjuredSheep();
+		this.getDeadSheep();
 	}
 
 	getDateAndDuration(): void {
@@ -74,8 +90,24 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 		sheepRegistrations.forEach((registration) => {
 			this.totalSheepCount += registration.sheepInfo.totalSheep.totalSheep.count;
-			this.totalEweCount += registration.sheepInfo.sheepType.ewe.count;
-			this.totalLambCount += registration.sheepInfo.sheepType.lamb.count;
+		});
+	}
+
+	getInjuredSheep(): void {
+		const injuredRegistrations = this.fieldTripInfo.registrations
+		.filter(reg => reg.registrationType === RegistrationType.Injured) as InjuredSheepRegistration[];
+
+		injuredRegistrations.forEach((registration) => {
+			this.injuredCount += registration.count;
+		});
+	}
+
+	getDeadSheep(): void {
+		const deadRegistrations = this.fieldTripInfo.registrations
+		.filter(reg => reg.registrationType === RegistrationType.Dead) as InjuredSheepRegistration[];
+
+		deadRegistrations.forEach((registration) => {
+			this.deadCount += registration.count;
 		});
 	}
 
@@ -85,7 +117,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		});
 	}
 
-	initMap(): void {
+	async initMap(): Promise<void> {
 		this.map = L.map('summary-map', {
 			zoomControl: false,
 			attributionControl: false,
@@ -112,14 +144,50 @@ export class FieldTripSummaryPage implements AfterViewInit {
 			}
 
 			this.map.fitBounds(L.polyline(fitBoundsCoords).getBounds());
+
 		} else {
 			this.map.setView(this.startPos, 12);
 		}
 
-		L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
-		{
-			attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
-		}).addTo(this.map);
+		this.setOnlineTileLayer();
+		this.setOfflineTileLayer();
+
+		if ((await Network.getStatus()).connected) {
+			this.map.addLayer(this.onlineTileLayer);
+		} else {
+			this.map.addLayer(this.offlineTileLayer);
+			this.map.setZoom(this.mapService.getMaxZoom());
+		}
+	}
+
+	private setOnlineTileLayer(): void {
+		this.onlineTileLayer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
+								{
+									attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
+								});
+	}
+
+	private setOfflineTileLayer(): void {
+		L.GridLayer.OfflineMap = L.GridLayer.extend({
+			createTile: (coords, done) => {
+				const tile = document.createElement('img');
+
+				this.mapService.getTile(coords.z, coords.x, coords.y).then((base64Img) => {
+					tile.setAttribute(
+						'src', base64Img
+					);
+					done(null, tile);
+				}).catch((e) => {
+					tile.innerHTML = 'Map not available offline.';
+					console.log(e);
+				});
+				return tile;
+			}
+		});
+		L.gridLayer.offlineMap = (opts) => {
+			return new L.GridLayer.OfflineMap(opts);
+		};
+		this.offlineTileLayer = L.gridLayer.offlineMap();
 	}
 
 	navigateBack(): void {

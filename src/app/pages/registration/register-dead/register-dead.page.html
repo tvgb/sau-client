@@ -1,0 +1,30 @@
+<ion-content>
+    <div class="register-dead-container">
+        <app-page-header [navUrl]= "['/map']" [pageHeaderText] = "['Registrer døde dyr']"></app-page-header>
+        <ion-list class="register-dead-info-list">
+            <form [formGroup]="registerDeadForm">
+                <ion-label>Antall døde dyr:</ion-label>
+                <ion-item lines="full">
+                    <ion-input formControlName="deadCount" required="true" type="number"></ion-input>
+                </ion-item>
+                <div *ngIf="!registerDeadForm.controls.deadCount.valid && (registerDeadForm.controls.deadCount.dirty || submitAttempt)">
+                    <p class="invalid">
+                        {{invalidText}}
+                        </p>
+                </div>
+                <ion-label>Kommentar</ion-label>
+                <ion-textarea formControlName="comment" placeholder="Skriv her..."></ion-textarea>
+            </form>
+        </ion-list>
+    </div>
+</ion-content>
+<ion-footer>
+	<ion-row>
+		<ion-col class="ion-no-padding">
+			<ion-button (click)="navigateBack()" id="back-button" color="tertiary" class="ion-no-margin" expand="full" size="large">TILBAKE</ion-button>
+		</ion-col>
+		<ion-col class="ion-no-padding">
+			<ion-button (click)="onCompleteRegistration()" color="primary" id="complete-button" class="ion-no-margin" expand="full" size="large">FULLFØR</ion-button>
+		</ion-col>
+	</ion-row>
+</ion-footer>

@@ -14,10 +14,10 @@
 			<ion-icon name="add"></ion-icon>
 		</ion-fab-button>
 		<ion-fab-list side="top">
-			<ion-fab-button (click)="navigateToRegistration()" class="add-registration-button"><ion-img [src]="addSheepBtnPath"></ion-img></ion-fab-button>
-			<ion-fab-button (click)="addRegistration(registrationType.Predator)" class="add-registration-button"><ion-img [src]="addPredatorBtnPath"></ion-img></ion-fab-button>
-			<ion-fab-button (click)="addRegistration(registrationType.Injured)" class="add-registration-button"><ion-img [src]="addInjuredSheepBtnPath"></ion-img></ion-fab-button>
-			<ion-fab-button (click)="addRegistration(registrationType.Dead)" class="add-registration-button"><ion-img [src]="addDeadSheepBtnPath"></ion-img></ion-fab-button>
+			<ion-fab-button (click)="navigateToRegistration(registrationType.Sheep)" class="add-registration-button"><ion-img [src]="addSheepBtnPath"></ion-img></ion-fab-button>
+			<ion-fab-button (click)="navigateToRegistration(registrationType.Predator)" class="add-registration-button"><ion-img [src]="addPredatorBtnPath"></ion-img></ion-fab-button>
+			<ion-fab-button (click)="navigateToRegistration(registrationType.Injured)" class="add-registration-button"><ion-img [src]="addInjuredSheepBtnPath"></ion-img></ion-fab-button>
+			<ion-fab-button (click)="navigateToRegistration(registrationType.Dead)" class="add-registration-button"><ion-img [src]="addDeadSheepBtnPath"></ion-img></ion-fab-button>
 		</ion-fab-list>
 	</ion-fab>	
 </ion-content>
