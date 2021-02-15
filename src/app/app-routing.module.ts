@@ -20,8 +20,8 @@ const routes: Routes = [
 		loadChildren: () => import('./pages/registration/summary/summary.module').then( m => m.SummaryPageModule)
 	},
 	{
-		path: 'registration/register',
-		loadChildren: () => import('./pages/registration/register/register.module').then( m => m.RegisterPageModule)
+		path: 'registration/register-sheep',
+		loadChildren: () => import('./pages/registration/register-sheep/register-sheep.module').then( m => m.RegisterPageModule)
 	},
 	{
 		path: 'registration/register-injured',
@@ -47,6 +47,10 @@ const routes: Routes = [
 		path: 'field-trip-summary',
 		loadChildren: () => import('./pages/field-trip-summary/field-trip-summary.module').then( m => m.FieldTripSummaryPageModule)
   	},
+	{
+		path: 'register-predator',
+		loadChildren: () => import('./pages/registration/register-predator/register-predator.module').then( m => m.RegisterPredatorPageModule)
+	},
 ];
 
 @NgModule({

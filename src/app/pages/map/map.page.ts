@@ -28,7 +28,7 @@ const { App, Network } = Plugins;
 })
 
 export class MapPage {
-	private registrationUrl = '/registration/register';
+	private registrationUrl = '/registration/register-sheep';
 	private registrationDeadUrl = 'registration/register-dead';
 	private registrationInjuredUrl = '/registration/register-injured';
 	private map;

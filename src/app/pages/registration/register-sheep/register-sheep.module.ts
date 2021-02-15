@@ -4,9 +4,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { RegisterPageRoutingModule } from './register-routing.module';
+import { RegisterPageRoutingModule } from './register-sheep-routing.module';
 
-import { RegisterPage } from './register.page';
+import { RegisterPage } from './register-sheep.page';
 import { RegistrationModule } from '../registration.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 
