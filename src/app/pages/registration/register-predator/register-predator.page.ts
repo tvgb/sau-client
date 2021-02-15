@@ -16,6 +16,7 @@ export class RegisterPredatorPage {
 	registerPredatorForm: FormGroup;
 	predatorTypes = [];
 	submitAttempt = false;
+	invalidText = 'Obligatorisk felt';
 
 	constructor(private navController: NavController, private formbuilder: FormBuilder, private statusBarService: StatusbarService, private regService: RegistrationService) {
 		this.registerPredatorForm = this.formbuilder.group({
@@ -40,8 +41,13 @@ export class RegisterPredatorPage {
 		});
 	}
 	onCompleteRegistration(): void {
-		if (this.submitAttempt) {
-			console.log('hei');
+		this.submitAttempt = true;
+		if (this.registerPredatorForm.valid) {
+			console.log(this.registerPredatorForm.controls.predatorType.value);
+			this.regService.completeRegistration(undefined, undefined,
+			this.registerPredatorForm.controls.comment.value,
+			this.registerPredatorForm.controls.predatorType.value);
+			this.navController.back();
 		}
 	}
 	navigateBack() {

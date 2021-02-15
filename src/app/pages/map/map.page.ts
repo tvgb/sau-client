@@ -123,7 +123,6 @@ export class MapPage {
 					lastRegistration.gpsPos,
 					lastRegistration.registrationType
 				);
-
 				pin.addTo(this.map);
 				polyline.addTo(this.map);
 			}

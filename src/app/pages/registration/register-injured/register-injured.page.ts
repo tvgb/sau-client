@@ -1,11 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NavController } from '@ionic/angular';
-import { Select } from '@ngxs/store';
-import { Observable, Subject } from 'rxjs';
-import { FieldTripInfo } from 'src/app/shared/classes/FieldTripInfo';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
-import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { RegistrationService } from '../services/registration.service';
 
 @Component({
@@ -19,10 +15,6 @@ export class RegisterInjuredPage {
 	submitAttempt = false;
 	registerInjuredForm: FormGroup;
 	invalidText = 'Obligatorisk felt';
-
-	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
-
-	private unsubscribe$: Subject<void> = new Subject<void>();
 
 	constructor(private navController: NavController,
 				         private formbuilder: FormBuilder,
@@ -38,10 +30,6 @@ export class RegisterInjuredPage {
 		this.statusBarService.changeStatusBar(false, true);
 	}
 
-	navigateBack(): void {
-		this.navController.back();
-	}
-
 	onCompleteRegistration() {
 		this.submitAttempt = true;
 		if (this.registerInjuredForm.valid) {
@@ -52,7 +40,7 @@ export class RegisterInjuredPage {
 		}
 	}
 
-	ionViewWillLeave(): void {
-		this.unsubscribe$.next();
+	navigateBack(): void {
+		this.navController.back();
 	}
 }

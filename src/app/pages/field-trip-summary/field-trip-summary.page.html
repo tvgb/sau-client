@@ -24,7 +24,7 @@
     <div class="summary-column-heading">
         <h2>REGISTRERINGER</h2>
     </div>
-    <div *ngIf="!fieldTripInfo?.registrations; else elseblock" > <ion-text class="summary-registration">Det er ingen registreringer. </ion-text> </div>
+    <div *ngIf="!fieldTripInfo?.registrations; else elseblock"> <ion-text class="summary-registration">Det er ingen registreringer. </ion-text></div>
     <ng-template #elseblock >
         <div class="summary-registrations">
             <div>
@@ -38,6 +38,12 @@
             </div>
         </div>
     </ng-template>
+    <div *ngIf="predators > 0" class="summary-column-heading" margin-top="15px">
+        <h5>OBSERVERTE ROVDYR</h5>
+        <div class="summary-registrations-predator">
+            ROVDYR: {{predators}}
+        </div>
+    </div>
  </div>
 </ion-content>
 <ion-footer>
