@@ -28,9 +28,10 @@ const { App, Network } = Plugins;
 })
 
 export class MapPage {
-	private registrationUrl = '/registration/register-sheep';
+	private registrationSheepUrl = '/registration/register-sheep';
 	private registrationDeadUrl = 'registration/register-dead';
 	private registrationInjuredUrl = '/registration/register-injured';
+	private registrationPredatorUrl = '/registration/register-predator';
 	private map;
 	private currentMainCategory: MainCategory;
 	private trackedRouteSub: Subscription;
@@ -156,7 +157,7 @@ export class MapPage {
 		switch (type) {
 			case RegistrationType.Sheep:
 				this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);
-				this.navController.navigateForward(this.registrationUrl);
+				this.navController.navigateForward(this.registrationSheepUrl);
 				break;
 
 			case RegistrationType.Injured:
@@ -166,6 +167,9 @@ export class MapPage {
 			case RegistrationType.Dead:
 				this.navController.navigateForward(this.registrationDeadUrl);
 				break;
+
+			case RegistrationType.Predator:
+				this.navController.navigateForward(this.registrationPredatorUrl);
 		}
 	}
 

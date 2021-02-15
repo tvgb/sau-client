@@ -46,6 +46,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		private navController: NavController,
 		private statusBarService: StatusbarService,
 		private mapUiService: MapUIService,
+		private mapService: MapService,
 		private store: Store) { }
 
 	ionViewWillEnter(): void {

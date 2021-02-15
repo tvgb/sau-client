@@ -1,9 +1,27 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>register-predator</ion-title>
-  </ion-toolbar>
-</ion-header>
-
 <ion-content>
-
+    <div class="register-predator-container">
+        <app-page-header [navUrl]= "['/map']" [pageHeaderText] = "['Registrer rovdyr']"></app-page-header>
+        <ion-list class="register-dead-info-list">
+            <form [formGroup]="registerPredatorForm">
+                <ion-label>Rovdyr art:</ion-label>
+                <ion-item lines="full">
+                    <ion-select formControlName="predatorType" class="predator-select" interface="popover" placeholder="Observert rovdyr">
+                        <ion-select-option *ngFor="let types of predatorTypes">{{types}}</ion-select-option>
+                    </ion-select>
+                </ion-item>
+                <ion-label>Kommentar</ion-label>
+                <ion-textarea formControlName="comment" placeholder="Skriv inn observasjon her..."></ion-textarea>
+            </form>
+        </ion-list>
+    </div>
 </ion-content>
+<ion-footer>
+	<ion-row>
+		<ion-col class="ion-no-padding">
+			<ion-button (click)="navigateBack()" id="back-button" color="tertiary" class="ion-no-margin" expand="full" size="large">TILBAKE</ion-button>
+		</ion-col>
+		<ion-col class="ion-no-padding">
+			<ion-button (click)="onCompleteRegistration()" color="primary" id="complete-button" class="ion-no-margin" expand="full" size="large">FULLFØR</ion-button>
+		</ion-col>
+	</ion-row>
+</ion-footer>

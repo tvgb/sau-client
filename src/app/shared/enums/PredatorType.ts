@@ -1,7 +1,7 @@
 export enum PredatorType {
-	Bear = 'BJØRN',
-	Lynx = 'GAUPE',
-	Wolverine = 'JERV',
-	Wolf = 'ULV',
-	Eagle = 'KONGEØRN'
+	Bear = 'Bjørn',
+	Lynx = 'Gaupe',
+	Wolverine = 'Jerv',
+	Wolf = 'Ulv',
+	Eagle = 'Kongeørn',
 }

@@ -32,6 +32,10 @@ const routes: Routes = [
 		loadChildren: () => import('./pages/registration/register-dead/register-dead.module').then( m => m.RegisterDeadPageModule)
 	},
 	{
+		path: 'registration/register-predator',
+		loadChildren: () => import('./pages/registration/register-predator/register-predator.module').then( m => m.RegisterPredatorPageModule)
+	},
+	{
 		path: 'offline-maps',
 		loadChildren: () => import('./pages/offline-maps/offline-maps.module').then( m => m.OfflineMapsPageModule)
 	},
@@ -47,10 +51,6 @@ const routes: Routes = [
 		path: 'field-trip-summary',
 		loadChildren: () => import('./pages/field-trip-summary/field-trip-summary.module').then( m => m.FieldTripSummaryPageModule)
   	},
-	{
-		path: 'register-predator',
-		loadChildren: () => import('./pages/registration/register-predator/register-predator.module').then( m => m.RegisterPredatorPageModule)
-	},
 ];
 
 @NgModule({
