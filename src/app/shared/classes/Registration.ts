@@ -1,3 +1,4 @@
+import { PredatorType } from '../enums/PredatorType';
 import { RegistrationType } from '../enums/RegistrationType';
 import { Coordinate } from './Coordinate';
 import { SheepInfo } from './SheepInfo';
@@ -14,6 +15,8 @@ export class SheepRegistration extends Registration {
 }
 
 export class PredatorRegistration extends Registration {
+	predatorType: PredatorType;
+	comment: string;
 	// Eventuelle ting som trengs her
 }
 
