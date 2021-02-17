@@ -46,7 +46,11 @@ const routes: Routes = [
   	{
 		path: 'field-trip-summary',
 		loadChildren: () => import('./pages/field-trip-summary/field-trip-summary.module').then( m => m.FieldTripSummaryPageModule)
-  	},
+  	},  {
+    path: 'settings',
+    loadChildren: () => import('./pages/settings/settings.module').then( m => m.SettingsPageModule)
+  },
+
 ];
 
 @NgModule({
