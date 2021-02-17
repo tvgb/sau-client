@@ -12,15 +12,20 @@
                         {{invalidText}}
                     </p>
                 </div>
-                <ion-label>Kommentar</ion-label>
+                <ion-label>Kommentar:</ion-label>
                 <ion-textarea formControlName="comment" placeholder="Skriv inn observasjon her..."></ion-textarea>
-                <ion-label>Bilde</ion-label>
                 <div class="add-photo-container">
-                <div class="add-photo-header-text">
-                    Legg ved et bilde
+                    <div class="add-photo-header">
+                        <ion-icon class="camera-icon" size="large" name="camera"></ion-icon>
+                        <ion-label class="add-photo-header-text">Bilde</ion-label> 
+                    </div>
+                    <div class="add-photo-text">Legg ved et bilde</div>
+                    <div class="photos-container">
+                        <div class="add-photo-box">
+                            <div class="plus-icon" (click)="addPhoto()">+</div>
+                        </div>
+                    </div>
                 </div>
-                <ion-icon (click)="addPhoto()" class="camera-icon" size="large" name="camera"></ion-icon>
-            </div>
             <ion-img *ngIf="capturedImage" [src]="'data:image/png;base64, ' +  capturedImage"></ion-img>
             </form>
         </ion-list>

@@ -17,18 +17,41 @@
 .add-photo-container {
 	width: 100%;
 	display: flex;
+    flex-direction: column;
 	justify-content: flex-start;
     margin-top: 5px;
 }
 
+.add-photo-header {
+    margin-bottom: 5px;
+    display: flex;
+}
 .add-photo-header-text {
-    padding-top: 8px;
-    text-align: start;
+    padding-top: 5px;
+    align-self: center;
     width: 100%;
+    padding-left: 5px;
 }
 
-.camera-icon {
-    align-self: flex-end;
+.add-photo-text {
+    font-size: 14px;
+}
+
+.photos-container {
+    margin-top: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-content: space-around ;
+}
+.add-photo-box {
+    width: 127px;
+    height: 127px;
+    border: 1px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 55px;
+    font-weight: 100;
 }
 
 ion-item {
