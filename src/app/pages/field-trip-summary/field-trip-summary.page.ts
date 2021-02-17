@@ -118,9 +118,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		const predatorsRegistrations = this.fieldTripInfo.registrations
 		.filter(reg => reg.registrationType === RegistrationType.Predator) as PredatorRegistration[];
 
-		predatorsRegistrations.forEach(() => {
-			this.predators++;
-		});
+		this.predators = predatorsRegistrations.length;
 	}
 
 	ngAfterViewInit(): void {

@@ -43,7 +43,6 @@ export class RegisterPredatorPage {
 	onCompleteRegistration(): void {
 		this.submitAttempt = true;
 		if (this.registerPredatorForm.valid) {
-			console.log(this.registerPredatorForm.controls.predatorType.value);
 			this.regService.completeRegistration(undefined, undefined,
 			this.registerPredatorForm.controls.comment.value,
 			this.registerPredatorForm.controls.predatorType.value);
