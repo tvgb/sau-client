@@ -14,6 +14,23 @@
     margin-bottom: 30px;
 }
 
+.add-photo-container {
+	width: 100%;
+	display: flex;
+	justify-content: flex-start;
+    margin-top: 5px;
+}
+
+.add-photo-header-text {
+    padding-top: 8px;
+    text-align: start;
+    width: 100%;
+}
+
+.camera-icon {
+    align-self: flex-end;
+}
+
 ion-item {
     margin-top: 5px;
     --background: rgba(255, 255, 255, 0.05);
