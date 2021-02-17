@@ -35,14 +35,18 @@
 
 .add-photo-text {
     font-size: 14px;
+    margin-bottom: 15px;
 }
 
 .photos-container {
     margin-top: 25px;
+    width: 100%;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-content: space-around ;
 }
+
 .add-photo-box {
     width: 127px;
     height: 127px;
@@ -52,6 +56,12 @@
     justify-content: center;
     font-size: 55px;
     font-weight: 100;
+}
+
+.photo {
+    height: 127px;
+    width: 127px;
+    margin-bottom: 25px;
 }
 
 ion-item {
