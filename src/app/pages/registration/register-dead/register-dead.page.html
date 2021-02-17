@@ -19,8 +19,9 @@
                 <div class="add-photo-header-text">
                     Legg ved et bilde
                 </div>
-                <ion-icon class="camera-icon" size="large" name="camera"></ion-icon>
+                <ion-icon (click)="addPhoto()" class="camera-icon" size="large" name="camera"></ion-icon>
             </div>
+            <ion-img *ngIf="capturedImage" [src]="'data:image/png;base64, ' +  capturedImage"></ion-img>
             </form>
         </ion-list>
     </div>

@@ -3,6 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NavController } from '@ionic/angular';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { RegistrationService } from '../services/registration.service';
+import { Plugins, CameraResultType} from '@capacitor/core';
+
+const { Camera} = Plugins;
 
 @Component({
 	selector: 'app-register-dead',
@@ -12,6 +15,7 @@ import { RegistrationService } from '../services/registration.service';
 
 export class RegisterDeadPage {
 
+	capturedImage: any;
 	submitAttempt = false;
 	registerDeadForm: FormGroup;
 	invalidText = 'Obligatorisk felt';
@@ -30,6 +34,16 @@ export class RegisterDeadPage {
 		this.statusBarService.changeStatusBar(false, true);
 	}
 
+	async addPhoto() {
+		const image = await Camera.getPhoto({
+			quality: 90,
+			allowEditing: false,
+			resultType: CameraResultType.Base64
+		});
+		this.capturedImage = image.base64String;
+		console.log('KIMIAAa!!');
+		console.log(this.capturedImage);
+	}
 	onCompleteRegistration() {
 		this.submitAttempt = true;
 		if (this.registerDeadForm.valid) {
