@@ -16,15 +16,15 @@
     margin: 0px 10px;
 }
 
+.summary-column-heading {
+	margin: 5px 10px 5px 15px;
+}
+
 .summary-element {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
     margin-left: 15px;
-}
-
-.summary-column-heading {
-	margin: 5px 10px 5px 15px;
 }
 
 .summary-registration {
@@ -37,6 +37,11 @@
 .summary-registrations {
     display: flex;
     justify-content: space-around;
+}
+
+.summary-registrations-predator {
+    display: flex;
+    justify-content: flex-start;
 }
 
 #summary-map {

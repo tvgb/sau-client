@@ -1,0 +1,34 @@
+.register-predator-container {
+    height: 100%;
+}
+
+.register-dead-info-list { 
+    background-color: var(--ion-background-color);
+    margin-top: 40px;
+    margin-left: 35px;
+    margin-right: 35px;
+}
+
+.invalid {
+    color: red;
+    margin-bottom: 30px;
+}
+
+ion-item {
+    margin-top: 5px;
+    --background: rgba(255, 255, 255, 0.05);
+    --border-color: rgba(255, 255, 255, 1);
+    margin-bottom: 20px;
+}
+
+ion-select {
+    width:100%;
+    max-width: 100% !important;
+    padding-left:0px;
+}
+
+ion-textarea {
+    margin-top: 5px;
+    --background: rgba(255, 255, 255, 0.05);
+    margin-bottom: 25px;
+}

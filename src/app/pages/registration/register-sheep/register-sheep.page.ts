@@ -14,8 +14,8 @@ import { takeUntil } from 'rxjs/operators';
 
 @Component({
 	selector: 'app-register',
-	templateUrl: './register.page.html',
-	styleUrls: ['./register.page.scss'],
+	templateUrl: './register-sheep.page.html',
+	styleUrls: ['./register-sheep.page.scss'],
 })
 export class RegisterPage {
 	@ViewChild('colourInput') colourInput: ElementRef;
