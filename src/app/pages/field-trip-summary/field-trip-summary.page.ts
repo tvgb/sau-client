@@ -8,7 +8,7 @@ import { FieldTripInfo, UpdateFieldTripInfoObject } from 'src/app/shared/classes
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 import { Coordinate } from 'src/app/shared/classes/Coordinate';
-import { InjuredSheepRegistration, SheepRegistration } from 'src/app/shared/classes/Registration';
+import { DeadSheepRegistration, InjuredSheepRegistration, PredatorRegistration, SheepRegistration } from 'src/app/shared/classes/Registration';
 import { MapUIService } from 'src/app/shared/services/map-ui.service';
 import { SetDateTimeEnded } from 'src/app/shared/store/fieldTripInfo.actions';
 import { Network } from '@capacitor/core';
@@ -31,6 +31,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	totalSheepCount = 0;
 	injuredCount = 0;
 	deadCount = 0;
+	predators = 0;
 	private fieldTripInfoSub: Subscription;
 	private startPos = [63.424, 10.3961];
 	private mapUrl = '/map';
@@ -46,6 +47,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		private navController: NavController,
 		private statusBarService: StatusbarService,
 		private mapUiService: MapUIService,
+		private mapService: MapService,
 		private store: Store) { }
 
 	ionViewWillEnter(): void {
@@ -69,6 +71,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		this.getTotalSheep();
 		this.getInjuredSheep();
 		this.getDeadSheep();
+		this.getPredators();
 	}
 
 	getDateAndDuration(): void {
@@ -104,11 +107,18 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 	getDeadSheep(): void {
 		const deadRegistrations = this.fieldTripInfo.registrations
-		.filter(reg => reg.registrationType === RegistrationType.Dead) as InjuredSheepRegistration[];
+		.filter(reg => reg.registrationType === RegistrationType.Dead) as DeadSheepRegistration[];
 
 		deadRegistrations.forEach((registration) => {
 			this.deadCount += registration.count;
 		});
+	}
+
+	getPredators(): void {
+		const predatorsRegistrations = this.fieldTripInfo.registrations
+		.filter(reg => reg.registrationType === RegistrationType.Predator) as PredatorRegistration[];
+
+		this.predators = predatorsRegistrations.length;
 	}
 
 	ngAfterViewInit(): void {

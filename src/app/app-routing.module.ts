@@ -20,8 +20,8 @@ const routes: Routes = [
 		loadChildren: () => import('./pages/registration/summary/summary.module').then( m => m.SummaryPageModule)
 	},
 	{
-		path: 'registration/register',
-		loadChildren: () => import('./pages/registration/register/register.module').then( m => m.RegisterPageModule)
+		path: 'registration/register-sheep',
+		loadChildren: () => import('./pages/registration/register-sheep/register-sheep.module').then( m => m.RegisterPageModule)
 	},
 	{
 		path: 'registration/register-injured',
@@ -30,6 +30,10 @@ const routes: Routes = [
 	{
 		path: 'registration/register-dead',
 		loadChildren: () => import('./pages/registration/register-dead/register-dead.module').then( m => m.RegisterDeadPageModule)
+	},
+	{
+		path: 'registration/register-predator',
+		loadChildren: () => import('./pages/registration/register-predator/register-predator.module').then( m => m.RegisterPredatorPageModule)
 	},
 	{
 		path: 'offline-maps',

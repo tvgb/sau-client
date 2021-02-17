@@ -26,7 +26,7 @@ export class RegisterDeadPage {
 		});
 	}
 
-	ionViewDidEnter() {
+	ionViewWillEnter() {
 		this.statusBarService.changeStatusBar(false, true);
 	}
 
