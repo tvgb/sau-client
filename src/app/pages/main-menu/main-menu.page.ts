@@ -11,6 +11,7 @@ export class MainMenuPage {
 
 	private offlineMapUrl = '/offline-maps';
 	private newFieldTripUrl = '/new-field-trip';
+	private settingsUrl = '/settings';
 
 	constructor(private navController: NavController, private statusBarService: StatusbarService) { }
 
@@ -24,5 +25,9 @@ export class MainMenuPage {
 
 	offlineMapsButtonClicked(): void {
 		this.navController.navigateForward(this.offlineMapUrl);
+	}
+
+	settingsButtonClicked(): void {
+		this.navController.navigateForward(this.settingsUrl);
 	}
 }

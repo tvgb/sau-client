@@ -24,8 +24,13 @@ export class AuthService {
 		});
 	}
 
-	signOut(): void {
-		this.fireAuth.signOut();
+	signOut(): Promise<boolean> {
+		return this.fireAuth.signOut().then(() => {
+			this.isAuthenticated();
+			return true;
+		}).catch(() => {
+			return false;
+		});
 	}
 
 	isAuthenticated(): Observable<boolean> {
