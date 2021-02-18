@@ -30,7 +30,7 @@ npm-debug.log*
 /plugins
 /www
 
-/environments
+**/environments
 
 /android
 /ios
