@@ -28,7 +28,7 @@ export class LoginPage {
 
 	loginButtonPressed(): void {
 		if (this.loginForm.valid) {
-			this.authService.signIn(this.loginForm.controls.email.value, this.loginForm.controls.password.value)
+			this.authService.signIn(this.loginForm.controls.email.value.trim(), this.loginForm.controls.password.value)
 				.then((loginSucceeded) => {
 					if (loginSucceeded) {
 						this.loginAttempted = false;
