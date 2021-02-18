@@ -9,27 +9,23 @@ export class AlertService {
 
 	constructor(private alertController: AlertController) { }
 
-	async confirmAlert(alertHeader: string, alertMessage: string, context: object, confirmFunction, args = null) {
-		console.log('KIMIAAAAA!!');
+	async confirmAlert(alertHeader: string, alertMessage: string, context: object, confirmFunction) {
 		const alert = await this.alertController.create({
-				cssClass: 'alertConfirm',
-				header: alertHeader,
-				backdropDismiss: true,
-				message: alertMessage,
-				buttons: [
-					{
-						text: 'Nei',
-						role: 'cancel',
-						handler: () => {}
-					}, {
-						text: 'Ja',
-						handler: () => {
-							confirmFunction.bind(context);
-							confirmFunction.apply(args);
-						}
-					}
-				]
-			});
+			cssClass: 'alertConfirm',
+			header: alertHeader,
+			backdropDismiss: true,
+			message: alertMessage,
+			buttons: [
+				{
+					text: 'Nei',
+					role: 'cancel',
+					handler: () => {}
+				}, {
+					text: 'Ja',
+					handler: confirmFunction.bind(context)
+				}
+			]
+		});
 		await alert.present();
 	}
 }

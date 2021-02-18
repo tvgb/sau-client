@@ -1,10 +1,9 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NavController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { RegistrationService } from '../services/registration.service';
 import { Plugins, CameraResultType} from '@capacitor/core';
-import { AlertService } from 'src/app/shared/services/alert.service';
 
 const { Camera} = Plugins;
 
@@ -26,10 +25,11 @@ export class RegisterDeadPage {
 
 	constructor(
 		private navController: NavController,
+		private alertController: AlertController,
+		private cdr: ChangeDetectorRef,
 		private formbuilder: FormBuilder,
 		private statusBarService: StatusbarService,
-		private regService: RegistrationService,
-		private alertService: AlertService) {
+		private regService: RegistrationService) {
 		this.registerDeadForm = this.formbuilder.group({
 			deadCount: ['', Validators.required],
 			comment: [''],
@@ -48,14 +48,30 @@ export class RegisterDeadPage {
 		});
 		this.capturedImage = image.base64String;
 		this.images.push(this.capturedImage);
+		this.cdr.detectChanges();
 	}
 
 	async confirmPhotoRemoval(index: number) {
-		this.alertService.confirmAlert(this.removeAlertHeader, this.removeAlertMessage, this, this.removePhoto, index);
-	}
-
-	removePhoto(index: number) {
-		this.images.splice(index, 1);
+		const alert = await this.alertController.create({
+			cssClass: 'alertConfirm',
+			header: this.removeAlertHeader,
+			backdropDismiss: true,
+			message: this.removeAlertMessage,
+			buttons: [
+				{
+					text: 'Nei',
+					role: 'cancel',
+					handler: () => {}
+				}, {
+					text: 'Ja',
+					handler: () => {
+						this.images.splice(index, 1);
+						this.cdr.detectChanges();
+					}
+				}
+			]
+		});
+		await alert.present();
 	}
 
 	onCompleteRegistration() {
