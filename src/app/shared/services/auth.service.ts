@@ -15,12 +15,12 @@ export class AuthService {
 
 	constructor(private fireAuth: AngularFireAuth, public fireStore: AngularFirestore) { }
 
-	signIn(email: string, password: string): void {
-		this.fireAuth.signInWithEmailAndPassword(email, password)
-			.then((result) => {
-				console.log(result);
-			}).catch((error) => {
-				console.log(error);
+	signIn(email: string, password: string): Promise<boolean> {
+		return this.fireAuth.signInWithEmailAndPassword(email, password)
+			.then(() => {
+				return true;
+			}).catch(() => {
+				return false;
 		});
 	}
 
