@@ -77,9 +77,12 @@ export class RegisterDeadPage {
 	onCompleteRegistration() {
 		this.submitAttempt = true;
 		if (this.registerDeadForm.valid) {
-			this.regService.completeRegistration(undefined,
+			this.regService.completeRegistration(
+			undefined,
 			this.registerDeadForm.controls.deadCount.value,
-			this.registerDeadForm.controls.comment.value);
+			this.registerDeadForm.controls.comment.value,
+			undefined,
+			this.images);
 			this.navController.back();
 		}
 	}

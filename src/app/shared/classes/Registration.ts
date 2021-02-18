@@ -17,17 +17,15 @@ export class SheepRegistration extends Registration {
 export class PredatorRegistration extends Registration {
 	predatorType: PredatorType;
 	comment: string;
-	// Eventuelle ting som trengs her
 }
 
 export class InjuredSheepRegistration extends Registration {
 	count: number;
 	comment: string;
-	// Eventuelle ting som trengs her
 }
 
 export class DeadSheepRegistration extends Registration {
 	count: number;
 	comment: string;
-	// Eventuelle ting som trengs her
+	images: string[];
 }
