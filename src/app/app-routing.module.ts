@@ -16,7 +16,7 @@ const routes: Routes = [
 	},
 	{
 		path: 'map',
-		loadChildren: () => import('./pages/map/map.module').then( m => m.MapPageModule)
+		loadChildren: () => import('./pages/map/map.module').then( m => m.MapPageModule),
 	},
 	{
 		path: 'registration/summary',
@@ -52,7 +52,8 @@ const routes: Routes = [
   	},
   	{
 		path: 'field-trip-summary',
-		loadChildren: () => import('./pages/field-trip-summary/field-trip-summary.module').then( m => m.FieldTripSummaryPageModule)
+		loadChildren: () => import('./pages/field-trip-summary/field-trip-summary.module').then( m => m.FieldTripSummaryPageModule),
+		canActivate: [ AuthGuard ]
   	},
 	{
 		path: 'login',

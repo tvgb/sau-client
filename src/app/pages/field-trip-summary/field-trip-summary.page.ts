@@ -210,7 +210,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	completeSummary(): void {
 		// this.navController.navigateBack(this.mainMenuUrl);
 
-		this.firestoreService.addSomeData();
+		this.firestoreService.saveNewFieldTrip(this.fieldTripInfo);
 
 		// Add To File!!
 	}

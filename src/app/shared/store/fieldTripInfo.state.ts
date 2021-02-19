@@ -17,7 +17,7 @@ import { AddRegistration, SetCurrentFieldTrip, SetDateTimeEnded } from './fieldT
 			participants: 2,
 			description: 'Nais med tur.',
 			dateTimeStarted: Date.now(),
-			dateTimeEnded: undefined,
+			dateTimeEnded: null,
 			trackedRoute: [],
 			registrations: []
 		}

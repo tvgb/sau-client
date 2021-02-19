@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Plugins } from '@capacitor/core';
+import { cordovaInstance } from '@ionic-native/core';
 import * as firebase from 'firebase/app';
 
 const { Network } = Plugins;
@@ -23,6 +24,10 @@ export class AuthService {
 				localStorage.removeItem('user');
 			}
 		});
+	}
+
+	getUserId(): string {
+		return this.userData.uid;
 	}
 
 	signIn(email: string, password: string): Promise<boolean> {
