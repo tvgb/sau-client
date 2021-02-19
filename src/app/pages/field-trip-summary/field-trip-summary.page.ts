@@ -14,6 +14,7 @@ import { SetDateTimeEnded } from 'src/app/shared/store/fieldTripInfo.actions';
 import { Network } from '@capacitor/core';
 import { MapService } from '../map/services/map.service';
 import { takeUntil } from 'rxjs/operators';
+import { FirestoreService } from 'src/app/shared/services/firestore.service';
 
 @Component({
 	selector: 'app-field-trip-summary',
@@ -48,7 +49,8 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		private statusBarService: StatusbarService,
 		private mapUiService: MapUIService,
 		private mapService: MapService,
-		private store: Store) { }
+		private store: Store,
+		private firestoreService: FirestoreService) { }
 
 	ionViewWillEnter(): void {
 		this.statusBarService.changeStatusBar(false, true);
@@ -206,7 +208,9 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	}
 
 	completeSummary(): void {
-		this.navController.navigateBack(this.mainMenuUrl);
+		// this.navController.navigateBack(this.mainMenuUrl);
+
+		this.firestoreService.addSomeData();
 
 		// Add To File!!
 	}
