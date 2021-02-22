@@ -10,10 +10,6 @@ import { AddRegistration, SetCurrentFieldTrip, SetDateTimeEnded } from './fieldT
 		fieldTripInfo: {
 			overseerName: 'Sophus',
 			fieldTripId: '123',
-			fNumber: 1,
-			bNumber: 2,
-			municipality: 'Trondheim',
-			weather: 'Overskyet',
 			participants: 2,
 			description: 'Nais med tur.',
 			dateTimeStarted: Date.now(),
