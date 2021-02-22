@@ -44,7 +44,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	private offlineTileLayer: any;
 
 	private alertConfirmHeader = 'Fullfør oppsynstur';
-	private alertConfirmMessage = 'Er du sikker på at du vil fullføre oppsynsturen?';
 	private alertNoRegistrationsMessage =
 	'<br> <br> Det er ingen registreringer lagret på denne oppsynsturen.'; // <br> for newline
 	private alertNoLocationMessage = '<br> <br> Det er ikke registrert en GPS rute på denne oppsynsturen.';
@@ -70,7 +69,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 			takeUntil(this.unsubscribe$)
 		) .subscribe((res) => {
 			this.fieldTripInfo = res;
-			console.log(this.fieldTripInfo);
 		});
 
 		this.descriptionValue = this.fieldTripInfo.description;
@@ -226,18 +224,17 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	}
 
 	onCompleteSummary(): void {
-		console.log(this.descriptionChanged);
+		let alertConfirmMessage = 'Er du sikker på at du vil fullføre oppsynsturen?';
 		if (this.descriptionChanged) {
 			this.store.dispatch(new UpdateFieldTripInfo({description: this.descriptionValue} as UpdateFieldTripInfoObject));
-			console.log(this.fieldTripInfo);
 		}
 		if (!this.fieldTripInfo.registrations) {
-			this.alertConfirmMessage = this.alertConfirmMessage + this.alertNoRegistrationsMessage;
+			alertConfirmMessage = alertConfirmMessage + this.alertNoRegistrationsMessage;
 		}
 		if (this.fieldTripInfo.trackedRoute.length < 2) {
-			this.alertConfirmMessage = this.alertConfirmMessage + this.alertNoLocationMessage;
+			alertConfirmMessage = alertConfirmMessage + this.alertNoLocationMessage;
 		}
-		this.alertService.confirmAlert(this.alertConfirmHeader, this.alertConfirmMessage, this, this.confirmHandler);
+		this.alertService.confirmAlert(this.alertConfirmHeader, alertConfirmMessage, this, this.confirmHandler);
 	}
 
 	confirmHandler(): void {
