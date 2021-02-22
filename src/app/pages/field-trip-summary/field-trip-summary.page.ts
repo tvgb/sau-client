@@ -10,7 +10,7 @@ import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 import { Coordinate } from 'src/app/shared/classes/Coordinate';
 import { DeadSheepRegistration, InjuredSheepRegistration, PredatorRegistration, SheepRegistration } from 'src/app/shared/classes/Registration';
 import { MapUIService } from 'src/app/shared/services/map-ui.service';
-import { SetDateTimeEnded } from 'src/app/shared/store/fieldTripInfo.actions';
+import { UpdateFieldTripInfo } from 'src/app/shared/store/fieldTripInfo.actions';
 import { Network } from '@capacitor/core';
 import { MapService } from '../map/services/map.service';
 import { takeUntil } from 'rxjs/operators';
@@ -49,6 +49,9 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	'<br> <br> Det er ingen registreringer lagret på denne oppsynsturen.'; // <br> for newline
 	private alertNoLocationMessage = '<br> <br> Det er ikke registrert en GPS rute på denne oppsynsturen.';
 
+	descriptionChanged = false;
+	descriptionValue = '';
+
 	private unsubscribe$: Subject<void> = new Subject();
 
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
@@ -69,6 +72,8 @@ export class FieldTripSummaryPage implements AfterViewInit {
 			this.fieldTripInfo = res;
 			console.log(this.fieldTripInfo);
 		});
+
+		this.descriptionValue = this.fieldTripInfo.description;
 
 		if (this.fieldTripInfo.registrations) {
 			this.getTotalSheep();
@@ -216,11 +221,16 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	}
 
 	onNavigateBack(): void {
-		this.store.dispatch(new SetDateTimeEnded({dateTimeEnded: undefined} as UpdateFieldTripInfoObject));
+		this.store.dispatch(new UpdateFieldTripInfo({dateTimeEnded: undefined} as UpdateFieldTripInfoObject));
 		this.navController.navigateBack(this.mapUrl);
 	}
 
 	onCompleteSummary(): void {
+		console.log(this.descriptionChanged);
+		if (this.descriptionChanged) {
+			this.store.dispatch(new UpdateFieldTripInfo({description: this.descriptionValue} as UpdateFieldTripInfoObject));
+			console.log(this.fieldTripInfo);
+		}
 		if (!this.fieldTripInfo.registrations) {
 			this.alertConfirmMessage = this.alertConfirmMessage + this.alertNoRegistrationsMessage;
 		}

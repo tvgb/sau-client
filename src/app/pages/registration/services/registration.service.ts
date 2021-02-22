@@ -144,7 +144,14 @@ export class RegistrationService {
 	}
 
 	completeRegistration(sheepInfo?: SheepInfo, count?: number, comment?: string, predatorType?: PredatorType): void {
-		const reg = this.createRegistration(this.registrationType, this.gpsPosition, this.registrationPosition, sheepInfo, count, comment, predatorType);
+		const reg = this.createRegistration(
+			this.registrationType,
+			this.gpsPosition,
+			this.registrationPosition,
+			sheepInfo,
+			count,
+			comment,
+			predatorType);
 		this.registrationPosition = undefined;
 		this.gpsPosition = undefined;
 		this.registrationType = undefined;
