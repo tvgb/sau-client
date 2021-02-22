@@ -15,6 +15,7 @@ import { Network } from '@capacitor/core';
 import { MapService } from '../map/services/map.service';
 import { takeUntil } from 'rxjs/operators';
 import { AlertService } from 'src/app/shared/services/alert.service';
+import { FirestoreService } from 'src/app/shared/services/firestore.service';
 
 @Component({
 	selector: 'app-field-trip-summary',
@@ -53,6 +54,14 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 	private unsubscribe$: Subject<void> = new Subject();
 
+	connectedToNetwork = false;
+	completeButtonPressed = false;
+	uploadCompleted = false;
+	uploadFailed = false;
+	progressBarValue = 0;
+	waitBeforeNavTime = 4000;
+	uploadStatusText = 'Laster opp oppsynsturrapporten i skyen.';
+
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
 
 	constructor(
@@ -62,6 +71,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		private mapService: MapService,
 		private store: Store,
 		private alertService: AlertService) { }
+		private firestoreService: FirestoreService) { }
 
 	ionViewWillEnter(): void {
 		this.statusBarService.changeStatusBar(false, true);
@@ -81,7 +91,13 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		}
 		this.getDateAndDuration();
 
+		Network.getStatus().then((status) => {
+			this.connectedToNetwork = status.connected;
+		});
+
 		Network.addListener('networkStatusChange', (status) => {
+			this.connectedToNetwork = status.connected;
+
 			if (status.connected) {
 				this.map.removeLayer(this.offlineTileLayer);
 				this.map.addLayer(this.onlineTileLayer);
@@ -152,7 +168,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		});
 
 		if (this.fieldTripInfo?.trackedRoute) {
-			const trackedRoutePolyline = L.polyline(this.fieldTripInfo.trackedRoute);
+			const trackedRoutePolyline = L.polyline(this.fieldTripInfo.trackedRoute, {smoothFactor: 10});
 			const fitBoundsCoords: Coordinate[] = [...this.fieldTripInfo.trackedRoute];
 			trackedRoutePolyline.addTo(this.map);
 
@@ -236,10 +252,34 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		}
 		this.alertService.confirmAlert(this.alertConfirmHeader, alertConfirmMessage, this, this.confirmHandler);
 	}
+	completeSummary(): void {
+		this.completeButtonPressed = true;
+		this.firestoreService.saveNewFieldTrip(this.fieldTripInfo).then((saveComplete) => {
+			this.uploadCompleted = true;
 
+			if (saveComplete) {
+				this.uploadStatusText = 'Oppsynsturrapporten har blitt lagret i skyen. Du blir tatt tilbake til hovedmenyen.';
+				this.tickProgressBar();
+				setTimeout(() => {
+					this.navController.navigateBack(this.mainMenuUrl);
+				}, this.waitBeforeNavTime);
+			} else {
+				this.uploadFailed = true;
+				this.uploadStatusText = 'Noe gikk galt under opplastingen...';
+			}
+		});
 	confirmHandler(): void {
 		// Add To File!!
 		this.navController.navigateBack(this.mainMenuUrl);
+	}
+
+	private tickProgressBar() {
+		setTimeout(() => {
+			if (this.progressBarValue < 1) {
+				this.progressBarValue += 0.01;
+				this.tickProgressBar();
+			}
+		}, this.waitBeforeNavTime / 120);
 	}
 
 	ionViewWillLeave(): void {

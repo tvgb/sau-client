@@ -1,6 +1,9 @@
 <ion-content id="summary-content">
-    <h1 class="summary-heading"> OPPSUMMERING</h1>
-    <div class="summary-column">
+	<app-page-header
+		navUrl="/map"
+		pageHeaderText="Oppsummering">
+	</app-page-header>
+	<div class="summary-column">
         <div class="summary-column-heading">
             <h2>TID BRUKT</h2>
         </div>
@@ -25,35 +28,48 @@
                     SKADDE: {{injuredCount}}
                 </div>
                 <div>
-                    DØDE: {{deadCount}}
                 </div>
+                    DØDE: {{deadCount}}
                 <div >
                     SAU TOTALT: {{totalSheepCount}}
                 </div>
             </div>
         </ng-template>
-        <div *ngIf="predators > 0" class="summary-column-heading" margin-top="15px">
             <h5>OBSERVERTE ROVDYR</h5>
+        <div *ngIf="predators > 0" class="summary-column-heading" margin-top="15px">
             <div class="summary-registrations-predator">
                 ROVDYR: {{predators}}
             </div>
         </div>
     </div>
     <div class="summary-column">
-        <div class="summary-column-heading">
             <h2>BESKRIVELSE</h2>
+        <div class="summary-column-heading">
         </div>
         <ion-textarea [(ngModel)]="descriptionValue" (ngModelChange)="descriptionChanged=true" class="summary-registration" placeholder="Skriv her..."></ion-textarea>
     </div>
 </ion-content>
 
 <ion-footer>
-    <ion-row>
-        <ion-col class="ion-no-padding">
-            <ion-button (click)="onNavigateBack()" id="back-button" color="tertiary" class="ion-no-margin" expand="full" size="large">TILBAKE</ion-button>
-        </ion-col>
-        <ion-col class="ion-no-padding">
-            <ion-button (click)="onCompleteSummary()" color="primary" id="complete-button" class="ion-no-margin" expand="full" size="large">FULLFØR</ion-button>
-        </ion-col>
-    </ion-row>
+	<ion-row>
+		<ion-col *ngIf="!completeButtonPressed">
+			<div [hidden]="connectedToNetwork" class="not-connected-to-network-text">
+				Du må være koblet til internett for å fullføre en oppsynstur.
+			</div>
+			<ion-button [disabled]="!connectedToNetwork" (click)="completeSummary()" shape="round" color="primary" id="complete-button" expand="block">FULLFØR</ion-button>
+		</ion-col>
+		<ion-col *ngIf="completeButtonPressed">
+			<div class="uploading-container">
+				<div class="icon-wrapper">
+					<ion-spinner *ngIf="completeButtonPressed && !uploadCompleted" name="circles"></ion-spinner>
+					<ion-icon style="color: var(--ion-color-primary);" *ngIf="uploadCompleted && !uploadFailed" name="cloud-done"></ion-icon>
+					<ion-icon style="color: var(--ion-color-danger);" *ngIf="uploadCompleted && uploadFailed" name="cloud-offline"></ion-icon>
+				</div>
+				<div class="uploading-text">
+					{{ uploadStatusText }}
+				</div>
+			</div>
+			<ion-progress-bar class="progress-bar" color="primary" [value]="progressBarValue"></ion-progress-bar>
+		</ion-col>
+	</ion-row>
 </ion-footer>

@@ -8,6 +8,7 @@ import { AddRegistration, SetCurrentFieldTrip, UpdateFieldTripInfo } from './fie
 	name: 'fieldTripInfo',
 	defaults: {
 		fieldTripInfo: {
+			overseerId: null,
 			overseerName: 'Sophus',
 			fieldTripId: '123',
 			fNumber: 1,
@@ -17,7 +18,7 @@ import { AddRegistration, SetCurrentFieldTrip, UpdateFieldTripInfo } from './fie
 			participants: 2,
 			description: 'Nais med tur.',
 			dateTimeStarted: Date.now(),
-			dateTimeEnded: undefined,
+			dateTimeEnded: null,
 			trackedRoute: [],
 			registrations: []
 		}

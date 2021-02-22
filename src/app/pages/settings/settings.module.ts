@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
-import { FieldTripSummaryPageRoutingModule } from './field-trip-summary-routing.module';
-import { FieldTripSummaryPage } from './field-trip-summary.page';
+
+import { SettingsPageRoutingModule } from './settings-routing.module';
+
+import { SettingsPage } from './settings.page';
 import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
@@ -12,10 +14,9 @@ import { SharedModule } from 'src/app/shared/shared.module';
 		CommonModule,
 		FormsModule,
 		IonicModule,
-		FieldTripSummaryPageRoutingModule,
+		SettingsPageRoutingModule,
 		SharedModule
 	],
-	declarations: [FieldTripSummaryPage]
+	declarations: [SettingsPage]
 })
-
-export class FieldTripSummaryPageModule {}
+export class SettingsPageModule {}

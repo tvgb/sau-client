@@ -37,9 +37,9 @@ export class NewFieldTripPage {
 
 	constructor(
 		private store: Store,
-		private navController: NavController, private formbuilder: FormBuilder,
+		private navController: NavController,
+		private formbuilder: FormBuilder,
 		private statusBarService: StatusbarService) {
-
 		this.newFieldTripForm = this.formbuilder.group({
 			overseerName: ['Kari Nordmann', Validators.required],
 			fNumber: ['22', Validators.required],

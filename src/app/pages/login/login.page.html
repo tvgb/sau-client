@@ -1,0 +1,38 @@
+<ion-content>
+	<div class="centering-div">
+		<div class="login-header">
+			<div class="header-text">
+				SAURON
+			</div>
+			Logg inn for å begynne å registrere sau.
+		</div>
+
+		<div class="login-form-wrapper">
+			<div class="error-message">
+				<div *ngIf="loginAttempted && loginForm.invalid"> Feil epost eller passord!</div>
+			</div>
+
+			<form [formGroup]="loginForm" >
+				<ion-label> Epost </ion-label>
+				<ion-item lines="full">
+					<ion-input formControlName="email" required="true"></ion-input>
+				</ion-item >
+		
+				<ion-label> Passord </ion-label>
+				<ion-item lines="full">
+					<ion-input formControlName="password" required="true" type="password"></ion-input> 
+				</ion-item>
+			</form>
+
+			<ion-button (click)="loginButtonPressed()" expand="block" color="primary" fill="solid">Logg inn</ion-button>
+			<div class="forgot-password-wrapper"> 
+				Glemt passordet? 
+				<div class="restore-password-button">Trykk her</div>
+			</div>
+		</div>
+
+		<div class="spacer-div">
+
+		</div>
+	</div>
+</ion-content>

@@ -19,9 +19,15 @@ import { AppInfoState } from './shared/store/appInfo.state';
 import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
 import { SharedModule} from './shared/shared.module';
 import { FieldTripInfoState } from './shared/store/fieldTripInfo.state';
+import { AngularFireAuth, AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { environment } from '../environments/environment';
 
 @NgModule({
-	declarations: [AppComponent],
+	declarations: [
+		AppComponent
+	],
 	imports: [
 		SharedModule,
 		BrowserModule,
@@ -29,6 +35,9 @@ import { FieldTripInfoState } from './shared/store/fieldTripInfo.state';
 		AppRoutingModule,
 		HttpClientModule,
 		ReactiveFormsModule,
+		AngularFireModule.initializeApp(environment.firebaseConfig), // imports firebase/app needed for everything
+		AngularFireAuthModule,
+		AngularFirestoreModule,
 		NgxsModule.forRoot([
 			SheepInfoState,
 			AppInfoState,
@@ -41,6 +50,7 @@ import { FieldTripInfoState } from './shared/store/fieldTripInfo.state';
 		StatusBar,
 		SplashScreen,
 		Geolocation,
+		AngularFireAuth,
 		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
 		{ provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig }
 	],
