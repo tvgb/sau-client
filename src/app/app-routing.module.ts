@@ -1,15 +1,18 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './shared/guards/auth.guard';
 
 const routes: Routes = [
 	{
 		path: '',
 		redirectTo: 'main-menu',
-		pathMatch: 'full'
+		pathMatch: 'full',
+		canActivate: [ AuthGuard ]
 	},
 	{
 		path: 'main-menu',
-		loadChildren: () => import('./pages/main-menu/main-menu.module').then( m => m.MainMenuPageModule)
+		loadChildren: () => import('./pages/main-menu/main-menu.module').then( m => m.MainMenuPageModule),
+		canActivate: [ AuthGuard ]
 	},
 	{
 		path: 'map',
@@ -51,6 +54,14 @@ const routes: Routes = [
 		path: 'field-trip-summary',
 		loadChildren: () => import('./pages/field-trip-summary/field-trip-summary.module').then( m => m.FieldTripSummaryPageModule)
   	},
+	{
+		path: 'login',
+		loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
+	},
+	{
+		path: 'settings',
+		loadChildren: () => import('./pages/settings/settings.module').then( m => m.SettingsPageModule)
+	}
 ];
 
 @NgModule({

@@ -1,0 +1,48 @@
+.centering-div {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	height: 100%;
+}
+
+.login-header, .spacer-div {
+	width: 90%;
+	height: 80px;
+}
+
+.login-form-wrapper {
+	width: 90%;
+}
+
+.header-text {
+	font-size: 30px;
+	font-weight: 200;
+	margin-bottom: 5px;
+
+}
+
+.error-message {
+	height: 30px;
+	color: var(--ion-color-danger);
+}
+
+.forgot-password-wrapper {
+	margin-top: 10px;
+	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+.restore-password-button {
+	margin-left: 10px;
+	color: var(--ion-color-primary);
+	cursor: pointer;
+}
+
+ion-item {
+	margin-top: 5px;
+	--background: rgba(255, 255, 255, 0.05);
+	--border-color: rgba(255, 255, 255, 1);
+	margin-bottom: 20px;
+}
