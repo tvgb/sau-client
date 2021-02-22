@@ -70,7 +70,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		private mapUiService: MapUIService,
 		private mapService: MapService,
 		private store: Store,
-		private alertService: AlertService) { }
+		private alertService: AlertService,
 		private firestoreService: FirestoreService) { }
 
 	ionViewWillEnter(): void {
@@ -252,7 +252,9 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		}
 		this.alertService.confirmAlert(this.alertConfirmHeader, alertConfirmMessage, this, this.confirmHandler);
 	}
-	completeSummary(): void {
+
+
+	confirmHandler(): void {
 		this.completeButtonPressed = true;
 		this.firestoreService.saveNewFieldTrip(this.fieldTripInfo).then((saveComplete) => {
 			this.uploadCompleted = true;
@@ -268,9 +270,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 				this.uploadStatusText = 'Noe gikk galt under opplastingen...';
 			}
 		});
-	confirmHandler(): void {
-		// Add To File!!
-		this.navController.navigateBack(this.mainMenuUrl);
 	}
 
 	private tickProgressBar() {

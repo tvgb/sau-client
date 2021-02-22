@@ -28,15 +28,15 @@
                     SKADDE: {{injuredCount}}
                 </div>
                 <div>
-                </div>
                     DØDE: {{deadCount}}
-                <div >
+                </div>
+                <div>
                     SAU TOTALT: {{totalSheepCount}}
                 </div>
             </div>
         </ng-template>
-            <h5>OBSERVERTE ROVDYR</h5>
         <div *ngIf="predators > 0" class="summary-column-heading" margin-top="15px">
+            <h5>OBSERVERTE ROVDYR</h5>
             <div class="summary-registrations-predator">
                 ROVDYR: {{predators}}
             </div>
@@ -56,7 +56,7 @@
 			<div [hidden]="connectedToNetwork" class="not-connected-to-network-text">
 				Du må være koblet til internett for å fullføre en oppsynstur.
 			</div>
-			<ion-button [disabled]="!connectedToNetwork" (click)="completeSummary()" shape="round" color="primary" id="complete-button" expand="block">FULLFØR</ion-button>
+			<ion-button [disabled]="!connectedToNetwork" (click)="onCompleteSummary()" shape="round" color="primary" id="complete-button" expand="block">FULLFØR</ion-button>
 		</ion-col>
 		<ion-col *ngIf="completeButtonPressed">
 			<div class="uploading-container">
