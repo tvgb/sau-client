@@ -46,8 +46,8 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	private alertConfirmHeader = 'Fullfør oppsynstur';
 	private alertConfirmMessage = 'Er du sikker på at du vil fullføre oppsynsturen?';
 	private alertNoRegistrationsMessage =
-	'<br> <br> Det er ingen registreringer lagret på denne oppsynsturen. </br> </br>'; // <br> for newline
-	private alertNoLocationMessage = '<br> <br> Det er ikke registrert en GPS rute på denne oppsynsturen. <br> <br>';
+	'<br> <br> Det er ingen registreringer lagret på denne oppsynsturen.'; // <br> for newline
+	private alertNoLocationMessage = '<br> <br> Det er ikke registrert en GPS rute på denne oppsynsturen.';
 
 	private unsubscribe$: Subject<void> = new Subject();
 
@@ -224,7 +224,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		if (!this.fieldTripInfo.registrations) {
 			this.alertConfirmMessage = this.alertConfirmMessage + this.alertNoRegistrationsMessage;
 		}
-		console.log(this.fieldTripInfo.trackedRoute);
 		if (this.fieldTripInfo.trackedRoute.length < 2) {
 			this.alertConfirmMessage = this.alertConfirmMessage + this.alertNoLocationMessage;
 		}
