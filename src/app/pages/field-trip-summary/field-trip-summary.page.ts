@@ -134,7 +134,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		});
 
 		if (this.fieldTripInfo?.trackedRoute) {
-			const trackedRoutePolyline = L.polyline(this.fieldTripInfo.trackedRoute);
+			const trackedRoutePolyline = L.polyline(this.fieldTripInfo.trackedRoute, {smoothFactor: 10});
 			const fitBoundsCoords: Coordinate[] = [...this.fieldTripInfo.trackedRoute];
 			trackedRoutePolyline.addTo(this.map);
 
