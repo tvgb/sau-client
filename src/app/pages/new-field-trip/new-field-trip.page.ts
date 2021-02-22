@@ -35,9 +35,11 @@ export class NewFieldTripPage {
 
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) currentFieldTripInfo$: Observable<FieldTripInfoModel>;
 
-	constructor(private store: Store,
-				         private navController: NavController, private formbuilder: FormBuilder,
-		        private statusBarService: StatusbarService) {
+	constructor(
+		private store: Store,
+		private navController: NavController, private formbuilder: FormBuilder,
+		private statusBarService: StatusbarService) {
+
 		this.newFieldTripForm = this.formbuilder.group({
 			overseerName: ['Kari Nordmann', Validators.required],
 			fNumber: ['22', Validators.required],

@@ -14,6 +14,7 @@ import { SetDateTimeEnded } from 'src/app/shared/store/fieldTripInfo.actions';
 import { Network } from '@capacitor/core';
 import { MapService } from '../map/services/map.service';
 import { takeUntil } from 'rxjs/operators';
+import { AlertService } from 'src/app/shared/services/alert.service';
 
 @Component({
 	selector: 'app-field-trip-summary',
@@ -28,10 +29,12 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	hours: number;
 	min: number;
 	sec: number;
+
 	totalSheepCount = 0;
 	injuredCount = 0;
 	deadCount = 0;
 	predators = 0;
+
 	private fieldTripInfoSub: Subscription;
 	private startPos = [63.424, 10.3961];
 	private mapUrl = '/map';
@@ -39,6 +42,13 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	private map;
 	private onlineTileLayer: any;
 	private offlineTileLayer: any;
+
+	private alertConfirmHeader = 'Fullfør oppsynstur';
+	private alertConfirmMessage = 'Er du sikker på at du vil fullføre oppsynsturen?';
+	private alertNoRegistrationsMessage =
+	'<br> <br> Det er ingen registreringer lagret på denne oppsynsturen. </br> </br>'; // <br> for newline
+	private alertNoLocationMessage = '<br> <br> Det er ikke registrert en GPS rute på denne oppsynsturen. <br> <br>';
+
 	private unsubscribe$: Subject<void> = new Subject();
 
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
@@ -48,7 +58,8 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		private statusBarService: StatusbarService,
 		private mapUiService: MapUIService,
 		private mapService: MapService,
-		private store: Store) { }
+		private store: Store,
+		private alertService: AlertService) { }
 
 	ionViewWillEnter(): void {
 		this.statusBarService.changeStatusBar(false, true);
@@ -176,9 +187,9 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 	private setOnlineTileLayer(): void {
 		this.onlineTileLayer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
-								{
-									attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
-								});
+			{
+				attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
+			});
 	}
 
 	private setOfflineTileLayer(): void {
@@ -204,15 +215,25 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		this.offlineTileLayer = L.gridLayer.offlineMap();
 	}
 
-	navigateBack(): void {
+	onNavigateBack(): void {
 		this.store.dispatch(new SetDateTimeEnded({dateTimeEnded: undefined} as UpdateFieldTripInfoObject));
 		this.navController.navigateBack(this.mapUrl);
 	}
 
-	completeSummary(): void {
-		this.navController.navigateBack(this.mainMenuUrl);
+	onCompleteSummary(): void {
+		if (!this.fieldTripInfo.registrations) {
+			this.alertConfirmMessage = this.alertConfirmMessage + this.alertNoRegistrationsMessage;
+		}
+		console.log(this.fieldTripInfo.trackedRoute);
+		if (this.fieldTripInfo.trackedRoute.length < 2) {
+			this.alertConfirmMessage = this.alertConfirmMessage + this.alertNoLocationMessage;
+		}
+		this.alertService.confirmAlert(this.alertConfirmHeader, this.alertConfirmMessage, this, this.confirmHandler);
+	}
 
+	confirmHandler(): void {
 		// Add To File!!
+		this.navController.navigateBack(this.mainMenuUrl);
 	}
 
 	ionViewWillLeave(): void {
