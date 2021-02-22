@@ -53,7 +53,6 @@ const routes: Routes = [
   	{
 		path: 'field-trip-summary',
 		loadChildren: () => import('./pages/field-trip-summary/field-trip-summary.module').then( m => m.FieldTripSummaryPageModule),
-		canActivate: [ AuthGuard ]
   	},
 	{
 		path: 'login',

@@ -8,6 +8,7 @@ import { AddRegistration, SetCurrentFieldTrip, SetDateTimeEnded } from './fieldT
 	name: 'fieldTripInfo',
 	defaults: {
 		fieldTripInfo: {
+			overseerId: null,
 			overseerName: 'Sophus',
 			fieldTripId: '123',
 			fNumber: 1,

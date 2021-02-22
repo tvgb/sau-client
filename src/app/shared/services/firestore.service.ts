@@ -10,24 +10,28 @@ export class FirestoreService {
 
 	constructor(private fireStore: AngularFirestore, private authService: AuthService) { }
 
-	saveNewFieldTrip(fieldTripInfo: FieldTripInfo): void {
+	async saveNewFieldTrip(fieldTripInfo: FieldTripInfo): Promise<boolean> {
 
-		this.getBeitelagId().then((beitelagId) => {
+		const fti = {...fieldTripInfo};
+		const userId = this.authService.getUserId();
+		fti.overseerId = userId;
+
+		return this.getBeitelagId(userId).then((beitelagId) => {
 			if (beitelagId) {
 				const beitelagRef = this.fireStore.collection('beitelag').doc(beitelagId);
-				beitelagRef.collection('fieldTrips').add(this.convertToPlainJsObject(fieldTripInfo))
-				.then((docRef) => {
-					console.log('Document written with ID: ', docRef.id);
+				return beitelagRef.collection('fieldTrips').add(this.convertToPlainJsObject(fti))
+				.then(() => {
+					return true;
 				})
 				.catch((error) => {
 					console.error('Error adding document: ', error);
+					return false;
 				});
 			}
 		});
 	}
 
-	private async getBeitelagId(): Promise<any> {
-		const userId = this.authService.getUserId();
+	private async getBeitelagId(userId: string): Promise<any> {
 		const membersRef = this.fireStore.collection('members').ref;
 		return membersRef.where('id', '==', userId).get().then((members) => {
 			return members.docs[0].data()['beitelagId'];

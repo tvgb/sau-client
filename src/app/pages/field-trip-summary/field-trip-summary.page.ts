@@ -42,6 +42,14 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	private offlineTileLayer: any;
 	private unsubscribe$: Subject<void> = new Subject();
 
+	connectedToNetwork = false;
+	completeButtonPressed = false;
+	uploadCompleted = false;
+	uploadFailed = false;
+	progressBarValue = 0;
+	waitBeforeNavTime = 4000;
+	uploadStatusText = 'Laster opp oppsynsturrapporten i skyen.';
+
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
 
 	constructor(
@@ -60,7 +68,13 @@ export class FieldTripSummaryPage implements AfterViewInit {
 			this.fieldTripInfo = res;
 		});
 
+		Network.getStatus().then((status) => {
+			this.connectedToNetwork = status.connected;
+		});
+
 		Network.addListener('networkStatusChange', (status) => {
+			this.connectedToNetwork = status.connected;
+
 			if (status.connected) {
 				this.map.removeLayer(this.offlineTileLayer);
 				this.map.addLayer(this.onlineTileLayer);
@@ -208,11 +222,30 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	}
 
 	completeSummary(): void {
-		// this.navController.navigateBack(this.mainMenuUrl);
+		this.completeButtonPressed = true;
+		this.firestoreService.saveNewFieldTrip(this.fieldTripInfo).then((saveComplete) => {
+			this.uploadCompleted = true;
 
-		this.firestoreService.saveNewFieldTrip(this.fieldTripInfo);
+			if (saveComplete) {
+				this.uploadStatusText = 'Oppsynsturrapporten har blitt lagret i skyen. Du blir tatt tilbake til hovedmenyen.';
+				this.tickProgressBar();
+				setTimeout(() => {
+					this.navController.navigateBack(this.mainMenuUrl);
+				}, this.waitBeforeNavTime);
+			} else {
+				this.uploadFailed = true;
+				this.uploadStatusText = 'Noe gikk galt under opplastingen...';
+			}
+		});
+	}
 
-		// Add To File!!
+	private tickProgressBar() {
+		setTimeout(() => {
+			if (this.progressBarValue < 1) {
+				this.progressBarValue += 0.01;
+				this.tickProgressBar();
+			}
+		}, this.waitBeforeNavTime / 120);
 	}
 
 	ionViewWillLeave(): void {

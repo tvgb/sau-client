@@ -2,11 +2,8 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Plugins } from '@capacitor/core';
-import { cordovaInstance } from '@ionic-native/core';
+import { NavController } from '@ionic/angular';
 import * as firebase from 'firebase/app';
-
-const { Network } = Plugins;
-
 
 @Injectable({
 	providedIn: 'root'
@@ -15,12 +12,13 @@ export class AuthService {
 
 	private userData: any;
 
-	constructor(private fireAuth: AngularFireAuth, public fireStore: AngularFirestore) {
+	constructor(private fireAuth: AngularFireAuth, private fireStore: AngularFirestore, private navController: NavController) {
 		this.fireAuth.authState.subscribe((user) => {
 			if (user) {
 				localStorage.setItem('user', JSON.stringify(user));
 				this.userData = user;
 			} else {
+				this.navController.navigateBack('/login');
 				localStorage.removeItem('user');
 			}
 		});
