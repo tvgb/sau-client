@@ -18,7 +18,12 @@ export class RegisterPredatorPage {
 	submitAttempt = false;
 	invalidText = 'Obligatorisk felt';
 
-	constructor(private navController: NavController, private formbuilder: FormBuilder, private statusBarService: StatusbarService, private regService: RegistrationService) {
+	constructor(
+		private navController: NavController,
+		private formbuilder: FormBuilder,
+		private statusBarService: StatusbarService,
+		private regService: RegistrationService) {
+
 		this.registerPredatorForm = this.formbuilder.group({
 			predatorType: ['', Validators.required],
 			comment: ['']
@@ -32,7 +37,6 @@ export class RegisterPredatorPage {
 	ionViewDidEnter() {
 		this.statusBarService.changeStatusBar(false, true);
 	}
-
 
 	getPredatorTypes(): void {
 		const keys = Object.values(PredatorType);
@@ -49,6 +53,7 @@ export class RegisterPredatorPage {
 			this.navController.back();
 		}
 	}
+
 	navigateBack() {
 		this.navController.back();
 	}

@@ -16,10 +16,12 @@ export class RegisterDeadPage {
 	registerDeadForm: FormGroup;
 	invalidText = 'Obligatorisk felt';
 
-	constructor(private navController: NavController,
-				         private formbuilder: FormBuilder,
-				         private statusBarService: StatusbarService,
-				         private regService: RegistrationService) {
+	constructor(
+		private navController: NavController,
+		private formbuilder: FormBuilder,
+		private statusBarService: StatusbarService,
+		private regService: RegistrationService) {
+
 		this.registerDeadForm = this.formbuilder.group({
 			deadCount: ['', Validators.required],
 			comment: [''],

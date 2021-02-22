@@ -16,10 +16,12 @@ export class RegisterInjuredPage {
 	registerInjuredForm: FormGroup;
 	invalidText = 'Obligatorisk felt';
 
-	constructor(private navController: NavController,
-				         private formbuilder: FormBuilder,
-				         private statusBarService: StatusbarService,
-				         private regService: RegistrationService) {
+	constructor(
+		private navController: NavController,
+		private formbuilder: FormBuilder,
+		private statusBarService: StatusbarService,
+		private regService: RegistrationService) {
+
 		this.registerInjuredForm = this.formbuilder.group({
 			injuredCount: [''],
 			comment: [''],
