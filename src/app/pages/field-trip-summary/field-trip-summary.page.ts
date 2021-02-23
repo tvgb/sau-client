@@ -89,6 +89,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 			this.getDeadSheep();
 			this.getPredators();
 		}
+
 		this.getDateAndDuration();
 
 		Network.getStatus().then((status) => {
@@ -151,7 +152,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	getPredators(): void {
 		const predatorsRegistrations = this.fieldTripInfo.registrations
 		.filter(reg => reg.registrationType === RegistrationType.Predator) as PredatorRegistration[];
-
 		this.predators = predatorsRegistrations.length;
 	}
 
@@ -206,9 +206,9 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 	private setOnlineTileLayer(): void {
 		this.onlineTileLayer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
-			{
-				attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
-			});
+		{
+			attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
+		});
 	}
 
 	private setOfflineTileLayer(): void {
