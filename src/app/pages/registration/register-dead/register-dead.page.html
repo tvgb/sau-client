@@ -5,7 +5,7 @@
             <form [formGroup]="registerDeadForm">
                 <ion-label>Antall døde dyr:</ion-label>
                 <ion-item lines="full">
-                    <ion-input formControlName="deadCount" required="true" type="number"></ion-input>
+                    <ion-input formControlName="deadCount" required="true" type="number" placeholder="0"></ion-input>
                 </ion-item>
                 <div *ngIf="!registerDeadForm.controls.deadCount.valid && (registerDeadForm.controls.deadCount.dirty || submitAttempt)">
                     <p class="invalid">

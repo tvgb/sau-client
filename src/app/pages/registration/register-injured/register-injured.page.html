@@ -5,7 +5,7 @@
             <form [formGroup]="registerInjuredForm">
                 <ion-label>Antall skadde dyr:</ion-label>
                 <ion-item lines="full">
-                    <ion-input formControlName="injuredCount" required="true" type="number"></ion-input>
+                    <ion-input formControlName="injuredCount" required="true" type="number" placeholder="0"></ion-input>
                 </ion-item>
                 <div *ngIf="!registerInjuredForm.controls.injuredCount.valid && (registerInjuredForm.controls.injuredCount.dirty || submitAttempt)">
                     <p class="invalid">
