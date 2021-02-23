@@ -116,6 +116,7 @@ export class MapPage {
 		this.fieldTripInfo$.pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe((fieldTripInfo) => {
+			console.log(fieldTripInfo);
 			if (fieldTripInfo?.registrations?.length > 0 && !fieldTripInfo.dateTimeEnded) {
 				const lastRegistration = fieldTripInfo.registrations[fieldTripInfo.registrations.length - 1];
 				const {pin, polyline} = this.mapUiService.createRegistrationPin(

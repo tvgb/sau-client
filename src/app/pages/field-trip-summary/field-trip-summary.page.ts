@@ -79,6 +79,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 			takeUntil(this.unsubscribe$)
 		) .subscribe((res) => {
 			this.fieldTripInfo = res;
+			console.log(this.fieldTripInfo.dateTimeEnded);
 		});
 
 		this.descriptionValue = this.fieldTripInfo.description;
@@ -282,6 +283,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	}
 
 	ionViewWillLeave(): void {
+		this.store.dispatch(new UpdateFieldTripInfo({dateTimeEnded: null} as UpdateFieldTripInfoObject));
 		this.unsubscribe$.next();
 	}
 }
