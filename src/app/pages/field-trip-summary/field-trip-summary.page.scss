@@ -56,8 +56,14 @@
 	margin-top: 20px;
 }
 
+.not-connected-to-network-container {
+    text-align: center;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
 .not-connected-to-network-text {
-	width: 90%;
+	width: 100%;
 	font-weight: 200;
 	text-align: center;
     color: var(--ion-text-color);

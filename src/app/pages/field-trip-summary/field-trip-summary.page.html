@@ -53,9 +53,12 @@
 <ion-footer>
 	<ion-row>
 		<ion-col *ngIf="!completeButtonPressed">
-			<div [hidden]="connectedToNetwork" class="not-connected-to-network-text">
-				Du må være koblet til internett for å fullføre en oppsynstur.
-			</div>
+            <div class="not-connected-to-network-container" [hidden]="connectedToNetwork">
+                <div  class="not-connected-to-network-text">
+                    Du må være koblet til internett for å fullføre en oppsynstur.
+                </div>
+            </div>
+			
 			<ion-button [disabled]="!connectedToNetwork" (click)="onCompleteSummary()" shape="round" color="primary" id="complete-button" expand="block">FULLFØR</ion-button>
 		</ion-col>
 		<ion-col *ngIf="completeButtonPressed">
