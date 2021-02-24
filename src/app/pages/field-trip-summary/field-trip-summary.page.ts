@@ -101,6 +101,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 		Network.addListener('networkStatusChange', (status) => {
 			this.connectedToNetwork = status.connected;
+			this.cdr.detectChanges();
 
 			if (status.connected) {
 				this.map.removeLayer(this.offlineTileLayer);
