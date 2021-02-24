@@ -1,5 +1,5 @@
-import { AfterViewInit, Component} from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { AfterViewInit, ChangeDetectorRef, Component} from '@angular/core';
+import { AlertController, NavController } from '@ionic/angular';
 import { Observable, Subject, Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
@@ -59,7 +59,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	uploadCompleted = false;
 	uploadFailed = false;
 	progressBarValue = 0;
-	waitBeforeNavTime = 4000;
+	waitBeforeNavTime = 3000;
 	uploadStatusText = 'Laster opp oppsynsturrapporten i skyen.';
 
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
@@ -69,7 +69,9 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		private statusBarService: StatusbarService,
 		private mapUiService: MapUIService,
 		private mapService: MapService,
+		private alertController: AlertController,
 		private store: Store,
+		private cdr: ChangeDetectorRef,
 		private alertService: AlertService,
 		private firestoreService: FirestoreService) { }
 
@@ -251,36 +253,61 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		if (this.fieldTripInfo.trackedRoute.length < 2) {
 			alertConfirmMessage = alertConfirmMessage + this.alertNoLocationMessage;
 		}
-		this.alertService.confirmAlert(this.alertConfirmHeader, alertConfirmMessage, this, this.confirmHandler);
+		this.confirmAlert(alertConfirmMessage);
 	}
 
+	uploadToCloud(): void {
+		if (this.completeButtonPressed) {
+			this.firestoreService.saveNewFieldTrip(this.fieldTripInfo).then((saveComplete) => {
+				this.uploadCompleted = true;
+				if (saveComplete) {
+					this.uploadStatusText = 'Oppsynsturrapporten har blitt lagret i skyen. Du blir tatt tilbake til hovedmenyen.';
+					setTimeout(() => {
+						this.tickProgressBar();
 
-	confirmHandler(): void {
-		this.completeButtonPressed = true;
-		this.firestoreService.saveNewFieldTrip(this.fieldTripInfo).then((saveComplete) => {
-			this.uploadCompleted = true;
-
-			if (saveComplete) {
-				this.uploadStatusText = 'Oppsynsturrapporten har blitt lagret i skyen. Du blir tatt tilbake til hovedmenyen.';
-				this.tickProgressBar();
-				setTimeout(() => {
-					this.navController.navigateBack(this.mainMenuUrl);
-				}, this.waitBeforeNavTime);
-			} else {
-				this.uploadFailed = true;
-				this.uploadStatusText = 'Noe gikk galt under opplastingen...';
-			}
-		});
+					}, this.waitBeforeNavTime);
+				} else {
+					this.uploadFailed = true;
+					this.uploadStatusText = 'Noe gikk galt under opplastingen...';
+				}
+			});
+		}
 	}
 
 	private tickProgressBar() {
 		setTimeout(() => {
 			if (this.progressBarValue < 1) {
 				this.progressBarValue += 0.01;
+				this.cdr.detectChanges();
 				this.tickProgressBar();
+			} else {
+				this.navController.navigateBack(this.mainMenuUrl);
 			}
 		}, this.waitBeforeNavTime / 120);
 	}
+
+	async confirmAlert(alertConfirmMessage: string) {
+		const alert = await this.alertController.create({
+			cssClass: 'alertConfirm',
+			header: this.alertConfirmHeader,
+			backdropDismiss: true,
+			message: alertConfirmMessage,
+			buttons: [
+				{
+					text: 'Nei',
+					role: 'cancel',
+					handler: () => {}
+				}, {
+					text: 'Ja',
+					handler: () => {
+						this.completeButtonPressed = true;
+						this.uploadToCloud();
+					}
+				}
+			]
+		});
+		await alert.present();
+  	}
 
 	ionViewWillLeave(): void {
 		this.store.dispatch(new UpdateFieldTripInfo({dateTimeEnded: null} as UpdateFieldTripInfoObject));
