@@ -61,13 +61,13 @@
 		<ion-col *ngIf="completeButtonPressed">
 			<div class="uploading-container">
 				<div class="icon-wrapper">
-					<ion-spinner *ngIf="completeButtonPressed && !uploadCompleted" name="circles"></ion-spinner>
+					<ion-spinner style="color: var(--ion-text-color);" *ngIf="completeButtonPressed && !uploadCompleted" name="circles"></ion-spinner>
 					<ion-icon style="color: var(--ion-color-primary);" *ngIf="uploadCompleted && !uploadFailed" name="cloud-done"></ion-icon>
 					<ion-icon style="color: var(--ion-color-danger);" *ngIf="uploadCompleted && uploadFailed" name="cloud-offline"></ion-icon>
 				</div>
-				<div class="uploading-text">
+				<ion-text class="uploading-text">
 					{{ uploadStatusText }}
-				</div>
+                </ion-text>
 			</div>
 			<ion-progress-bar class="progress-bar" color="primary" [value]="progressBarValue"></ion-progress-bar>
 		</ion-col>
