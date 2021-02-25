@@ -66,7 +66,6 @@ export class NewFieldTripPage {
 					municipality: this.newFieldTripForm.controls.municipality.value, participants: this.newFieldTripForm.controls.participants.value,
 					weather: this.newFieldTripForm.controls.weather.value, description: this.newFieldTripForm.controls.description.value,
 					dateTimeStarted: Date.now() });
-			console.log(JSON.stringify(this.currentFieldTripInfo));
 			this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
 			this.navController.navigateForward(this.mapUrl);
 		}

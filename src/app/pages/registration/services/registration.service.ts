@@ -143,7 +143,7 @@ export class RegistrationService {
 		return this.subCategoryCountInCurrentMainCategory.asObservable();
 	}
 
-	completeRegistration(sheepInfo?: SheepInfo, count?: number, comment?: string, predatorType?: PredatorType): void {
+	completeRegistration(sheepInfo?: SheepInfo, count?: number, comment?: string, predatorType?: PredatorType, images?: string[]): void {
 		const reg = this.createRegistration(
 			this.registrationType,
 			this.gpsPosition,
@@ -151,7 +151,8 @@ export class RegistrationService {
 			sheepInfo,
 			count,
 			comment,
-			predatorType);
+			predatorType,
+			images);
 		this.registrationPosition = undefined;
 		this.gpsPosition = undefined;
 		this.registrationType = undefined;
@@ -167,7 +168,8 @@ export class RegistrationService {
 		sheepInfo: SheepInfo = null,
 		count?: number,
 		comment?: string,
-		predatorType?: PredatorType): Registration
+		predatorType?: PredatorType,
+		images?: string[]): Registration
 	{
 		switch (registrationType) {
 			case RegistrationType.Sheep:
@@ -180,7 +182,7 @@ export class RegistrationService {
 				return {dateTime: Date.now(), gpsPos, registrationPos, registrationType, count, comment} as InjuredSheepRegistration;
 
 			case RegistrationType.Dead:
-				return {dateTime: Date.now(), gpsPos, registrationPos, registrationType, count, comment} as DeadSheepRegistration;
+				return {dateTime: Date.now(), gpsPos, registrationPos, registrationType, count, comment, images} as DeadSheepRegistration;
 		}
 	}
 

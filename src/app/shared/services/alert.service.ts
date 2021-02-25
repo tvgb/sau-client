@@ -7,9 +7,9 @@ import { AlertController } from '@ionic/angular';
 
 export class AlertService {
 
-  constructor(private alertController: AlertController) { }
+	constructor(private alertController: AlertController) { }
 
-  async confirmAlert(alertHeader: string, alertMessage: string, context: object, confirmFunction) {
+	async confirmAlert(alertHeader: string, alertMessage: string, context: object, confirmFunction) {
 		const alert = await this.alertController.create({
 			cssClass: 'alertConfirm',
 			header: alertHeader,
@@ -27,5 +27,5 @@ export class AlertService {
 			]
 		});
 		await alert.present();
-  	}
+	}
 }
