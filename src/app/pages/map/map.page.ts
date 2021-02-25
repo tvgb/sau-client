@@ -8,7 +8,7 @@ import { TextToSpeechService } from '../registration/services/text-to-speech.ser
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
 import { Plugins } from '@capacitor/core';
-import { NavController, Platform } from '@ionic/angular';
+import { NavController, Platform, ToastController } from '@ionic/angular';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { RegistrationService } from '../registration/services/registration.service';
@@ -38,6 +38,7 @@ export class MapPage {
 	private onlineTileLayer: any;
 	private offlineTileLayer: any;
 	private trackedRoute = [];
+	private networkHandler: any;
 
 	private posistionIcon =  new L.Icon({
 		iconUrl: 'assets/icon/current_gps_pos.png',
@@ -90,13 +91,15 @@ export class MapPage {
 			this.navController.navigateBack('/main-menu');
 		});
 
-		Network.addListener('networkStatusChange', (status) => {
+		this.networkHandler = Network.addListener('networkStatusChange', (status) => {
 			if (status.connected) {
 				this.map.removeLayer(this.offlineTileLayer);
 				this.map.addLayer(this.onlineTileLayer);
+				this.alertService.presentNetworkToast(true);
 			} else {
 				this.map.removeLayer(this.onlineTileLayer);
 				this.map.addLayer(this.offlineTileLayer);
+				this.alertService.presentNetworkToast(false);
 			}
 		});
 	}
@@ -255,6 +258,7 @@ export class MapPage {
 	}
 
 	ionViewWillLeave(): void {
+		this.networkHandler.remove();
 		this.unsubscribe$.next();
 		this.gpsService.setTracking(false);
 	}
