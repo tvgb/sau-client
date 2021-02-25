@@ -14,7 +14,7 @@ import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { RegistrationService } from '../registration/services/registration.service';
 import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
-import { SetDateTimeEnded } from 'src/app/shared/store/fieldTripInfo.actions';
+import { UpdateFieldTripInfo } from 'src/app/shared/store/fieldTripInfo.actions';
 import { FieldTripInfo, UpdateFieldTripInfoObject } from 'src/app/shared/classes/FieldTripInfo';
 import { takeUntil } from 'rxjs/operators';
 import { MapUIService } from 'src/app/shared/services/map-ui.service';
@@ -173,7 +173,7 @@ export class MapPage {
 	}
 
 	navigateToSummary(): void {
-		this.store.dispatch(new SetDateTimeEnded({dateTimeEnded: Date.now(), trackedRoute: this.trackedRoute} as UpdateFieldTripInfoObject));
+		this.store.dispatch(new UpdateFieldTripInfo({dateTimeEnded: Date.now(), trackedRoute: this.trackedRoute} as UpdateFieldTripInfoObject));
 		this.navController.navigateForward('/field-trip-summary');
 	}
 

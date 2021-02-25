@@ -4,70 +4,73 @@
 		pageHeaderText="Oppsummering">
 	</app-page-header>
 	<div class="summary-column">
-		<div class="summary-column-heading">
-			<h2>DATO</h2>
-		</div>
-		<div class="summary-element"><ion-text>{{date | date:"dd/MM/yyyy"}}</ion-text></div>
-	</div>
-	<div class="summary-column">
-		<div class="summary-column-heading">
-			<h2>TID BRUKT</h2>
-		</div>
-		<ng-container class="summary-element" *ngIf="hours && min || hours && !min then caseA; else caseB"></ng-container>
-		<ng-template #caseA><ion-text class="summary-registration">{{hours}} timer, {{min}} minutter</ion-text></ng-template>
-		<ng-template #caseB>
-			<div *ngIf="min else caseC">
-				<ion-text class="summary-registration">{{min}} minutter</ion-text>
-			</div>
-			<ng-template #caseC><ion-text class="summary-registration">Oppsynsturen har vart i under 1 minutt.</ion-text></ng-template>
-		</ng-template>
-	</div>
-	<div id="summary-map"></div>
-	<div class="summary-column">
-		<div class="summary-column-heading">
-			<h2>REGISTRERINGER</h2>
-		</div>
-		<div *ngIf="!fieldTripInfo?.registrations; else elseblock"> <ion-text class="summary-registration">Det er ingen registreringer. </ion-text></div>
-		<ng-template #elseblock >
-			<div class="summary-registrations">
-				<div>
-					SKADDE: {{injuredCount}}
-				</div>
-				<div>
-					DØDE: {{deadCount}}
-				</div>
-				<div >
-					SAU TOTALT: {{totalSheepCount}}
-				</div>
-			</div>
-		</ng-template>
-		<div *ngIf="predators > 0" class="summary-column-heading" margin-top="15px">
-			<h5>OBSERVERTE ROVDYR</h5>
-			<div class="summary-registrations-predator">
-				ROVDYR: {{predators}}
-			</div>
-		</div>
-	</div>
+        <div class="summary-column-heading">
+            <h2>TID BRUKT</h2>
+        </div>
+        <ng-container class="summary-element" *ngIf="hours && min || hours && !min then caseA; else caseB"></ng-container>
+        <ng-template #caseA><ion-text class="summary-registration">{{hours}} timer, {{min}} minutter</ion-text></ng-template>
+        <ng-template #caseB>
+            <div *ngIf="min else caseC">
+                <ion-text class="summary-registration">{{min}} minutter</ion-text>
+            </div>
+            <ng-template #caseC><ion-text class="summary-registration">Oppsynsturen har vart i under 1 minutt.</ion-text></ng-template>
+        </ng-template>
+    </div>
+    <div id="summary-map"></div>
+    <div class="summary-column">
+        <div class="summary-column-heading">
+            <h2>REGISTRERINGER</h2>
+        </div>
+        <div *ngIf="!fieldTripInfo?.registrations; else elseblock"> <ion-text class="summary-registration">Det er ingen registreringer. </ion-text></div>
+        <ng-template #elseblock >
+            <div class="summary-registrations">
+                <div>
+                    SKADDE: {{injuredCount}}
+                </div>
+                <div>
+                    DØDE: {{deadCount}}
+                </div>
+                <div>
+                    SAU TOTALT: {{totalSheepCount}}
+                </div>
+            </div>
+        </ng-template>
+        <div *ngIf="predators > 0" class="summary-column-heading" margin-top="15px">
+            <h5>OBSERVERTE ROVDYR</h5>
+            <div class="summary-registrations-predator">
+                ROVDYR: {{predators}}
+            </div>
+        </div>
+    </div>
+    <div class="summary-column">
+        <div class="summary-column-heading">
+            <h2>BESKRIVELSE</h2>
+        </div>
+        <ion-textarea [(ngModel)]="descriptionValue" (ngModelChange)="descriptionChanged=true" class="summary-registration" placeholder="Skriv her..."></ion-textarea>
+    </div>
 </ion-content>
 
 <ion-footer>
 	<ion-row>
 		<ion-col *ngIf="!completeButtonPressed">
-			<div [hidden]="connectedToNetwork" class="not-connected-to-network-text">
-				Du må være koblet til internett for å fullføre en oppsynstur.
-			</div>
-			<ion-button [disabled]="!connectedToNetwork" (click)="completeSummary()" shape="round" color="primary" id="complete-button" expand="block">FULLFØR</ion-button>
+            <div class="not-connected-to-network-container" [hidden]="connectedToNetwork">
+                <div  class="not-connected-to-network-text">
+                    Du må være koblet til internett for å fullføre en oppsynstur.
+                </div>
+            </div>
+			
+			<ion-button [disabled]="!connectedToNetwork" (click)="onCompleteSummary()" shape="round" color="primary" id="complete-button" expand="block">FULLFØR</ion-button>
 		</ion-col>
 		<ion-col *ngIf="completeButtonPressed">
 			<div class="uploading-container">
 				<div class="icon-wrapper">
-					<ion-spinner *ngIf="completeButtonPressed && !uploadCompleted" name="circles"></ion-spinner>
+					<ion-spinner style="color: var(--ion-text-color);" *ngIf="completeButtonPressed && !uploadCompleted" name="circles"></ion-spinner>
 					<ion-icon style="color: var(--ion-color-primary);" *ngIf="uploadCompleted && !uploadFailed" name="cloud-done"></ion-icon>
 					<ion-icon style="color: var(--ion-color-danger);" *ngIf="uploadCompleted && uploadFailed" name="cloud-offline"></ion-icon>
 				</div>
-				<div class="uploading-text">
+				<ion-text class="uploading-text">
 					{{ uploadStatusText }}
-				</div>
+                </ion-text>
 			</div>
 			<ion-progress-bar class="progress-bar" color="primary" [value]="progressBarValue"></ion-progress-bar>
 		</ion-col>
