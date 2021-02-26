@@ -1,8 +1,9 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
-import { NavController } from '@ionic/angular';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { Network } from '@capacitor/core';
+import { NavController, Platform } from '@ionic/angular';
 import * as L from 'leaflet';
 import { OfflineMapMetaData } from 'src/app/shared/classes/OfflineMapMetaData';
+import { AlertService } from 'src/app/shared/services/alert.service';
 import { GpsService } from '../map/services/gps.service';
 import { MapService } from '../map/services/map.service';
 
@@ -14,10 +15,18 @@ import { MapService } from '../map/services/map.service';
 export class DownloadMapPage implements AfterViewInit {
 
 	private map;
+	alertNoInternetHeader = 'Ikke tilkoblet internett';
+	alertNoInternetMessage = 'Applikasjonen må være tilkoblet internett for å kunne laste ned kartutsnitt. Vennligst koble til internett og prøv igjen.';
+
 
 	@ViewChild('downloadArea') downloadArea: ElementRef;
 
-	constructor(private mapService: MapService, private gpsService: GpsService, private navController: NavController) { }
+	constructor(
+		private mapService: MapService,
+		private gpsService: GpsService,
+		private platform: Platform,
+		private navController: NavController,
+		private alertService: AlertService) { }
 
 	ngAfterViewInit(): void {
 		setTimeout(_ => {
@@ -25,17 +34,26 @@ export class DownloadMapPage implements AfterViewInit {
 		});
 	}
 
-	downloadMapArea(): void {
-		const offsetHeight = this.downloadArea.nativeElement.offsetHeight;
-		const offsetWidth = this.downloadArea.nativeElement.offsetWidth;
-		const offsetTop = this.downloadArea.nativeElement.offsetTop;
-		const offsetLeft = this.downloadArea.nativeElement.offsetLeft;
+	async downloadMapArea() {
+		if ((await Network.getStatus()).connected){
+			const offsetHeight = this.downloadArea.nativeElement.offsetHeight;
+			const offsetWidth = this.downloadArea.nativeElement.offsetWidth;
+			const offsetTop = this.downloadArea.nativeElement.offsetTop;
+			const offsetLeft = this.downloadArea.nativeElement.offsetLeft;
 
-		const startPos = this.map.containerPointToLatLng(L.point(offsetLeft, offsetTop));
-		const endPos = this.map.containerPointToLatLng(L.point(offsetWidth + offsetLeft, offsetTop + offsetHeight)) ;
+			const startPos = this.map.containerPointToLatLng(L.point(offsetLeft, offsetTop));
+			const endPos = this.map.containerPointToLatLng(L.point(offsetWidth + offsetLeft, offsetTop + offsetHeight)) ;
 
-		this.mapService.startMapTileAreaDownload({startPos, endPos, downloadFinished: false, deleted: false} as OfflineMapMetaData);
-		this.navController.navigateBack('/offline-maps');
+			this.mapService.startMapTileAreaDownload({startPos, endPos, downloadFinished: false, deleted: false} as OfflineMapMetaData);
+			this.navController.navigateBack('/offline-maps');
+		} else {
+			if (this.platform.is('mobileweb')) {
+				console.log('Alert: Connect to the Internet');
+			} else {
+				this.alertService.basicAlert(this.alertNoInternetHeader, this.alertNoInternetMessage);
+			}
+
+		}
 	}
 
 

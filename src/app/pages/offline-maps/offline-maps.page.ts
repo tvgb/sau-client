@@ -25,9 +25,6 @@ export class OfflineMapsPage {
 	alertNoInternetHeader = 'Ikke tilkoblet internett';
 	alertNoInternetMessage = 'Applikasjonen må være tilkoblet internett for å kunne laste ned kartutsnitt. Vennligst koble til internett og prøv igjen.';
 
-	networkHandler: any;
-	connectedToNetwork: boolean;
-
 	private unsubscribe$: Subject<void> = new Subject();
 
 	@ViewChild('backdrop') backdrop: ElementRef;
@@ -52,10 +49,6 @@ export class OfflineMapsPage {
 				this.downloadProgressions = res;
 				this.cd.detectChanges();
 			}
-		});
-
-		this.networkHandler = Network.addListener('networkStatusChange', (status) => {
-			this.connectedToNetwork = status.connected;
 		});
 
 		this.mapService.mapsUpdated().pipe(
@@ -137,7 +130,6 @@ export class OfflineMapsPage {
 				return false;
 			}
 		}
-
 		return true;
 	}
 
@@ -162,10 +154,14 @@ export class OfflineMapsPage {
 		this.selectedMapId = null;
 	}
 
-	updateOfflineMap(): void {
-		if (!this.connectedToNetwork) {
-			this.hideOptionsMenu();
-			this.alertService.basicAlert(this.alertNoInternetHeader, this.alertNoInternetMessage);
+	async updateOfflineMap() {
+		if (!(await Network.getStatus()).connected) {
+			if (this.platform.is('mobileweb')) {
+				console.log('Alert: Connect to the Internet');
+			} else {
+				this.hideOptionsMenu();
+				this.alertService.basicAlert(this.alertNoInternetHeader, this.alertNoInternetMessage);
+			}
 		} else {
 			if (!this.selectedMapId) {
 				return;
@@ -190,16 +186,15 @@ export class OfflineMapsPage {
 	}
 
 	async plusButtonClicked() {
-		if (!this.connectedToNetwork) {
+		if (!(await Network.getStatus()).connected) {
 			if (this.platform.is('mobileweb')) {
-				console.log('Alert: Connect to Internet');
+				console.log('Alert: Connect to the Internet');
 			} else {
 				this.alertService.basicAlert(this.alertNoInternetHeader, this.alertNoInternetMessage);
 			}
 		} else {
 			this.navController.navigateForward('/download-map');
 		}
-
 	}
 
 	getMapInfoText(mapId: string): string {
@@ -244,7 +239,6 @@ export class OfflineMapsPage {
 	}
 
 	ionViewWillLeave(): void {
-		this.networkHandler.remove();
 		this.unsubscribe$.next();
 	}
 }
