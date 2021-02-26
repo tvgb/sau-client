@@ -1,9 +1,11 @@
 import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
-import { AnimationController, Animation, NavController } from '@ionic/angular';
+import { Network } from '@capacitor/core';
+import { AnimationController, Animation, NavController, Platform } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DownloadProgressionData } from 'src/app/shared/classes/DownloadProgressionData';
 import { OfflineMapMetaData } from 'src/app/shared/classes/OfflineMapMetaData';
+import { AlertService } from 'src/app/shared/services/alert.service';
 import { MapService } from '../map/services/map.service';
 
 @Component({
@@ -20,6 +22,12 @@ export class OfflineMapsPage {
 	selectedMapId: string;
 	newMapName: string;
 
+	alertNoInternetHeader = 'Ikke tilkoblet internett';
+	alertNoInternetMessage = 'Applikasjonen må være tilkoblet internett for å kunne laste ned kartutsnitt. Vennligst koble til internett og prøv igjen.';
+
+	networkHandler: any;
+	connectedToNetwork: boolean;
+
 	private unsubscribe$: Subject<void> = new Subject();
 
 	@ViewChild('backdrop') backdrop: ElementRef;
@@ -29,6 +37,8 @@ export class OfflineMapsPage {
 		private mapService: MapService,
 		private navController: NavController,
 		private animationCtrl: AnimationController,
+		private alertService: AlertService,
+		private platform: Platform,
 		private cd: ChangeDetectorRef) {
 	}
 
@@ -42,6 +52,10 @@ export class OfflineMapsPage {
 				this.downloadProgressions = res;
 				this.cd.detectChanges();
 			}
+		});
+
+		this.networkHandler = Network.addListener('networkStatusChange', (status) => {
+			this.connectedToNetwork = status.connected;
 		});
 
 		this.mapService.mapsUpdated().pipe(
@@ -149,13 +163,17 @@ export class OfflineMapsPage {
 	}
 
 	updateOfflineMap(): void {
-		if (!this.selectedMapId) {
-			return;
+		if (!this.connectedToNetwork) {
+			this.hideOptionsMenu();
+			this.alertService.basicAlert(this.alertNoInternetHeader, this.alertNoInternetMessage);
+		} else {
+			if (!this.selectedMapId) {
+				return;
+			}
+			this.hideOptionsMenu();
+			this.mapService.updateOfflineMap(this.selectedMapId);
+			this.selectedMapId = null;
 		}
-
-		this.hideOptionsMenu();
-		this.mapService.updateOfflineMap(this.selectedMapId);
-		this.selectedMapId = null;
 	}
 
 	getMapFileSize(bytes: number): string {
@@ -171,8 +189,17 @@ export class OfflineMapsPage {
 		return 0;
 	}
 
-	plusButtonClicked(): void {
-		this.navController.navigateForward('/download-map');
+	async plusButtonClicked() {
+		if (!this.connectedToNetwork) {
+			if (this.platform.is('mobileweb')) {
+				console.log('Alert: Connect to Internet');
+			} else {
+				this.alertService.basicAlert(this.alertNoInternetHeader, this.alertNoInternetMessage);
+			}
+		} else {
+			this.navController.navigateForward('/download-map');
+		}
+
 	}
 
 	getMapInfoText(mapId: string): string {
@@ -217,6 +244,7 @@ export class OfflineMapsPage {
 	}
 
 	ionViewWillLeave(): void {
+		this.networkHandler.remove();
 		this.unsubscribe$.next();
 	}
 }

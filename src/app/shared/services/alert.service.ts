@@ -34,6 +34,16 @@ export class AlertService {
 		await alert.present();
 	}
 
+	async basicAlert(alertHeader: string, alertMessage: string) {
+		const alert = await this.alertController.create({
+			header: alertHeader,
+			message: alertMessage,
+			backdropDismiss: true,
+			buttons: ['OK']
+		});
+		alert.present();
+	}
+
 	async presentNetworkToast(internet: boolean) {
 		let toastMessage = '';
 		internet ? toastMessage = this.toastNetworkMessage : toastMessage = this.toastNoNetworkMessage;

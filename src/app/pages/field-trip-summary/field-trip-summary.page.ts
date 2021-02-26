@@ -73,6 +73,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		});
 
 		this.networkHandler = Network.addListener('networkStatusChange', (status) => {
+			this.connectedToNetwork = status.connected;
 			if (status.connected) {
 				this.map.removeLayer(this.offlineTileLayer);
 				this.map.addLayer(this.onlineTileLayer);
@@ -187,7 +188,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		this.setOnlineTileLayer();
 		this.setOfflineTileLayer();
 
-		if ((await Network.getStatus()).connected) {
+		if (this.connectedToNetwork) {
 			this.map.addLayer(this.onlineTileLayer);
 		} else {
 			this.map.addLayer(this.offlineTileLayer);
