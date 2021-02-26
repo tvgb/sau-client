@@ -1,5 +1,5 @@
 import { AfterViewInit, Component} from '@angular/core';
-import { AlertController, NavController } from '@ionic/angular';
+import { AlertController, NavController, Platform } from '@ionic/angular';
 import { Observable, Subject, Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
@@ -61,6 +61,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		private mapService: MapService,
 		private store: Store,
 		private alertService: AlertService,
+		private platform: Platform,
 		private firestoreService: FirestoreService) { }
 
 	ionViewWillEnter(): void {
@@ -71,21 +72,23 @@ export class FieldTripSummaryPage implements AfterViewInit {
 			this.fieldTripInfo = res;
 		});
 
-		Network.getStatus().then((status) => {
-			this.connectedToNetwork = status.connected;
-		});
-
 		this.networkHandler = Network.addListener('networkStatusChange', (status) => {
-			this.connectedToNetwork = status.connected;
-
 			if (status.connected) {
 				this.map.removeLayer(this.offlineTileLayer);
 				this.map.addLayer(this.onlineTileLayer);
-				this.alertService.presentNetworkToast(true);
+				if (this.platform.is('mobileweb')) {
+					console.log('Toast: Connected to Internet, using ONLINE map.');
+				} else {
+					this.alertService.presentNetworkToast(true);
+				}
 			} else {
 				this.map.removeLayer(this.onlineTileLayer);
 				this.map.addLayer(this.offlineTileLayer);
-				this.alertService.presentNetworkToast(false);
+				if (this.platform.is('mobileweb')) {
+					console.log('Toast: Disconnected to Internet, using OFFLINE map.');
+				} else {
+					this.alertService.presentNetworkToast(false);
+				}
 			}
 		});
 
@@ -155,7 +158,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 			attributionControl: false,
 		});
 
-		if (this.fieldTripInfo?.trackedRoute) {
+		if (this.fieldTripInfo?.trackedRoute.length > 0) {
 			const trackedRoutePolyline = L.polyline(this.fieldTripInfo.trackedRoute, {smoothFactor: 10});
 			const fitBoundsCoords: Coordinate[] = [...this.fieldTripInfo.trackedRoute];
 			trackedRoutePolyline.addTo(this.map);
@@ -163,6 +166,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 			if (this.fieldTripInfo?.registrations) {
 				this.fieldTripInfo.registrations.forEach(registration => {
 					fitBoundsCoords.push(registration.registrationPos);
+
 					const {pin, polyline} = this.mapUiService.createRegistrationPin(
 						registration.registrationPos,
 						registration.gpsPos,
@@ -174,7 +178,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 					polyline.addTo(this.map);
 				});
 			}
-
 			this.map.fitBounds(L.polyline(fitBoundsCoords).getBounds());
 
 		} else {

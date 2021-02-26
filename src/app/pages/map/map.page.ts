@@ -8,7 +8,7 @@ import { TextToSpeechService } from '../registration/services/text-to-speech.ser
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
 import { Plugins } from '@capacitor/core';
-import { NavController, Platform, ToastController } from '@ionic/angular';
+import { NavController, Platform } from '@ionic/angular';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { RegistrationService } from '../registration/services/registration.service';
@@ -95,11 +95,20 @@ export class MapPage {
 			if (status.connected) {
 				this.map.removeLayer(this.offlineTileLayer);
 				this.map.addLayer(this.onlineTileLayer);
-				this.alertService.presentNetworkToast(true);
+				if (this.platform.is('mobileweb')) {
+					console.log('Toast: Connected to Internet, using ONLINE map.');
+				} else {
+					this.alertService.presentNetworkToast(true);
+				}
+
 			} else {
 				this.map.removeLayer(this.onlineTileLayer);
 				this.map.addLayer(this.offlineTileLayer);
-				this.alertService.presentNetworkToast(false);
+				if (this.platform.is('mobileweb')) {
+					console.log('Toast: Disconnected to Internet, using OFFLINE map.');
+				} else {
+					this.alertService.presentNetworkToast(false);
+				}
 			}
 		});
 	}
@@ -253,8 +262,13 @@ export class MapPage {
 		this.offlineTileLayer = L.gridLayer.offlineMap();
 	}
 
-	showConfirmAlert() {
-		this.alertService.confirmAlert(this.alertHeader, this.alertMessage, this, this.navigateToSummary);
+	async showConfirmAlert() {
+		const status = (await Network.getStatus()).connected;
+		if (!status && this.platform.is('mobileweb'))  {
+			this.navController.navigateForward('/field-trip-summary');
+		} else {
+			this.alertService.confirmAlert(this.alertHeader, this.alertMessage, this, this.navigateToSummary);
+		}
 	}
 
 	ionViewWillLeave(): void {
