@@ -6,8 +6,8 @@ export class SetCurrentFieldTrip {
 	constructor(public fieldTripInfo: FieldTripInfo) {}
 }
 
-export class SetDateTimeEnded {
-	static readonly type = '[Map Page] SetDateTimeEnded';
+export class UpdateFieldTripInfo {
+	static readonly type = '[Map Page] UpdateFieldTripInfo';
 	constructor(public changes: UpdateFieldTripInfoObject) {}
 }
 

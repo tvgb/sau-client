@@ -1,4 +1,4 @@
-import { AfterViewInit, Component} from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component} from '@angular/core';
 import { AlertController, NavController, Platform } from '@ionic/angular';
 import { Observable, Subject, Subscription } from 'rxjs';
 import * as L from 'leaflet';
@@ -10,10 +10,11 @@ import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 import { Coordinate } from 'src/app/shared/classes/Coordinate';
 import { DeadSheepRegistration, InjuredSheepRegistration, PredatorRegistration, SheepRegistration } from 'src/app/shared/classes/Registration';
 import { MapUIService } from 'src/app/shared/services/map-ui.service';
-import { SetDateTimeEnded } from 'src/app/shared/store/fieldTripInfo.actions';
+import { UpdateFieldTripInfo } from 'src/app/shared/store/fieldTripInfo.actions';
 import { Network } from '@capacitor/core';
 import { MapService } from '../map/services/map.service';
 import { takeUntil } from 'rxjs/operators';
+import { AlertService } from 'src/app/shared/services/alert.service';
 import { FirestoreService } from 'src/app/shared/services/firestore.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
 
@@ -30,10 +31,12 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	hours: number;
 	min: number;
 	sec: number;
+
 	totalSheepCount = 0;
 	injuredCount = 0;
 	deadCount = 0;
 	predators = 0;
+
 	private fieldTripInfoSub: Subscription;
 	private startPos = [63.424, 10.3961];
 	private mapUrl = '/map';
@@ -41,6 +44,15 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	private map;
 	private onlineTileLayer: any;
 	private offlineTileLayer: any;
+
+	private alertConfirmHeader = 'Fullfør oppsynstur';
+	private alertNoRegistrationsMessage =
+	'<br> <br> Det er ingen registreringer lagret på denne oppsynsturen.'; // <br> for newline
+	private alertNoLocationMessage = '<br> <br> Det er ikke registrert en GPS rute på denne oppsynsturen.';
+
+	descriptionChanged = false;
+	descriptionValue = '';
+
 	private unsubscribe$: Subject<void> = new Subject();
 	private networkHandler: any;
 
@@ -49,7 +61,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	uploadCompleted = false;
 	uploadFailed = false;
 	progressBarValue = 0;
-	waitBeforeNavTime = 4000;
+	waitBeforeNavTime = 3000;
 	uploadStatusText = 'Laster opp oppsynsturrapporten i skyen.';
 
 	@Select(FieldTripInfoState.getCurrentFieldTripInfo) fieldTripInfo$: Observable<FieldTripInfo>;
@@ -59,7 +71,9 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		private statusBarService: StatusbarService,
 		private mapUiService: MapUIService,
 		private mapService: MapService,
+		private alertController: AlertController,
 		private store: Store,
+		private cdr: ChangeDetectorRef,
 		private alertService: AlertService,
 		private platform: Platform,
 		private firestoreService: FirestoreService) { }
@@ -72,8 +86,19 @@ export class FieldTripSummaryPage implements AfterViewInit {
 			this.fieldTripInfo = res;
 		});
 
+		this.descriptionValue = this.fieldTripInfo.description;
+
+		if (this.fieldTripInfo.registrations) {
+			this.getTotalSheep();
+			this.getInjuredSheep();
+			this.getDeadSheep();
+			this.getPredators();
+		}
+
+		this.getDateAndDuration();
 		this.networkHandler = Network.addListener('networkStatusChange', (status) => {
 			this.connectedToNetwork = status.connected;
+			this.cdr.detectChanges();
 			if (status.connected) {
 				this.map.removeLayer(this.offlineTileLayer);
 				this.map.addLayer(this.onlineTileLayer);
@@ -92,7 +117,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 				}
 			}
 		});
-
 		this.getDateAndDuration();
 		this.getTotalSheep();
 		this.getInjuredSheep();
@@ -143,7 +167,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	getPredators(): void {
 		const predatorsRegistrations = this.fieldTripInfo.registrations
 		.filter(reg => reg.registrationType === RegistrationType.Predator) as PredatorRegistration[];
-
 		this.predators = predatorsRegistrations.length;
 	}
 
@@ -198,9 +221,9 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 	private setOnlineTileLayer(): void {
 		this.onlineTileLayer = L.tileLayer('https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps?layers=norges_grunnkart&zoom={z}&x={x}&y={y}',
-								{
-									attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
-								});
+		{
+			attribution: '<a href="http://www.kartverket.no/">Kartverket</a>'
+		});
 	}
 
 	private setOfflineTileLayer(): void {
@@ -226,40 +249,81 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		this.offlineTileLayer = L.gridLayer.offlineMap();
 	}
 
-	navigateBack(): void {
-		this.store.dispatch(new SetDateTimeEnded({dateTimeEnded: undefined} as UpdateFieldTripInfoObject));
+	onNavigateBack(): void {
+		this.store.dispatch(new UpdateFieldTripInfo({dateTimeEnded: undefined} as UpdateFieldTripInfoObject));
 		this.navController.navigateBack(this.mapUrl);
 	}
 
-	completeSummary(): void {
-		this.completeButtonPressed = true;
-		this.firestoreService.saveNewFieldTrip(this.fieldTripInfo).then((saveComplete) => {
-			this.uploadCompleted = true;
+	onCompleteSummary(): void {
+		let alertConfirmMessage = 'Er du sikker på at du vil fullføre oppsynsturen?';
+		if (this.descriptionChanged) {
+			this.store.dispatch(new UpdateFieldTripInfo({description: this.descriptionValue} as UpdateFieldTripInfoObject));
+		}
+		if (!this.fieldTripInfo.registrations) {
+			alertConfirmMessage = alertConfirmMessage + this.alertNoRegistrationsMessage;
+		}
+		if (this.fieldTripInfo.trackedRoute.length < 2) {
+			alertConfirmMessage = alertConfirmMessage + this.alertNoLocationMessage;
+		}
+		this.confirmAlert(alertConfirmMessage);
+	}
 
-			if (saveComplete) {
-				this.uploadStatusText = 'Oppsynsturrapporten har blitt lagret i skyen. Du blir tatt tilbake til hovedmenyen.';
-				this.tickProgressBar();
-				setTimeout(() => {
-					this.navController.navigateBack(this.mainMenuUrl);
-				}, this.waitBeforeNavTime);
-			} else {
-				this.uploadFailed = true;
-				this.uploadStatusText = 'Noe gikk galt under opplastingen...';
-			}
-		});
+	uploadToCloud(): void {
+		if (this.completeButtonPressed) {
+			this.firestoreService.saveNewFieldTrip(this.fieldTripInfo).then((saveComplete) => {
+				this.uploadCompleted = true;
+				if (saveComplete) {
+					this.uploadStatusText = 'Oppsynsturrapporten har blitt lagret i skyen. Du blir tatt tilbake til hovedmenyen.';
+					setTimeout(() => {
+						this.tickProgressBar();
+
+					}, this.waitBeforeNavTime);
+				} else {
+					this.uploadFailed = true;
+					this.uploadStatusText = 'Noe gikk galt under opplastingen...';
+				}
+			});
+		}
 	}
 
 	private tickProgressBar() {
 		setTimeout(() => {
 			if (this.progressBarValue < 1) {
 				this.progressBarValue += 0.01;
+				this.cdr.detectChanges();
 				this.tickProgressBar();
+			} else {
+				this.navController.navigateBack(this.mainMenuUrl);
 			}
 		}, this.waitBeforeNavTime / 120);
 	}
 
+	async confirmAlert(alertConfirmMessage: string) {
+		const alert = await this.alertController.create({
+			cssClass: 'alertConfirm',
+			header: this.alertConfirmHeader,
+			backdropDismiss: true,
+			message: alertConfirmMessage,
+			buttons: [
+				{
+					text: 'Nei',
+					role: 'cancel',
+					handler: () => {}
+				}, {
+					text: 'Ja',
+					handler: () => {
+						this.completeButtonPressed = true;
+						this.uploadToCloud();
+					}
+				}
+			]
+		});
+		await alert.present();
+  	}
+
 	ionViewWillLeave(): void {
 		this.networkHandler.remove();
+		this.store.dispatch(new UpdateFieldTripInfo({dateTimeEnded: null} as UpdateFieldTripInfoObject));
 		this.unsubscribe$.next();
 	}
 }
