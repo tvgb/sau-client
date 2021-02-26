@@ -14,7 +14,6 @@ import { UpdateFieldTripInfo } from 'src/app/shared/store/fieldTripInfo.actions'
 import { Network } from '@capacitor/core';
 import { MapService } from '../map/services/map.service';
 import { takeUntil } from 'rxjs/operators';
-import { AlertService } from 'src/app/shared/services/alert.service';
 import { FirestoreService } from 'src/app/shared/services/firestore.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
 
