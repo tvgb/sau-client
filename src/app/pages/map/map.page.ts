@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { GpsService } from './services/gps.service';
@@ -8,7 +8,7 @@ import { TextToSpeechService } from '../registration/services/text-to-speech.ser
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
 import { Plugins } from '@capacitor/core';
-import { NavController, Platform } from '@ionic/angular';
+import { AnimationController, Animation, NavController, Platform } from '@ionic/angular';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { RegistrationService } from '../registration/services/registration.service';
@@ -38,6 +38,13 @@ export class MapPage {
 	private onlineTileLayer: any;
 	private offlineTileLayer: any;
 	private trackedRoute = [];
+
+	@ViewChild('lowPowerModeOverlay') lowPowerModeOverlay: ElementRef;
+	@ViewChild('lowPowerModeHelpMessage') lowPowerModeHelpMessage: ElementRef;
+	lowPowerModeOn = false;
+	showLowPowerModeHelpMessage = true;
+	lowPowerModeOnAnimation: Animation;
+	lowPowerModeOffAnimation: Animation;
 
 	private posistionIcon =  new L.Icon({
 		iconUrl: 'assets/icon/current_gps_pos.png',
@@ -84,7 +91,6 @@ export class MapPage {
 		private alertService: AlertService,
 		private navController: NavController,
 		private mapUiService: MapUIService) {
-
 
 		this.platform.backButton.subscribeWithPriority(5, () => {
 			this.navController.navigateBack('/main-menu');
@@ -169,6 +175,26 @@ export class MapPage {
 
 			case RegistrationType.Predator:
 				this.navController.navigateForward(this.registrationPredatorUrl);
+		}
+	}
+
+	toggleLowPowerMode(event: any): void {
+		if (this.lowPowerModeOn && event.tapCount === 2) {
+			this.lowPowerModeOn = false;
+			this.showLowPowerModeHelpMessage = false;
+
+			this.map.panTo(this.posistionMarker.getLatLng(), {animate: true, duration: 1.0, easeLinearity: 0.2, noMoveStart: true});
+		} else if (!this.lowPowerModeOn) {
+			this.lowPowerModeOn = true;
+			this.showLowPowerModeHelpMessage = true;
+			setTimeout(() => {
+				this.showLowPowerModeHelpMessage = false;
+			}, 8000);
+		} else if (this.lowPowerModeOn && event.tapCount === 1 && !this.showLowPowerModeHelpMessage) {
+			this.showLowPowerModeHelpMessage = true;
+			setTimeout(() => {
+				this.showLowPowerModeHelpMessage = false;
+			}, 8000);
 		}
 	}
 

@@ -27,3 +27,35 @@ ion-fab-button {
 .add-registration-button {
 	--background: transparent;
 }
+
+.dark-overlay {
+	height: 100%;
+	width: 100%;
+	z-index: 99999;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #000000;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	font-weight: 300;
+}
+
+.low-lower-mode-help-message {
+	opacity: 1;
+}
+
+.center-fab {
+	left: calc(50% - 38px);
+}
+
+.right-fab {
+	right: 20px;
+}
+
+.left-fab {
+	left: 20px;
+}
