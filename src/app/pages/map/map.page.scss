@@ -49,7 +49,7 @@ ion-fab-button {
 }
 
 .center-fab {
-	left: calc(50% - 38px);
+	left: calc(50% - 38px); //50% minus (width + margin) / 2 av fab for å sentrere
 }
 
 .right-fab {
