@@ -7,7 +7,7 @@ import { DownloadProgressionData } from 'src/app/shared/classes/DownloadProgress
 import { v4 as uuidv4 } from 'uuid';
 import { Coordinate } from 'src/app/shared/classes/Coordinate';
 import { GpsService } from './gps.service';
-import { Filesystem, FilesystemDirectory, FilesystemEncoding, FileWriteResult, Plugins, RmdirResult } from '@capacitor/core';
+import { FileWriteResult, Plugins, RmdirResult } from '@capacitor/core';
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
 
 const { LocalNotifications, BackgroundTask, App} = Plugins;

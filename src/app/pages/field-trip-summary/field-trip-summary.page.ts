@@ -1,5 +1,5 @@
 import { AfterViewInit, ChangeDetectorRef, Component} from '@angular/core';
-import { AlertController, NavController } from '@ionic/angular';
+import { AlertController, NavController, Platform } from '@ionic/angular';
 import { Observable, Subject, Subscription } from 'rxjs';
 import * as L from 'leaflet';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
@@ -14,8 +14,8 @@ import { UpdateFieldTripInfo } from 'src/app/shared/store/fieldTripInfo.actions'
 import { Network } from '@capacitor/core';
 import { MapService } from '../map/services/map.service';
 import { takeUntil } from 'rxjs/operators';
-import { AlertService } from 'src/app/shared/services/alert.service';
 import { FirestoreService } from 'src/app/shared/services/firestore.service';
+import { AlertService } from 'src/app/shared/services/alert.service';
 
 @Component({
 	selector: 'app-field-trip-summary',
@@ -53,6 +53,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	descriptionValue = '';
 
 	private unsubscribe$: Subject<void> = new Subject();
+	private networkHandler: any;
 
 	connectedToNetwork = false;
 	completeButtonPressed = false;
@@ -73,6 +74,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		private store: Store,
 		private cdr: ChangeDetectorRef,
 		private alertService: AlertService,
+		private platform: Platform,
 		private firestoreService: FirestoreService) { }
 
 	ionViewWillEnter(): void {
@@ -93,23 +95,32 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		}
 
 		this.getDateAndDuration();
-
-		Network.getStatus().then((status) => {
-			this.connectedToNetwork = status.connected;
-		});
-
-		Network.addListener('networkStatusChange', (status) => {
+		this.networkHandler = Network.addListener('networkStatusChange', (status) => {
 			this.connectedToNetwork = status.connected;
 			this.cdr.detectChanges();
-
 			if (status.connected) {
 				this.map.removeLayer(this.offlineTileLayer);
 				this.map.addLayer(this.onlineTileLayer);
+				if (this.platform.is('mobileweb')) {
+					console.log('Toast: Connected to Internet, using ONLINE map.');
+				} else {
+					this.alertService.presentNetworkToast(true);
+				}
 			} else {
 				this.map.removeLayer(this.onlineTileLayer);
 				this.map.addLayer(this.offlineTileLayer);
+				if (this.platform.is('mobileweb')) {
+					console.log('Toast: Disconnected to Internet, using OFFLINE map.');
+				} else {
+					this.alertService.presentNetworkToast(false);
+				}
 			}
 		});
+		this.getDateAndDuration();
+		this.getTotalSheep();
+		this.getInjuredSheep();
+		this.getDeadSheep();
+		this.getPredators();
 	}
 
 	getDateAndDuration(): void {
@@ -170,7 +181,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 			attributionControl: false,
 		});
 
-		if (this.fieldTripInfo?.trackedRoute) {
+		if (this.fieldTripInfo?.trackedRoute.length > 0) {
 			const trackedRoutePolyline = L.polyline(this.fieldTripInfo.trackedRoute, {smoothFactor: 10});
 			const fitBoundsCoords: Coordinate[] = [...this.fieldTripInfo.trackedRoute];
 			trackedRoutePolyline.addTo(this.map);
@@ -178,6 +189,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 			if (this.fieldTripInfo?.registrations) {
 				this.fieldTripInfo.registrations.forEach(registration => {
 					fitBoundsCoords.push(registration.registrationPos);
+
 					const {pin, polyline} = this.mapUiService.createRegistrationPin(
 						registration.registrationPos,
 						registration.gpsPos,
@@ -189,7 +201,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 					polyline.addTo(this.map);
 				});
 			}
-
 			this.map.fitBounds(L.polyline(fitBoundsCoords).getBounds());
 
 		} else {
@@ -199,7 +210,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		this.setOnlineTileLayer();
 		this.setOfflineTileLayer();
 
-		if ((await Network.getStatus()).connected) {
+		if (this.connectedToNetwork) {
 			this.map.addLayer(this.onlineTileLayer);
 		} else {
 			this.map.addLayer(this.offlineTileLayer);
@@ -310,6 +321,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
   	}
 
 	ionViewWillLeave(): void {
+		this.networkHandler.remove();
 		this.store.dispatch(new UpdateFieldTripInfo({dateTimeEnded: null} as UpdateFieldTripInfoObject));
 		this.unsubscribe$.next();
 	}
