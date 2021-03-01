@@ -8,7 +8,7 @@ import { TextToSpeechService } from '../registration/services/text-to-speech.ser
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
 import { Plugins } from '@capacitor/core';
-import { AnimationController, Animation, NavController, Platform } from '@ionic/angular';
+import { Animation, NavController, Platform } from '@ionic/angular';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { RegistrationService } from '../registration/services/registration.service';
@@ -18,6 +18,7 @@ import { UpdateFieldTripInfo } from 'src/app/shared/store/fieldTripInfo.actions'
 import { FieldTripInfo, UpdateFieldTripInfoObject } from 'src/app/shared/classes/FieldTripInfo';
 import { takeUntil } from 'rxjs/operators';
 import { MapUIService } from 'src/app/shared/services/map-ui.service';
+import { Coordinate } from 'src/app/shared/classes/Coordinate';
 
 const { App, Network } = Plugins;
 
@@ -78,6 +79,8 @@ export class MapPage {
 	crosshairMarker: any;
 	addMarkerAgain: boolean;
 
+	private positionMarkerCoordinates: Coordinate;
+
 	private unsubscribe$: Subject<void> = new Subject<void>();
 
 	constructor(
@@ -115,7 +118,8 @@ export class MapPage {
 			this.trackedRoute = res;
 			if (this.map) {
 				L.polyline(res).addTo(this.map);
-				this.posistionMarker.setLatLng([res[res.length - 1].lat, res[res.length - 1].lng]);
+				this.positionMarkerCoordinates = { lat: res[res.length - 1].lat, lng: res[res.length - 1].lng };
+				this.posistionMarker.setLatLng(this.positionMarkerCoordinates);
 			}
 		});
 
@@ -183,7 +187,11 @@ export class MapPage {
 			this.lowPowerModeOn = false;
 			this.showLowPowerModeHelpMessage = false;
 
-			this.map.panTo(this.posistionMarker.getLatLng(), {animate: true, duration: 1.0, easeLinearity: 0.2, noMoveStart: true});
+			const pos = this.posistionMarker.getLatLng();
+
+			console.log('WTFFFF: ' + JSON.stringify(this.posistionMarker.getLatLng()));
+
+			this.map.panTo(JSON.parse(JSON.stringify(pos)), {animate: true, duration: 1.0, easeLinearity: 0.2, noMoveStart: true});
 		} else if (!this.lowPowerModeOn) {
 			this.lowPowerModeOn = true;
 			this.showLowPowerModeHelpMessage = true;
@@ -220,6 +228,8 @@ export class MapPage {
 			this.map.on('move', () => {
 				this.crosshairMarker.setLatLng([this.map.getCenter().lat, this.map.getCenter().lng]);
 			});
+
+			this.positionMarkerCoordinates = { lat: gpsPosition.coords.latitude, lng: gpsPosition.coords.longitude };
 
 			this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude],
 				{icon: this.posistionIcon}).addTo(this.map);

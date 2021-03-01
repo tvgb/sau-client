@@ -12,7 +12,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxsModule } from '@ngxs/store';
 
-import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { SheepInfoState } from './shared/store/sheepInfo.state';
 import { IonicGestureConfig } from './shared/classes/hammer-config';
 import { AppInfoState } from './shared/store/appInfo.state';
@@ -49,7 +48,6 @@ import { environment } from '../environments/environment';
 	providers: [
 		StatusBar,
 		SplashScreen,
-		Geolocation,
 		AngularFireAuth,
 		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
 		{ provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig }
