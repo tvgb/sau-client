@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { GpsService } from './services/gps.service';
@@ -8,7 +8,7 @@ import { TextToSpeechService } from '../registration/services/text-to-speech.ser
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
 import { Plugins } from '@capacitor/core';
-import { NavController, Platform } from '@ionic/angular';
+import { Animation, NavController, Platform } from '@ionic/angular';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { RegistrationService } from '../registration/services/registration.service';
@@ -18,6 +18,7 @@ import { UpdateFieldTripInfo } from 'src/app/shared/store/fieldTripInfo.actions'
 import { FieldTripInfo, UpdateFieldTripInfoObject } from 'src/app/shared/classes/FieldTripInfo';
 import { takeUntil } from 'rxjs/operators';
 import { MapUIService } from 'src/app/shared/services/map-ui.service';
+import { Coordinate } from 'src/app/shared/classes/Coordinate';
 
 const { App, Network } = Plugins;
 
@@ -39,6 +40,13 @@ export class MapPage {
 	private offlineTileLayer: any;
 	private trackedRoute = [];
 	private networkHandler: any;
+
+	@ViewChild('lowPowerModeOverlay') lowPowerModeOverlay: ElementRef;
+	@ViewChild('lowPowerModeHelpMessage') lowPowerModeHelpMessage: ElementRef;
+	lowPowerModeOn = false;
+	showLowPowerModeHelpMessage = true;
+	lowPowerModeOnAnimation: Animation;
+	lowPowerModeOffAnimation: Animation;
 
 	private posistionIcon =  new L.Icon({
 		iconUrl: 'assets/icon/current_gps_pos.png',
@@ -72,6 +80,8 @@ export class MapPage {
 	crosshairMarker: any;
 	addMarkerAgain: boolean;
 
+	private positionMarkerCoordinates: Coordinate;
+
 	private unsubscribe$: Subject<void> = new Subject<void>();
 
 	constructor(
@@ -85,7 +95,6 @@ export class MapPage {
 		private alertService: AlertService,
 		private navController: NavController,
 		private mapUiService: MapUIService) {
-
 
 		this.platform.backButton.subscribeWithPriority(5, () => {
 			this.navController.navigateBack('/main-menu');
@@ -121,7 +130,8 @@ export class MapPage {
 			this.trackedRoute = res;
 			if (this.map) {
 				L.polyline(res).addTo(this.map);
-				this.posistionMarker.setLatLng([res[res.length - 1].lat, res[res.length - 1].lng]);
+				this.positionMarkerCoordinates = { lat: res[res.length - 1].lat, lng: res[res.length - 1].lng };
+				this.posistionMarker.setLatLng(this.positionMarkerCoordinates);
 			}
 		});
 
@@ -184,6 +194,33 @@ export class MapPage {
 		}
 	}
 
+	toggleLowPowerMode(event: any): void {
+		if (this.lowPowerModeOn && event.tapCount === 2) {
+			this.lowPowerModeOn = false;
+			this.showLowPowerModeHelpMessage = false;
+
+			const pos = this.posistionMarker.getLatLng();
+
+			this.map.panTo((pos), {animate: true, duration: 1.0, easeLinearity: 0.2, noMoveStart: true});
+			setTimeout(() => {
+				this.map.doubleClickZoom.enable();
+			}, 250);
+
+		} else if (!this.lowPowerModeOn) {
+			this.lowPowerModeOn = true;
+			this.showLowPowerModeHelpMessage = true;
+			this.map.doubleClickZoom.disable();
+			setTimeout(() => {
+				this.showLowPowerModeHelpMessage = false;
+			}, 8000);
+		} else if (this.lowPowerModeOn && event.tapCount === 1 && !this.showLowPowerModeHelpMessage) {
+			this.showLowPowerModeHelpMessage = true;
+			setTimeout(() => {
+				this.showLowPowerModeHelpMessage = false;
+			}, 8000);
+		}
+	}
+
 	navigateToSummary(): void {
 		this.store.dispatch(new UpdateFieldTripInfo({dateTimeEnded: Date.now(), trackedRoute: this.trackedRoute} as UpdateFieldTripInfoObject));
 		this.navController.navigateForward('/field-trip-summary');
@@ -206,6 +243,8 @@ export class MapPage {
 			this.map.on('move', () => {
 				this.crosshairMarker.setLatLng([this.map.getCenter().lat, this.map.getCenter().lng]);
 			});
+
+			this.positionMarkerCoordinates = { lat: gpsPosition.coords.latitude, lng: gpsPosition.coords.longitude };
 
 			this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude],
 				{icon: this.posistionIcon}).addTo(this.map);

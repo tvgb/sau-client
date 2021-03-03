@@ -3,13 +3,18 @@
 		<div class="map-frame">
 			<div id="map"></div>
 		</div>
-    </div>
-    <ion-fab vertical="bottom" horizontal="start" slot="fixed">
+	</div>
+	<ion-fab vertical="bottom" class="left-fab" slot="fixed">
 		<ion-fab-button (click)="showConfirmAlert()"> 
 			<ion-icon name="checkmark-outline"></ion-icon>
-        </ion-fab-button>
-    </ion-fab>
-	<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+		</ion-fab-button>
+	</ion-fab>
+	<ion-fab class="center-fab" vertical="bottom" slot="fixed">
+		<ion-fab-button (tap)="toggleLowPowerMode($event)"> 
+			<ion-icon name="walk"></ion-icon>
+		</ion-fab-button>
+	</ion-fab>
+	<ion-fab vertical="bottom" class="right-fab" slot="fixed">
 		<ion-fab-button>
 			<ion-icon name="add"></ion-icon>
 		</ion-fab-button>
@@ -19,5 +24,11 @@
 			<ion-fab-button (click)="navigateToRegistration(registrationType.Injured)" class="add-registration-button"><ion-img [src]="addInjuredSheepBtnPath"></ion-img></ion-fab-button>
 			<ion-fab-button (click)="navigateToRegistration(registrationType.Dead)" class="add-registration-button"><ion-img [src]="addDeadSheepBtnPath"></ion-img></ion-fab-button>
 		</ion-fab-list>
-	</ion-fab>	
+	</ion-fab>
 </ion-content>
+
+<div #lowPowerModeOverlay [hidden]="!lowPowerModeOn" class="dark-overlay" (tap)="toggleLowPowerMode($event)">
+	<div #lowPowerModeHelpMessage class="low-lower-mode-help-message" [hidden]="!showLowPowerModeHelpMessage">
+		Trykk to ganger på skjermen for å gå ut av strømsparingsmodus.
+	</div>
+</div>
