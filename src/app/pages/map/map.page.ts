@@ -189,12 +189,15 @@ export class MapPage {
 
 			const pos = this.posistionMarker.getLatLng();
 
-			console.log('WTFFFF: ' + JSON.stringify(this.posistionMarker.getLatLng()));
+			this.map.panTo((pos), {animate: true, duration: 1.0, easeLinearity: 0.2, noMoveStart: true});
+			setTimeout(() => {
+				this.map.doubleClickZoom.enable();
+			}, 250);
 
-			this.map.panTo(JSON.parse(JSON.stringify(pos)), {animate: true, duration: 1.0, easeLinearity: 0.2, noMoveStart: true});
 		} else if (!this.lowPowerModeOn) {
 			this.lowPowerModeOn = true;
 			this.showLowPowerModeHelpMessage = true;
+			this.map.doubleClickZoom.disable();
 			setTimeout(() => {
 				this.showLowPowerModeHelpMessage = false;
 			}, 8000);
