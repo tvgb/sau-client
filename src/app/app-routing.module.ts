@@ -61,6 +61,11 @@ const routes: Routes = [
 	{
 		path: 'settings',
 		loadChildren: () => import('./pages/settings/settings.module').then( m => m.SettingsPageModule)
+	},
+	{
+		path: 'field-trips',
+		loadChildren: () => import('./pages/field-trips/field-trips.module').then( m => m.FieldTripsPageModule),
+		canActivate: [ AuthGuard ]
 	}
 ];
 

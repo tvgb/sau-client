@@ -39,7 +39,6 @@ export class MapPage {
 	private onlineTileLayer: any;
 	private offlineTileLayer: any;
 	private trackedRoute = [];
-	private networkHandler: any;
 
 	@ViewChild('lowPowerModeOverlay') lowPowerModeOverlay: ElementRef;
 	@ViewChild('lowPowerModeHelpMessage') lowPowerModeHelpMessage: ElementRef;
@@ -100,24 +99,13 @@ export class MapPage {
 			this.navController.navigateBack('/main-menu');
 		});
 
-		this.networkHandler = Network.addListener('networkStatusChange', (status) => {
+		Network.addListener('networkStatusChange', (status) => {
 			if (status.connected) {
 				this.map.removeLayer(this.offlineTileLayer);
 				this.map.addLayer(this.onlineTileLayer);
-				if (this.platform.is('mobileweb')) {
-					console.log('Toast: Connected to Internet, using ONLINE map.');
-				} else {
-					this.alertService.presentNetworkToast(true);
-				}
-
 			} else {
 				this.map.removeLayer(this.onlineTileLayer);
 				this.map.addLayer(this.offlineTileLayer);
-				if (this.platform.is('mobileweb')) {
-					console.log('Toast: Disconnected to Internet, using OFFLINE map.');
-				} else {
-					this.alertService.presentNetworkToast(false);
-				}
 			}
 		});
 	}
@@ -301,17 +289,11 @@ export class MapPage {
 		this.offlineTileLayer = L.gridLayer.offlineMap();
 	}
 
-	async showConfirmAlert() {
-		const status = (await Network.getStatus()).connected;
-		if (!status && this.platform.is('mobileweb'))  {
-			this.navController.navigateForward('/field-trip-summary');
-		} else {
-			this.alertService.confirmAlert(this.alertHeader, this.alertMessage, this, this.navigateToSummary);
-		}
+	showConfirmAlert() {
+		this.alertService.confirmAlert(this.alertHeader, this.alertMessage, this, this.navigateToSummary);
 	}
 
 	ionViewWillLeave(): void {
-		this.networkHandler.remove();
 		this.unsubscribe$.next();
 		this.gpsService.setTracking(false);
 	}
