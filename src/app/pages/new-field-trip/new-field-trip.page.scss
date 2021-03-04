@@ -1,8 +1,4 @@
 .new-field-trip-container {
-    // height: 100%;
-    // margin-top: 20px;
-    // margin-left: 35px;
-    // margin-right: 35px;
     background-color: var(--ion-background-color);
 }
 
@@ -15,12 +11,6 @@
 
 .participants-list {
     background-color: var(--ion-background-color);
-    margin-bottom: 10px;
-}
-
-.invalid {
-    align-self: flex-end;
-    color: red;
     margin-bottom: 30px;
 }
 
@@ -41,7 +31,7 @@
 
 .add-participant-container {
     margin-top: 5px;
-    margin-bottom: 35px;
+    margin-bottom: 30px;
     display: flex;
     align-items: center;
     justify-content: space-between;

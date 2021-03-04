@@ -6,10 +6,10 @@ import { FieldTripInfo } from 'src/app/shared/classes/FieldTripInfo';
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { SetCurrentFieldTrip } from 'src/app/shared/store/fieldTripInfo.actions';
 import { NavController } from '@ionic/angular';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Plugins } from '@capacitor/core';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 const { Keyboard } = Plugins;
 
@@ -40,8 +40,8 @@ export class NewFieldTripPage {
 	constructor(
 		private store: Store,
 		private navController: NavController,
-		private formbuilder: FormBuilder,
 		private statusBarService: StatusbarService,
+		private authService: AuthService,
 		private cdr: ChangeDetectorRef) {}
 
 	ionViewWillEnter() {
@@ -49,20 +49,22 @@ export class NewFieldTripPage {
 	}
 
 	createNewFieldTrip() {
-			Keyboard.hide();
-			this.fieldTripId = uuidv4();
-			this.currentFieldTripInfo = new FieldTripInfo(
-				{
-					fieldtripId: this.fieldTripId,
-					overseerName: 'Kimia',
-					participants: this.participants,
-					description: this.description,
-					dateTimeStarted: Date.now()
-				});
+		// Keyboard.hide();
+		this.fieldTripId = uuidv4();
+		const overseerName = this.authService.getOverseerName();
+		console.log(overseerName);
+		this.currentFieldTripInfo = new FieldTripInfo(
+			{
+				fieldtripId: this.fieldTripId,
+				overseerName,
+				participants: this.participants,
+				description: this.description,
+				dateTimeStarted: Date.now()
+			});
 
-			console.log(JSON.stringify(this.currentFieldTripInfo));
-			this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
-			this.navController.navigateForward(this.mapUrl);
+		console.log(JSON.stringify(this.currentFieldTripInfo));
+		this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
+		this.navController.navigateForward(this.mapUrl);
 	}
 
 	addParticipant(): void {
