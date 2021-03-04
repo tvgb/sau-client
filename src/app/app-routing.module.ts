@@ -66,7 +66,12 @@ const routes: Routes = [
 		path: 'field-trips',
 		loadChildren: () => import('./pages/field-trips/field-trips.module').then( m => m.FieldTripsPageModule),
 		canActivate: [ AuthGuard ]
+	},
+	{
+		path: 'field-trip',
+		loadChildren: () => import('./pages/field-trip/field-trip.module').then( m => m.FieldTripPageModule)
 	}
+
 ];
 
 @NgModule({

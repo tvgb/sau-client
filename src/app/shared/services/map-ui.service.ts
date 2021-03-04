@@ -15,12 +15,26 @@ export class MapUIService {
 	private InjuredSheepPinPath = 'injured_sheep_pin.png';
 	private deadSheepPinPath = 'dead_sheep_pin.png';
 
+	private sheepIconPath = `${this.iconPath}/add_sheep_btn.png`;
+	private predatorIconPath = `${this.iconPath}/add_predator_btn.png`;
+	private injuredSheepIconPath = `${this.iconPath}/add_injured_sheep_btn.png`;
+	private deadSheepIconPath = `${this.iconPath}/add_dead_sheep_btn.png`;
+
 	private sheepPinColour = '#719AAB';
 	private predatorPinColour = '#C26B69';
 	private injuredSheepPinColour = '#FFAE69';
 	private deadSheepPinColour = '#5A5A5A';
 
 	constructor() { }
+
+	getIconPaths(): {sheep: string, predator: string, dead: string, injured: string} {
+		return {
+			sheep: this.sheepIconPath,
+			predator: this.predatorIconPath,
+			dead: this.deadSheepIconPath,
+			injured: this.injuredSheepIconPath
+		};
+	}
 
 	createRegistrationPin(
 		registrationPos: Coordinate,

@@ -1,0 +1,57 @@
+<ion-content class="content">
+	<app-page-header navUrl="/field-trips"></app-page-header>
+	<div class="field-trip-container">
+		<div class="map-container">
+			<div id="field-trip-map"></div>
+		</div>
+		<div *ngIf="fieldTrip" class="info-container">
+			<div class="info-box" style="border: 2px solid #719AAB;">
+				<div class="info-box-header">
+					<div class="field icon-field">
+						<ion-img [src]="sheepIconPath"></ion-img>
+						<div class="icon-text" style="color: #719AAB;"> {{ fieldTripsService.getRegisteredSheepCount(fieldTrip) }} </div>
+					</div>
+					<div class="field arrow-field">
+						<ion-icon style="color: #719AAB;" name="caret-down-outline"></ion-icon>
+					</div>
+				</div>
+			</div>
+			<div class="info-box" style="border: 2px solid #FFAE69;">
+				<div class="info-box-header">
+					<div class="field icon-field">
+						<ion-img [src]="injuredSheepIconPath"></ion-img>
+						<div class="icon-text" style="color: #FFAE69;"> {{ fieldTripsService.getInjuredSheepCount(fieldTrip) }} </div>
+					</div>
+					<div class="field arrow-field" (click)="onOpenInfoBox(registrationType.Injured)">
+						<ion-icon style="color: #FFAE69;" name="caret-down-outline"></ion-icon>
+					</div>
+				</div>
+				<div class="registrations-container" *ngIf="openInfoBox === registrationType.Injured">
+					<div 
+						class="registration-injured"
+						[ngClass]="{'selected-registration-injured': selectedRegistration === registration.dateTime}"
+						(click)="selectRegistration(registration)"
+						*ngFor="let registration of getRegistrationByType(fieldTrip.registrations, registrationType.Injured)">
+						<div class="field count-field">
+							<div class="bold-text">
+								Antall skadde dyr:
+							</div>
+							<div style="width: 5px;"></div>
+							<div class="text">
+								{{ registration.count }}
+							</div>
+						</div>
+						<div class="field comment-field">
+							<div class="bold-text">
+								Beskrivelse:
+							</div>
+							<div class="text">
+								{{ registration.comment }}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</ion-content>

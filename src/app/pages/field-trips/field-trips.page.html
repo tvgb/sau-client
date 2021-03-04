@@ -10,7 +10,7 @@
 					<div class="bold-text">Registrert av</div>
 					<div class="text">{{ fieldTrip.overseerName }}</div>
 				</div>
-				<div class="field">
+				<div (click)="navigateToFieldTrip(fieldTrip)" class="field">
 					<ion-icon size="large" name="arrow-forward-outline"></ion-icon>
 				</div>
 			</div>
@@ -29,19 +29,19 @@
 			<div class="bottom-row">
 				<div class="field icon-field">
 					<ion-img [src]="sheepIconPath"></ion-img>
-					<div class="icon-text" style="color: #719AAB;"> {{ getRegisteredSheepCount(fieldTrip) }} </div>
+					<div class="icon-text" style="color: #719AAB;"> {{ fieldTripsService.getRegisteredSheepCount(fieldTrip) }} </div>
 				</div>
 				<div class="field icon-field">
 					<ion-img [src]="injuredSheepIconPath"></ion-img>
-					<div class="icon-text" style="color: #FFAE69;"> {{ getInjuredSheepCount(fieldTrip) }} </div>
+					<div class="icon-text" style="color: #FFAE69;"> {{ fieldTripsService.getInjuredSheepCount(fieldTrip) }} </div>
 				</div>
 				<div class="field icon-field">
 					<ion-img [src]="deadSheepIconPath"></ion-img>
-					<div class="icon-text" style="color: #5A5A5A;"> {{ getDeadSheepCount(fieldTrip) }} </div>
+					<div class="icon-text" style="color: #5A5A5A;"> {{ fieldTripsService.getDeadSheepCount(fieldTrip) }} </div>
 				</div>
 				<div class="field icon-field">
 					<ion-img [src]="predatorIconPath"></ion-img>
-					<div class="icon-text" style="color: #C26B69;"> {{ getPredatorCount(fieldTrip) }} </div>
+					<div class="icon-text" style="color: #C26B69;"> {{ fieldTripsService.getPredatorCount(fieldTrip) }} </div>
 				</div>
 			</div>
 		</div>

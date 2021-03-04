@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationExtras } from '@angular/router';
 import { Plugins } from '@capacitor/core';
+import { NavController } from '@ionic/angular';
 import { FieldTripInfo } from 'src/app/shared/classes/FieldTripInfo';
 import { DeadSheepRegistration, InjuredSheepRegistration, SheepRegistration } from 'src/app/shared/classes/Registration';
 import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 import { FirestoreService } from 'src/app/shared/services/firestore.service';
+import { FieldTripsService } from './field-trips.service';
 
 const { Network } = Plugins;
 
@@ -25,7 +28,7 @@ export class FieldTripsPage {
 	noInternet = false;
 	fieldTrips: FieldTripInfo[] = [];
 
-	constructor(private firestore: FirestoreService) { }
+	constructor(private firestore: FirestoreService, private navController: NavController, public fieldTripsService: FieldTripsService) { }
 
 	ionViewWillEnter() {
 		Network.getStatus().then((status) => {
@@ -47,32 +50,9 @@ export class FieldTripsPage {
 		});
 	}
 
-	getRegisteredSheepCount(fieldTrip: FieldTripInfo): number {
-		return fieldTrip.registrations
-			.filter(f => f.registrationType === RegistrationType.Sheep)
-			.reduce((acc, registration) => {
-				return acc + (registration as SheepRegistration).sheepInfo.totalSheep.totalSheep.count;
-			}, 0);
-	}
-
-	getInjuredSheepCount(fieldTrip: FieldTripInfo): number {
-		return fieldTrip.registrations
-			.filter(f => f.registrationType === RegistrationType.Injured)
-			.reduce((acc, registration) => {
-				return acc + (registration as InjuredSheepRegistration).count;
-			}, 0);
-	}
-
-	getDeadSheepCount(fieldTrip: FieldTripInfo): number {
-		return fieldTrip.registrations
-			.filter(f => f.registrationType === RegistrationType.Dead)
-			.reduce((acc, registration) => {
-				return acc + (registration as DeadSheepRegistration).count;
-			}, 0);
-	}
-
-	getPredatorCount(fieldTrip: FieldTripInfo): number {
-		return fieldTrip.registrations.filter(f => f.registrationType === RegistrationType.Predator).length;
+	navigateToFieldTrip(fieldTrip: FieldTripInfo): void {
+		this.fieldTripsService.setSelectedFieldTrip(fieldTrip);
+		this.navController.navigateForward('/field-trip');
 	}
 
 	getDateAndDuration(startDate: number, endDate: number): string {

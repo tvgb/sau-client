@@ -1,0 +1,82 @@
+
+.field-trip-container {
+	min-height: 100%;
+	padding: 0 10px;
+}
+
+.map-container {
+	height: 40vh;
+}
+
+#field-trip-map {
+	height: 100%;
+}
+
+.info-container {
+	margin-top: 10px;
+}
+
+.info-box {
+	margin-top: 10px;
+	border-radius: 3px;
+	display: flex;
+	flex-direction: column;
+}
+
+.info-box-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.registration-injured {
+	border: 2px solid #FFF4EB;
+	border-radius: 3px;
+	margin: 5px;
+}
+
+.selected-registration-injured {
+	border: 2px solid #FFAE69;
+	border-radius: 3px;
+	margin: 5px;
+}
+
+.icon-field {
+	display: flex;
+	align-items: center;
+}
+
+.arrow-field {
+	font-size: large;
+	display: flex;
+	align-items: center;
+}
+
+.count-field {
+	display: flex;
+	align-items: center;
+}
+
+.icon-text {
+	font-size: 23px;
+	margin-left: 5px;
+	font-weight: 500;
+}
+
+.bold-text {
+	font-weight: 400;
+	color: white;
+}
+
+.text {
+	font-weight: 200;
+	color: white;
+}
+
+.field {
+	padding: 10px;
+}
+
+ion-img {
+	width: 30px;
+}
