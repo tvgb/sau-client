@@ -2,18 +2,19 @@ import { Injectable } from '@angular/core';
 import { State, Selector, Action, StateContext } from '@ngxs/store';
 import { FieldTripInfo } from '../classes/FieldTripInfo';
 import { FieldTripInfoModel } from '../interfaces/FieldTripInfoModel';
-import { AddRegistration, SetCurrentFieldTrip, SetDateTimeEnded } from './fieldTripInfo.actions';
+import { AddRegistration, SetCurrentFieldTrip, UpdateFieldTripInfo } from './fieldTripInfo.actions';
 
 @State<FieldTripInfoModel>({
 	name: 'fieldTripInfo',
 	defaults: {
 		fieldTripInfo: {
+			overseerId: null,
 			overseerName: 'Sophus',
 			fieldTripId: '123',
 			participants: [],
 			description: 'Nais med tur.',
 			dateTimeStarted: Date.now(),
-			dateTimeEnded: undefined,
+			dateTimeEnded: null,
 			trackedRoute: [],
 			registrations: []
 		}
@@ -37,8 +38,8 @@ export class FieldTripInfoState {
 		});
 	}
 
-	@Action(SetDateTimeEnded)
-	setDateTimeEnded(ctx: StateContext<FieldTripInfoModel>, action: SetDateTimeEnded) {
+	@Action(UpdateFieldTripInfo)
+	setDateTimeEnded(ctx: StateContext<FieldTripInfoModel>, action: UpdateFieldTripInfo) {
 		const state = ctx.getState();
 		const fieldTripInfo = {...state.fieldTripInfo};
 		Object.assign(fieldTripInfo, action.changes);

@@ -1,6 +1,7 @@
 import { Registration } from './Registration';
 
 export class FieldTripInfo {
+	overseerId: string;
 	fieldTripId: string;
 	overseerName: string;
 	participants: string[];

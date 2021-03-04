@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Geolocation, Geoposition } from '@ionic-native/geolocation/ngx';
 import { Observable } from 'rxjs';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Coordinate } from 'src/app/shared/classes/Coordinate';
+import { Plugins } from '@capacitor/core';
+
+const { Geolocation } = Plugins;
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +20,7 @@ export class GpsService {
 	private lastTrackedPos: Subject<Coordinate> = new Subject();
 
 
-	constructor(private geolocation: Geolocation) {	}
+	constructor() { }
 
 	getTracking(): boolean {
 		return this.tracking;
@@ -49,7 +51,7 @@ export class GpsService {
 	 * Recalibrates position when app has been inactive, waits until stable position
 	 */
 	recalibratePosition() {
-		this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
+		Geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
 			this.calibrationCoords.push({lat: data.coords.latitude, lng: data.coords.longitude});
 			if (this.calibrationCoords.length < 2) {
 				setTimeout(() => {
@@ -78,7 +80,7 @@ export class GpsService {
 	 */
 	updateTrackAndPosition(): void {
 		if (this.tracking) {
-			this.geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
+			Geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
 				this.trackedRoute$.next([...this.trackedRoute$.getValue(), new Coordinate(data.coords.latitude, data.coords.longitude)]);
 			}).catch((error) => {
 					console.log('Error getting location', error);
@@ -94,7 +96,7 @@ export class GpsService {
 		return this.trackedRoute$.asObservable();
 	}
 
-	getCurrentPosition(): Promise<Geoposition> {
-		return this.geolocation.getCurrentPosition();
+	getCurrentPosition(): Promise<any> {
+		return Geolocation.getCurrentPosition({enableHighAccuracy: true});
 	}
 }

@@ -12,8 +12,34 @@
                         {{invalidText}}
                     </p>
                 </div>
-                <ion-label>Kommentar</ion-label>
+                <ion-label>Kommentar:</ion-label>
                 <ion-textarea formControlName="comment" placeholder="Skriv inn observasjon her..."></ion-textarea>
+                <div class="add-photo-container">
+                    <div class="add-photo-header">
+                        <ion-icon class="camera-icon" size="large" name="camera"></ion-icon>
+                        <ion-label class="add-photo-header-text">Bilde</ion-label> 
+                    </div>
+                    <div *ngIf="images.length > 0, else removeImages" class="add-photo-text">Legg ved et bilde. Klikk på bildet for å fjerne det.</div>
+                    <ng-template  #removeImages>
+                        <div class="add-photo-text">
+                            Legg ved et bilde.
+                        </div>
+                    </ng-template>
+                    <div *ngIf="images.length > 0, else elseblock" class="photos-container">
+                        <div (click)="confirmPhotoRemoval(i)" *ngFor="let image of images; index as i" >
+                            <ion-img class="photo" *ngIf="capturedImage" [src]="'data:image/png;base64, ' +  images[i]"></ion-img>
+                        </div>
+                        <div class="add-photo-box">
+                            <div class="plus-icon" (click)="addPhoto()">+</div>
+                        </div>
+                    </div>
+                    <ng-template #elseblock >
+                        <div class="add-photo-box">
+                            <div class="plus-icon" (click)="addPhoto()">+</div>
+                        </div>
+                    </ng-template>
+                    
+                </div>  
             </form>
         </ion-list>
     </div>
