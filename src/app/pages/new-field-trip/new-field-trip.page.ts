@@ -22,8 +22,9 @@ const { Keyboard } = Plugins;
 export class NewFieldTripPage {
 
 	fieldTripId: string;
-	participants = [];
+	participants: string[] = [];
 	participantName: string;
+	description: string;
 
 	public addAttempt = false;
 
@@ -48,34 +49,32 @@ export class NewFieldTripPage {
 	}
 
 	createNewFieldTrip() {
-		if (this.newFieldTripForm.valid) {
 			Keyboard.hide();
 			this.fieldTripId = uuidv4();
 			this.currentFieldTripInfo = new FieldTripInfo(
 				{
 					fieldtripId: this.fieldTripId,
-					overseerName: this.newFieldTripForm.controls.overseerName.value,
-					participants: this.newFieldTripForm.controls.participants.value,
-					description: this.newFieldTripForm.controls.description.value,
+					overseerName: 'Kimia',
+					participants: this.participants,
+					description: this.description,
 					dateTimeStarted: Date.now()
 				});
 
 			console.log(JSON.stringify(this.currentFieldTripInfo));
 			this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
 			this.navController.navigateForward(this.mapUrl);
-		}
 	}
 
 	addParticipant(): void {
-		if (!!this.participantName.trim()) {
-			this.participants.push(this.participantName);
-			this.participantName = '';
+			if (!!this.participantName.trim()) {
+				this.participants.push(this.participantName);
+				this.participantName = '';
+				this.cdr.detectChanges();
+			}
+		}
+
+	deleteParticipant(index: number): void {
+			this.participants.splice(index, 1);
 			this.cdr.detectChanges();
 		}
 	}
-
-	deleteParticipant(index: number): void {
-		this.participants.splice(index, 1);
-		this.cdr.detectChanges();
-	}
-}

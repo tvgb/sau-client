@@ -3,7 +3,7 @@ import { Registration } from './Registration';
 export class FieldTripInfo {
 	fieldTripId: string;
 	overseerName: string;
-	participants: number;
+	participants: string[];
 	description: string;
 	registrations: Registration[];
 	dateTimeStarted: number;
@@ -11,7 +11,7 @@ export class FieldTripInfo {
 	trackedRoute: [];
 
 	constructor({ fieldtripId, overseerName, participants, description, dateTimeStarted }:
-		{ fieldtripId: string; overseerName: string; participants: number; description: string; dateTimeStarted: number; }) {
+		{ fieldtripId: string; overseerName: string; participants: string[]; description: string; dateTimeStarted: number; }) {
 		this.fieldTripId = fieldtripId;
 		this.overseerName = overseerName;
 		this.participants = participants;
