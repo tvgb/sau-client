@@ -5,7 +5,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -29,6 +29,7 @@ import { FieldTripInfoState } from './shared/store/fieldTripInfo.state';
 		AppRoutingModule,
 		HttpClientModule,
 		ReactiveFormsModule,
+		FormsModule,
 		NgxsModule.forRoot([
 			SheepInfoState,
 			AppInfoState,

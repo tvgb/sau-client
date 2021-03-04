@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
@@ -21,10 +21,11 @@ const { Keyboard } = Plugins;
 
 export class NewFieldTripPage {
 
-	newFieldTripForm: FormGroup;
 	fieldTripId: string;
+	participants = [];
+	participantName: string;
 
-	public submitAttempt = false;
+	public addAttempt = false;
 
 	currentFieldTripSub: Subscription;
 	currentFieldTripInfo: FieldTripInfo;
@@ -39,20 +40,14 @@ export class NewFieldTripPage {
 		private store: Store,
 		private navController: NavController,
 		private formbuilder: FormBuilder,
-		private statusBarService: StatusbarService) {
-		this.newFieldTripForm = this.formbuilder.group({
-			overseerName: ['Kari Nordmann', Validators.required],
-			participants: ['1', Validators.required],
-			description: [''],
-		});
-	}
+		private statusBarService: StatusbarService,
+		private cdr: ChangeDetectorRef) {}
 
 	ionViewWillEnter() {
 		this.statusBarService.changeStatusBar(false, true);
 	}
 
 	createNewFieldTrip() {
-		this.submitAttempt = true;
 		if (this.newFieldTripForm.valid) {
 			Keyboard.hide();
 			this.fieldTripId = uuidv4();
@@ -69,5 +64,18 @@ export class NewFieldTripPage {
 			this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
 			this.navController.navigateForward(this.mapUrl);
 		}
+	}
+
+	addParticipant(): void {
+		if (!!this.participantName.trim()) {
+			this.participants.push(this.participantName);
+			this.participantName = '';
+			this.cdr.detectChanges();
+		}
+	}
+
+	deleteParticipant(index: number): void {
+		this.participants.splice(index, 1);
+		this.cdr.detectChanges();
 	}
 }
