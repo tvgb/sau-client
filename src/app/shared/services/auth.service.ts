@@ -1,9 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Plugins } from '@capacitor/core';
 import { NavController } from '@ionic/angular';
-import * as firebase from 'firebase/app';
 
 @Injectable({
 	providedIn: 'root'

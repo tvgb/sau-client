@@ -9,6 +9,7 @@ import { NavController } from '@ionic/angular';
 import { Plugins } from '@capacitor/core';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel';
+import { FirestoreService } from 'src/app/shared/services/firestore.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 
 const { Keyboard } = Plugins;
@@ -25,6 +26,7 @@ export class NewFieldTripPage {
 	participants: string[] = [];
 	participantName: string;
 	description: string;
+	overseerName: string;
 
 	public addAttempt = false;
 
@@ -42,21 +44,24 @@ export class NewFieldTripPage {
 		private navController: NavController,
 		private statusBarService: StatusbarService,
 		private authService: AuthService,
+		private firestoreService: FirestoreService,
 		private cdr: ChangeDetectorRef) {}
 
 	ionViewWillEnter() {
 		this.statusBarService.changeStatusBar(false, true);
 	}
 
-	createNewFieldTrip() {
+	async createNewFieldTrip() {
 		// Keyboard.hide();
 		this.fieldTripId = uuidv4();
-		const overseerName = this.authService.getOverseerName();
-		console.log(overseerName);
+		await this.firestoreService.getCurrentUser(this.authService.getUserId()).then((res) => {
+			this.overseerName = res['name'];
+		});
+
 		this.currentFieldTripInfo = new FieldTripInfo(
 			{
 				fieldtripId: this.fieldTripId,
-				overseerName,
+				overseerName: this.overseerName,
 				participants: this.participants,
 				description: this.description,
 				dateTimeStarted: Date.now()
