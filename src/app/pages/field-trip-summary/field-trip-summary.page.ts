@@ -55,7 +55,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	private unsubscribe$: Subject<void> = new Subject();
 	private networkHandler: any;
 
-	connectedToNetwork = false;
+	connectedToNetwork: boolean;
 	completeButtonPressed = false;
 	uploadCompleted = false;
 	uploadFailed = false;
@@ -77,7 +77,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		private platform: Platform,
 		private firestoreService: FirestoreService) { }
 
-	ionViewWillEnter(): void {
+	ionViewWillEnter() {
 		this.statusBarService.changeStatusBar(false, true);
 		this.fieldTripInfoSub = this.fieldTripInfo$.pipe(
 			takeUntil(this.unsubscribe$)
@@ -94,7 +94,16 @@ export class FieldTripSummaryPage implements AfterViewInit {
 			this.getPredators();
 		}
 
+		Network.getStatus().then((status) => {
+			this.connectedToNetwork = status.connected;
+		});
+
 		this.getDateAndDuration();
+
+		Network.getStatus().then((status) => {
+			this.connectedToNetwork = status.connected;
+		});
+
 		this.networkHandler = Network.addListener('networkStatusChange', (status) => {
 			this.connectedToNetwork = status.connected;
 			this.cdr.detectChanges();
@@ -116,11 +125,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 				}
 			}
 		});
-		this.getDateAndDuration();
-		this.getTotalSheep();
-		this.getInjuredSheep();
-		this.getDeadSheep();
-		this.getPredators();
 	}
 
 	getDateAndDuration(): void {

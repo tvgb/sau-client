@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { Plugins } from '@capacitor/core';
+import { cordovaInstance } from '@ionic-native/core';
 import { NavController } from '@ionic/angular';
 
 @Injectable({
@@ -23,7 +25,15 @@ export class AuthService {
 	}
 
 	getUserId(): string {
-		return this.userData.uid;
+		if (this.userData) {
+			return this.userData.uid;
+		} else {
+			const user = JSON.parse(localStorage.getItem('user'));
+			if (user) {
+				this.userData = user;
+				return this.userData.uid;
+			}
+		}
 	}
 
 	signIn(email: string, password: string): Promise<boolean> {

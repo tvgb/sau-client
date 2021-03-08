@@ -9,6 +9,7 @@ import { NavController } from '@ionic/angular';
 import { Plugins } from '@capacitor/core';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel';
+import { Registration } from 'src/app/shared/classes/Registration';
 import { FirestoreService } from 'src/app/shared/services/firestore.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 

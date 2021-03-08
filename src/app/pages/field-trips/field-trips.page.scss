@@ -1,0 +1,82 @@
+.info-box {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+
+	color: #e4e4e4;
+	font-weight: 300;
+
+	height: 80%;
+	padding: 0 20px;
+}
+
+.field-trips-container {
+	padding: 0 10px;
+}
+
+.field-trip-card {
+	border: 2px solid #263440;
+	border-radius: 3px;
+	margin-bottom: 20px;
+
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+}
+
+.bold-text {
+	font-weight: 400;
+}
+
+.text {
+	font-weight: 200;
+}
+
+.icon-text {
+	font-size: 23px;
+	margin-left: 5px;
+	font-weight: 500;
+}
+
+.field {
+	padding: 10px;
+}
+
+.icon-field {
+	display: flex;
+	align-items: center;
+}
+
+.top-row {
+	display: flex;
+	justify-content: space-between;
+}
+
+.middle-row {
+	display: flex;
+}
+
+.bottom-row {
+	display: flex;
+	justify-content: space-evenly;
+}
+
+ion-img {
+	width: 30px;
+}
+
+.bold-text-skeleton {
+	height: 13px;
+	width: 90px;
+}
+
+.text-skeleton {
+	height: 13px;
+	width: 120px;
+}
+
+.icon-skeleton {
+	height: 22px;
+	width: 22px;
+}
