@@ -21,9 +21,7 @@
     }
   },
   "server": {
-    "url": "http://192.168.0.195:8101",
-    "cleartext": true,
-    "originalUrl": "http://192.168.0.195:8100",
-    "originalCleartext": true
+    "url": "http://192.168.0.195:8100",
+    "cleartext": true
   }
 }

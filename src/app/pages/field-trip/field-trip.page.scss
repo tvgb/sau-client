@@ -1,11 +1,10 @@
 
 .field-trip-container {
-	min-height: 100%;
 	padding: 0 10px;
 }
 
 .map-container {
-	height: 40vh;
+	height: 30vh;
 }
 
 #field-trip-map {
@@ -29,8 +28,13 @@
 	justify-content: space-between;
 }
 
+.registrations-container {
+	overflow-y: auto;
+	max-height: 40vh;
+}
+
 .registration-injured {
-	border: 2px solid #FFF4EB;
+	border: 2px solid rgba(255, 174, 105, 0.2);
 	border-radius: 3px;
 	margin: 5px;
 }

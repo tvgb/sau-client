@@ -1,7 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Component } from '@angular/core';
 import { FieldTripInfo } from 'src/app/shared/classes/FieldTripInfo';
 import * as L from 'leaflet';
 import { Coordinate } from 'src/app/shared/classes/Coordinate';
@@ -21,15 +18,13 @@ export class FieldTripPage {
 	private map: any;
 
 	registrationType = RegistrationType;
-
 	sheepIconPath: string;
 	injuredSheepIconPath: string;
 	deadSheepIconPath: string;
 	predatorIconPath: string;
 	fieldTrip: FieldTripInfo;
-
 	openInfoBox: RegistrationType;
-
+	pinIdRegistrationDateTimeMap: Map<number, number> = new Map();
 	selectedRegistration = -1;
 
 	constructor(private mapUiService: MapUIService, public fieldTripsService: FieldTripsService) {
@@ -169,6 +164,48 @@ export class FieldTripPage {
 					comment: 'Disse sauene hadde det virkelig vondt. Ble nødt til å avlive begge på stedet :/.'
 				},
 				{
+					count: 5,
+					registrationPos: {
+						lng: 10.500392203373485,
+						lat: 63.31947419532316
+					},
+					dateTime: 1614785495758,
+					gpsPos: {
+						lng: 10.3983791,
+						lat: 63.4205762
+					},
+					registrationType: 'SKADET',
+					comment: 'Tror alle er skadet av en ulv. Det ser hvertfall sånn ut.'
+				},
+				{
+					count: 1,
+					registrationPos: {
+						lng: 10.510392203373485,
+						lat: 63.34947419532316
+					},
+					dateTime: 1614785595758,
+					gpsPos: {
+						lng: 10.3983791,
+						lat: 63.4205762
+					},
+					registrationType: 'SKADET',
+					comment: 'Tror alle er skadet av en ulv. Det ser hvertfall sånn ut.'
+				},
+				{
+					count: 9,
+					registrationPos: {
+						lng: 10.490392203373485,
+						lat: 63.28947419532316
+					},
+					dateTime: 1613785595758,
+					gpsPos: {
+						lng: 10.3983791,
+						lat: 63.4205762
+					},
+					registrationType: 'SKADET',
+					comment: 'Tror alle er skadet av en ulv. Det ser hvertfall sånn ut.'
+				},
+				{
 					gpsPos: {
 						lat: 63.42057,
 						lng: 10.3983932
@@ -248,11 +285,11 @@ export class FieldTripPage {
 	onOpenInfoBox(registrationType: RegistrationType): void {
 		if (this.openInfoBox === registrationType) {
 			this.openInfoBox = null;
+			this.selectedRegistration = -1;
 		} else {
 			this.openInfoBox = registrationType;
 		}
 	}
-
 
 	getTheTruth(r): boolean {
 		console.log(r.dateTime);
@@ -287,7 +324,10 @@ export class FieldTripPage {
 						true
 					);
 
+
 					pin.addTo(this.map);
+					this.pinIdRegistrationDateTimeMap.set(pin._leaflet_id, registration.dateTime);
+					pin.addEventListener('mousedown', this.selectRegistrationWithPin.bind(this));
 					polyline.addTo(this.map);
 				});
 			}
@@ -300,5 +340,14 @@ export class FieldTripPage {
 		});
 
 		this.map.addLayer(onlineTileLayer);
+	}
+
+	private selectRegistrationWithPin(event: any) {
+		this.selectedRegistration = this.pinIdRegistrationDateTimeMap.get(event.target._leaflet_id);
+		const registration = this.fieldTrip.registrations.find(r => r.dateTime === this.selectedRegistration);
+		this.openInfoBox = registration.registrationType;
+		setTimeout(() => {
+			document.getElementById(`${registration.dateTime}`).scrollIntoView();
+		})
 	}
 }

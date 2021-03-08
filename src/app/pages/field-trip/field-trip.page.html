@@ -1,4 +1,4 @@
-<ion-content class="content">
+<ion-content class="content" [scrollX]="false" [scrollY]="false">
 	<app-page-header navUrl="/field-trips"></app-page-header>
 	<div class="field-trip-container">
 		<div class="map-container">
@@ -13,6 +13,31 @@
 					</div>
 					<div class="field arrow-field">
 						<ion-icon style="color: #719AAB;" name="caret-down-outline"></ion-icon>
+					</div>
+				</div>
+				<div class="registrations-container" *ngIf="openInfoBox === registrationType.Sheep">
+					<div 
+						class="registration-injured"
+						[ngClass]="{'selected-registration-injured': selectedRegistration === registration.dateTime}"
+						(click)="selectRegistration(registration)"
+						*ngFor="let registration of getRegistrationByType(fieldTrip.registrations, registrationType.Injured)" [id]="registration.dateTime">
+						<div class="field count-field">
+							<div class="bold-text">
+								Antall skadde dyr:
+							</div>
+							<div style="width: 5px;"></div>
+							<div class="text">
+								{{ registration.count }}
+							</div>
+						</div>
+						<div class="field comment-field">
+							<div class="bold-text">
+								Beskrivelse:
+							</div>
+							<div class="text">
+								{{ registration.comment }}
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -31,7 +56,7 @@
 						class="registration-injured"
 						[ngClass]="{'selected-registration-injured': selectedRegistration === registration.dateTime}"
 						(click)="selectRegistration(registration)"
-						*ngFor="let registration of getRegistrationByType(fieldTrip.registrations, registrationType.Injured)">
+						*ngFor="let registration of getRegistrationByType(fieldTrip.registrations, registrationType.Injured)" [id]="registration.dateTime">
 						<div class="field count-field">
 							<div class="bold-text">
 								Antall skadde dyr:
