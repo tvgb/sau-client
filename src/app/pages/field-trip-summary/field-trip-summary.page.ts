@@ -55,7 +55,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 	private unsubscribe$: Subject<void> = new Subject();
 	private networkHandler: any;
 
-	connectedToNetwork = false;
+	connectedToNetwork: boolean;
 	completeButtonPressed = false;
 	uploadCompleted = false;
 	uploadFailed = false;
@@ -77,7 +77,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		private platform: Platform,
 		private firestoreService: FirestoreService) { }
 
-	ionViewWillEnter(): void {
+	async ionViewWillEnter(): Promise<void> {
 		this.statusBarService.changeStatusBar(false, true);
 		this.fieldTripInfoSub = this.fieldTripInfo$.pipe(
 			takeUntil(this.unsubscribe$)
@@ -95,6 +95,13 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		}
 
 		this.getDateAndDuration();
+
+		if ((await Network.getStatus()).connected){
+			this.connectedToNetwork = true;
+		} else {
+			this.connectedToNetwork = false;
+		}
+
 		this.networkHandler = Network.addListener('networkStatusChange', (status) => {
 			this.connectedToNetwork = status.connected;
 			this.cdr.detectChanges();
@@ -116,11 +123,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 				}
 			}
 		});
-		this.getDateAndDuration();
-		this.getTotalSheep();
-		this.getInjuredSheep();
-		this.getDeadSheep();
-		this.getPredators();
 	}
 
 	getDateAndDuration(): void {
@@ -215,6 +217,11 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		} else {
 			this.map.addLayer(this.offlineTileLayer);
 			this.map.setZoom(this.mapService.getMaxZoom());
+			if (this.platform.is('mobileweb')) {
+				console.log('Toast: Disconnected to Internet, using OFFLINE map.');
+			} else {
+				this.alertService.presentNetworkToast(false);
+			}
 		}
 	}
 
