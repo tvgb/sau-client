@@ -77,7 +77,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		private platform: Platform,
 		private firestoreService: FirestoreService) { }
 
-	async ionViewWillEnter(): Promise<void> {
+	ionViewWillEnter() {
 		this.statusBarService.changeStatusBar(false, true);
 		this.fieldTripInfoSub = this.fieldTripInfo$.pipe(
 			takeUntil(this.unsubscribe$)
@@ -96,11 +96,9 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 		this.getDateAndDuration();
 
-		if ((await Network.getStatus()).connected){
-			this.connectedToNetwork = true;
-		} else {
-			this.connectedToNetwork = false;
-		}
+		Network.getStatus().then((status) => {
+			this.connectedToNetwork = status.connected;
+		});
 
 		this.networkHandler = Network.addListener('networkStatusChange', (status) => {
 			this.connectedToNetwork = status.connected;
@@ -217,11 +215,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		} else {
 			this.map.addLayer(this.offlineTileLayer);
 			this.map.setZoom(this.mapService.getMaxZoom());
-			if (this.platform.is('mobileweb')) {
-				console.log('Toast: Disconnected to Internet, using OFFLINE map.');
-			} else {
-				this.alertService.presentNetworkToast(false);
-			}
 		}
 	}
 
