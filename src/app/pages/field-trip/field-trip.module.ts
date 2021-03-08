@@ -8,6 +8,7 @@ import { FieldTripPageRoutingModule } from './field-trip-routing.module';
 
 import { FieldTripPage } from './field-trip.page';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { RegistrationModule } from '../registration/registration.module';
 
 @NgModule({
 	imports: [
@@ -15,7 +16,8 @@ import { SharedModule } from 'src/app/shared/shared.module';
 		FormsModule,
 		IonicModule,
 		FieldTripPageRoutingModule,
-		SharedModule
+		SharedModule,
+		RegistrationModule
 	],
 	declarations: [FieldTripPage]
 })

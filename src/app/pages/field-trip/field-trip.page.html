@@ -1,23 +1,128 @@
 <ion-content class="content" [scrollX]="false" [scrollY]="false">
-	<app-page-header navUrl="/field-trips"></app-page-header>
+	<div class="nav" (click)="navBack()" >
+		<ion-icon size="medium" name="arrow-back-outline"></ion-icon>
+		Oversikt
+		<ion-icon size="medium" style="opacity: 0;" name="arrow-back-outline"></ion-icon>
+	</div>
 	<div class="field-trip-container">
 		<div class="map-container">
 			<div id="field-trip-map"></div>
 		</div>
 		<div *ngIf="fieldTrip" class="info-container">
+
+			<!-- INFOBOX FOR REGISTRERTE SAU -->
 			<div class="info-box" style="border: 2px solid #719AAB;">
 				<div class="info-box-header">
 					<div class="field icon-field">
 						<ion-img [src]="sheepIconPath"></ion-img>
 						<div class="icon-text" style="color: #719AAB;"> {{ fieldTripsService.getRegisteredSheepCount(fieldTrip) }} </div>
 					</div>
-					<div class="field arrow-field">
+					<div class="field arrow-field" (click)="onOpenInfoBox(registrationType.Sheep)">
 						<ion-icon style="color: #719AAB;" name="caret-down-outline"></ion-icon>
 					</div>
 				</div>
 				<div class="registrations-container" *ngIf="openInfoBox === registrationType.Sheep">
 					<div 
-						class="registration-injured"
+						class="registration-sheep registration"
+						[ngClass]="{'selected-registration-sheep': selectedRegistration === registration.dateTime}"
+						(click)="selectRegistration(registration)"
+						*ngFor="let registration of getRegistrationByType(fieldTrip.registrations, registrationType.Sheep)" [id]="registration.dateTime">
+						<div class="field count-field">
+							<div class="count-field">
+								<div class="bold-text">
+									Totalt antall:
+								</div>
+								<div style="width: 5px;"></div>
+								<div class="text">
+									{{ registration.sheepInfo.totalSheep.totalSheep.count }}
+								</div>
+							</div>
+							<div style="flex-grow: 2;"></div>
+							<div class="count-field" *ngIf="registration.sheepInfo.sheepType.ewe.count > 0">
+								<div class="bold-text">
+									Søyer:
+								</div>
+								<div style="width: 5px;"></div>
+								<div class="text">
+									{{ registration.sheepInfo.sheepType.ewe.count }}
+								</div>
+							</div>
+							<div style="width: 15px;"></div>
+							<div class="count-field" *ngIf="registration.sheepInfo.sheepType.lamb.count > 0">
+								<div class="bold-text">
+									Lam:
+								</div>
+								<div style="width: 5px;"></div>
+								<div class="text">
+									{{ registration.sheepInfo.sheepType.lamb.count }}
+								</div>
+							</div>
+						</div>
+						<div class="field count-field" *ngIf="showSheepColourInfo(registration)">
+							<div class="bold-text">
+								Farge:
+							</div>
+							<div class="colour text" *ngIf="registration.sheepInfo.sheepColour.whiteSheep.count > 0">
+								Hvit <div style="background-color: #FFFFFF;" class="colour-bar"></div> {{ registration.sheepInfo.sheepColour.whiteSheep.count }}
+							</div>
+							<div class="colour text" *ngIf="registration.sheepInfo.sheepColour.blackSheep.count > 0">
+								Svart <div style="background-color: #000000;" class="colour-bar"></div> {{ registration.sheepInfo.sheepColour.blackSheep.count }}
+							</div>
+							<div class="colour text" *ngIf="registration.sheepInfo.sheepColour.brownSheep.count > 0">
+								Brun <div style="background-color: #422916;" class="colour-bar"></div> {{ registration.sheepInfo.sheepColour.brownSheep.count }}
+							</div>
+						</div>
+						<div class="field count-field" *ngIf="showCollarColourInfo(registration)">
+							<div class="bold-text">
+								Slips:
+							</div>
+							<div class="colour text" *ngIf="registration.sheepInfo.collarColour.blueCollar.count > 0">
+								Blå <div style="background-color: #005BE4;" class="colour-bar"></div> {{ registration.sheepInfo.collarColour.blueCollar.count }}
+							</div>
+							<div class="colour text" *ngIf="registration.sheepInfo.collarColour.greenCollar.count > 0">
+								Grønn <div style="background-color: #198C0F;" class="colour-bar"></div> {{ registration.sheepInfo.collarColour.greenCollar.count }}
+							</div>
+							<div class="colour text" *ngIf="registration.sheepInfo.collarColour.yellowCollar.count > 0">
+								Gul <div style="background-color: #E2E700;" class="colour-bar"></div> {{ registration.sheepInfo.collarColour.yellowCollar.count }}
+							</div>
+							<div class="colour text" *ngIf="registration.sheepInfo.collarColour.redCollar.count > 0">
+								Rød <div style="background-color: #BD0000;" class="colour-bar"></div> {{ registration.sheepInfo.collarColour.redCollar.count }}
+							</div>
+							<div class="colour text" *ngIf="registration.sheepInfo.collarColour.missingCollar.count > 0">
+								Mangler <div style="background-color: #595959;" class="colour-bar"></div> {{ registration.sheepInfo.collarColour.missingCollar.count }}
+							</div>
+						</div>
+						<div class="field comment-field">
+							<div class="bold-text">
+								Øremerker:
+							</div>
+							<div class="text ear-tag" *ngFor="let earTag of registration.sheepInfo.earTag.earTagInfos">
+								<app-ear-tag-icon
+									[coloursPicked]="earTag.colours"
+									[smallVersion]="true">
+								</app-ear-tag-icon>
+								<div style="width: 15px;"></div>
+								{{ earTag.owner }}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- INFOBOX FOR SKADD SAU -->
+			<div class="info-box" style="border: 2px solid #FFAE69;">
+				<div class="info-box-header">
+					<div class="field icon-field">
+						<ion-img [src]="injuredSheepIconPath"></ion-img>
+						<div class="icon-text" style="color: #FFAE69;"> {{ fieldTripsService.getInjuredSheepCount(fieldTrip) }} </div>
+					</div>
+					<div class="field arrow-field" (click)="onOpenInfoBox(registrationType.Injured)">
+						<ion-icon style="color: #FFAE69;" name="caret-down-outline"></ion-icon>
+					</div>
+				</div>
+				<div class="registrations-container" *ngIf="openInfoBox === registrationType.Injured">
+					<div 
+						class="registration-injured registration"
 						[ngClass]="{'selected-registration-injured': selectedRegistration === registration.dateTime}"
 						(click)="selectRegistration(registration)"
 						*ngFor="let registration of getRegistrationByType(fieldTrip.registrations, registrationType.Injured)" [id]="registration.dateTime">
@@ -41,29 +146,77 @@
 					</div>
 				</div>
 			</div>
-			<div class="info-box" style="border: 2px solid #FFAE69;">
+
+			<!-- INFOBOX FOR DØDE SAU -->
+			<div class="info-box" style="border: 2px solid #595959;">
 				<div class="info-box-header">
 					<div class="field icon-field">
-						<ion-img [src]="injuredSheepIconPath"></ion-img>
-						<div class="icon-text" style="color: #FFAE69;"> {{ fieldTripsService.getInjuredSheepCount(fieldTrip) }} </div>
+						<ion-img [src]="deadSheepIconPath"></ion-img>
+						<div class="icon-text" style="color: #595959;"> {{ fieldTripsService.getInjuredSheepCount(fieldTrip) }} </div>
 					</div>
-					<div class="field arrow-field" (click)="onOpenInfoBox(registrationType.Injured)">
-						<ion-icon style="color: #FFAE69;" name="caret-down-outline"></ion-icon>
+					<div class="field arrow-field" (click)="onOpenInfoBox(registrationType.Dead)">
+						<ion-icon style="color: #595959;" name="caret-down-outline"></ion-icon>
 					</div>
 				</div>
-				<div class="registrations-container" *ngIf="openInfoBox === registrationType.Injured">
+				<div class="registrations-container" *ngIf="openInfoBox === registrationType.Dead">
 					<div 
-						class="registration-injured"
-						[ngClass]="{'selected-registration-injured': selectedRegistration === registration.dateTime}"
+						class="registration-dead registration"
+						[ngClass]="{'selected-registration-dead': selectedRegistration === registration.dateTime}"
 						(click)="selectRegistration(registration)"
-						*ngFor="let registration of getRegistrationByType(fieldTrip.registrations, registrationType.Injured)" [id]="registration.dateTime">
+						*ngFor="let registration of getRegistrationByType(fieldTrip.registrations, registrationType.Dead)" [id]="registration.dateTime">
 						<div class="field count-field">
 							<div class="bold-text">
-								Antall skadde dyr:
+								Antall døde dyr:
 							</div>
 							<div style="width: 5px;"></div>
 							<div class="text">
 								{{ registration.count }}
+							</div>
+						</div>
+						<div class="field comment-field">
+							<div class="bold-text">
+								Beskrivelse:
+							</div>
+							<div class="text">
+								{{ registration.comment }}
+							</div>
+						</div>
+						<div class="field comment-field" *ngIf="registration.images.length > 0">
+							<div class="bold-text">
+								Bilder:
+							</div>
+							<div class="images" *ngFor="let image of registration.images">
+								<ion-img class="photo" [src]="'data:image/png;base64, ' +  image"></ion-img>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- INFOBOX FOR ROVDYR -->
+			<div class="info-box" style="border: 2px solid #C26B69;">
+				<div class="info-box-header">
+					<div class="field icon-field">
+						<ion-img [src]="predatorIconPath"></ion-img>
+						<div class="icon-text" style="color: #C26B69;"> {{ fieldTripsService.getInjuredSheepCount(fieldTrip) }} </div>
+					</div>
+					<div class="field arrow-field" (click)="onOpenInfoBox(registrationType.Predator)">
+						<ion-icon style="color: #C26B69;" name="caret-down-outline"></ion-icon>
+					</div>
+				</div>
+				<div class="registrations-container" *ngIf="openInfoBox === registrationType.Predator">
+					<div 
+						class="registration-predator registration"
+						[ngClass]="{'selected-registration-predator': selectedRegistration === registration.dateTime}"
+						(click)="selectRegistration(registration)"
+						*ngFor="let registration of getRegistrationByType(fieldTrip.registrations, registrationType.Predator)" [id]="registration.dateTime">
+						<div class="field count-field">
+							<div class="bold-text">
+								Rovdyr:
+							</div>
+							<div style="width: 5px;"></div>
+							<div class="text">
+								{{ registration.predatorType }}
 							</div>
 						</div>
 						<div class="field comment-field">
