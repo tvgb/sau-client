@@ -94,6 +94,10 @@ export class FieldTripSummaryPage implements AfterViewInit {
 			this.getPredators();
 		}
 
+		Network.getStatus().then((status) => {
+			this.connectedToNetwork = status.connected;
+		});
+
 		this.getDateAndDuration();
 
 		Network.getStatus().then((status) => {

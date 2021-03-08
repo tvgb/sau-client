@@ -39,7 +39,7 @@ export class MapPage {
 	private onlineTileLayer: any;
 	private offlineTileLayer: any;
 	private trackedRoute = [];
-	private networkHandler: any;
+	private networkHandler;
 
 	@ViewChild('lowPowerModeOverlay') lowPowerModeOverlay: ElementRef;
 	@ViewChild('lowPowerModeHelpMessage') lowPowerModeHelpMessage: ElementRef;
@@ -80,6 +80,7 @@ export class MapPage {
 	crosshairMarker: any;
 	addMarkerAgain: boolean;
 
+
 	private positionMarkerCoordinates: Coordinate;
 
 	private unsubscribe$: Subject<void> = new Subject<void>();
@@ -104,15 +105,16 @@ export class MapPage {
 			if (status.connected) {
 				this.map.removeLayer(this.offlineTileLayer);
 				this.map.addLayer(this.onlineTileLayer);
+
 				if (this.platform.is('mobileweb')) {
 					console.log('Toast: Connected to Internet, using ONLINE map.');
 				} else {
 					this.alertService.presentNetworkToast(true);
 				}
-
 			} else {
 				this.map.removeLayer(this.onlineTileLayer);
 				this.map.addLayer(this.offlineTileLayer);
+
 				if (this.platform.is('mobileweb')) {
 					console.log('Toast: Disconnected to Internet, using OFFLINE map.');
 				} else {

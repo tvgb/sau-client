@@ -1,0 +1,149 @@
+
+.field-trip-container {
+	padding: 0 10px;
+}
+
+.nav {
+	height: 5vh;
+	display: flex;
+	align-items: center;
+	margin: 0 10px;
+	justify-content: space-between;
+	font-size: 24px;
+	font-weight: 200;
+}
+
+.map-container {
+	height: 30vh;
+}
+
+#field-trip-map {
+	height: 100%;
+}
+
+.info-container {
+	height: 65vh;
+	overflow-y: auto;
+}
+
+.info-box {
+	margin-top: 10px;
+	border-radius: 3px;
+	display: flex;
+	flex-direction: column;
+}
+
+.info-box-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.registrations-container {
+	overflow-y: auto;
+	max-height: 40vh;
+}
+
+.registration {
+	border-radius: 3px;
+	margin: 5px;
+}
+
+.registration-injured {
+	border: 2px solid rgba(255, 174, 105, 0.2);
+}
+
+.selected-registration-injured {
+	border: 2px solid #FFAE69;
+}
+
+.registration-sheep {
+	border: 2px solid rgba(113, 154, 171, 0.2);
+}
+
+.selected-registration-sheep {
+	border: 2px solid #719AAB;
+}
+
+.registration-dead {
+	border: 2px solid rgba(89, 89, 89, 0.2);
+}
+
+.selected-registration-dead {
+	border: 2px solid #595959;
+}
+
+.registration-predator {
+	border: 2px solid rgba(194, 107, 105, 0.2);
+}
+
+.selected-registration-predator {
+	border: 2px solid #C26B69;
+}
+
+.icon-field {
+	display: flex;
+	align-items: center;
+}
+
+.arrow-field {
+	font-size: large;
+	display: flex;
+	align-items: center;
+}
+
+.count-field {
+	display: flex;
+	align-items: center;
+}
+
+.icon-text {
+	font-size: 23px;
+	margin-left: 5px;
+	font-weight: 500;
+}
+
+.bold-text {
+	font-weight: 400;
+	color: white;
+}
+
+.text {
+	font-weight: 200;
+	color: white;
+}
+
+.field {
+	padding: 7px;
+}
+
+ion-img {
+	width: 30px;
+}
+
+.colour {
+	margin-left: 15px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.colour-bar {
+	width: 20px;
+	height: 3px;
+	border-radius: 3px;
+}
+
+.ear-tag {
+	margin-top: 5px;
+	display: flex;
+}
+
+.images {
+	display: flex;
+	justify-content: space-evenly;
+}
+
+.photo {
+	width: 40%;
+}
