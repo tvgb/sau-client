@@ -10,6 +10,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Plugins } from '@capacitor/core';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel';
+import { Registration } from 'src/app/shared/classes/Registration';
 
 const { Keyboard } = Plugins;
 
@@ -60,12 +61,20 @@ export class NewFieldTripPage {
 		if (this.newFieldTripForm.valid) {
 			Keyboard.hide();
 			this.fieldTripId = uuidv4();
-			this.currentFieldTripInfo = new FieldTripInfo(
-				{fieldtripId: this.fieldTripId, overseerName: this.newFieldTripForm.controls.overseerName.value,
-					fNumber: this.newFieldTripForm.controls.fNumber.value, bNumber: this.newFieldTripForm.controls.bNumber.value,
-					municipality: this.newFieldTripForm.controls.municipality.value, participants: this.newFieldTripForm.controls.participants.value,
-					weather: this.newFieldTripForm.controls.weather.value, description: this.newFieldTripForm.controls.description.value,
-					dateTimeStarted: Date.now() });
+			this.currentFieldTripInfo = {
+				fieldTripId: this.fieldTripId,
+				overseerName: this.newFieldTripForm.controls.overseerName.value,
+				fNumber: this.newFieldTripForm.controls.fNumber.value,
+				bNumber: this.newFieldTripForm.controls.bNumber.value,
+				municipality: this.newFieldTripForm.controls.municipality.value,
+				participants: this.newFieldTripForm.controls.participants.value,
+				weather: this.newFieldTripForm.controls.weather.value,
+				description: this.newFieldTripForm.controls.description.value,
+				dateTimeStarted: Date.now(),
+				registrations: [],
+				overseerId: '',
+				trackedRoute: []
+			} as FieldTripInfo;
 			this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
 			this.navController.navigateForward(this.mapUrl);
 		}
