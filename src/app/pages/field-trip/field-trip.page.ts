@@ -6,7 +6,6 @@ import { MapUIService } from 'src/app/shared/services/map-ui.service';
 import { FieldTripsService } from '../field-trips/field-trips.service';
 import { Registration, SheepRegistration } from 'src/app/shared/classes/Registration';
 import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
-import { NgIf } from '@angular/common';
 import { NavController } from '@ionic/angular';
 
 
@@ -93,7 +92,6 @@ export class FieldTripPage {
 						registration.registrationType,
 						true
 					);
-
 
 					pin.addTo(this.map);
 					this.pinIdRegistrationDateTimeMap.set(pin._leaflet_id, registration.dateTime);
