@@ -66,7 +66,6 @@ export class NewFieldTripPage {
 				dateTimeStarted: Date.now()
 			});
 
-		console.log(JSON.stringify(this.currentFieldTripInfo));
 		this.store.dispatch(new SetCurrentFieldTrip(this.currentFieldTripInfo));
 		this.navController.navigateForward(this.mapUrl);
 	}
