@@ -5,7 +5,7 @@ import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -34,6 +34,7 @@ import { environment } from '../environments/environment';
 		AppRoutingModule,
 		HttpClientModule,
 		ReactiveFormsModule,
+		FormsModule,
 		AngularFireModule.initializeApp(environment.firebaseConfig), // imports firebase/app needed for everything
 		AngularFireAuthModule,
 		AngularFirestoreModule,

@@ -152,7 +152,7 @@
 				<div class="info-box-header">
 					<div class="field icon-field">
 						<ion-img [src]="deadSheepIconPath"></ion-img>
-						<div class="icon-text" style="color: #595959;"> {{ fieldTripsService.getInjuredSheepCount(fieldTrip) }} </div>
+						<div class="icon-text" style="color: #595959;"> {{ fieldTripsService.getDeadSheepCount(fieldTrip) }} </div>
 					</div>
 					<div class="field arrow-field" (click)="onOpenInfoBox(registrationType.Dead)">
 						<ion-icon style="color: #595959;" name="caret-down-outline"></ion-icon>
@@ -186,7 +186,7 @@
 								Bilder:
 							</div>
 							<div class="images" *ngFor="let image of registration.images">
-								<ion-img class="photo" [src]="'data:image/png;base64, ' +  image"></ion-img>
+								<ion-img class="photo" [src]="image"></ion-img>
 							</div>
 						</div>
 					</div>
@@ -198,7 +198,7 @@
 				<div class="info-box-header">
 					<div class="field icon-field">
 						<ion-img [src]="predatorIconPath"></ion-img>
-						<div class="icon-text" style="color: #C26B69;"> {{ fieldTripsService.getInjuredSheepCount(fieldTrip) }} </div>
+						<div class="icon-text" style="color: #C26B69;"> {{ fieldTripsService.getPredatorCount(fieldTrip) }} </div>
 					</div>
 					<div class="field arrow-field" (click)="onOpenInfoBox(registrationType.Predator)">
 						<ion-icon style="color: #C26B69;" name="caret-down-outline"></ion-icon>

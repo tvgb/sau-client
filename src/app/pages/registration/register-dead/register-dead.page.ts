@@ -19,6 +19,7 @@ export class RegisterDeadPage {
 	removeAlertMessage = 'Ønsker du å fjerne bilde fra registrering?';
 	images = [];
 	capturedImage: any;
+	base64Url = 'data:image/jpeg;base64, ';
 	submitAttempt = false;
 	registerDeadForm: FormGroup;
 	invalidText = 'Obligatorisk felt';
@@ -42,11 +43,12 @@ export class RegisterDeadPage {
 
 	async addPhoto() {
 		const image = await Camera.getPhoto({
-			quality: 90,
+			quality: 40,
 			allowEditing: false,
 			resultType: CameraResultType.Base64
 		});
-		this.capturedImage = image.base64String;
+		this.capturedImage = this.base64Url + image.base64String;
+
 		this.images.push(this.capturedImage);
 		this.cdr.detectChanges();
 	}

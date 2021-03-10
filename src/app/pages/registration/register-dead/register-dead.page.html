@@ -27,7 +27,7 @@
                     </ng-template>
                     <div *ngIf="images.length > 0, else elseblock" class="photos-container">
                         <div (click)="confirmPhotoRemoval(i)" *ngFor="let image of images; index as i" >
-                            <ion-img class="photo" *ngIf="capturedImage" [src]="'data:image/png;base64, ' +  images[i]"></ion-img>
+                            <ion-img class="photo" *ngIf="capturedImage" [src]="images[i]"></ion-img>
                         </div>
                         <div class="add-photo-box">
                             <div class="plus-icon" (click)="addPhoto()">+</div>

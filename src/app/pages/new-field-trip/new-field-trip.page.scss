@@ -1,16 +1,16 @@
 .new-field-trip-container {
-    height: 100%;
+    background-color: var(--ion-background-color);
 }
 
 .field-trip-info-list {
     background-color: var(--ion-background-color);
-    margin-top: 40px;
+    margin-top: 20px;
     margin-left: 35px;
     margin-right: 35px;
 }
 
-.invalid {
-    color: red;
+.participants-list {
+    background-color: var(--ion-background-color);
     margin-bottom: 30px;
 }
 
@@ -29,11 +29,36 @@
     font-weight: 200;
 } 
 
-ion-item {
+.add-participant-container {
     margin-top: 5px;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.add-participant-name {
+    display: flex;
+    max-width: 80% !important;
+}
+
+.add-participant-box {
+    width: 39px;
+    height: 39px;
+    border: 1px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+ion-input {
     --background: rgba(255, 255, 255, 0.05);
-    --border-color: rgba(255, 255, 255, 1);
-    margin-bottom: 20px;
+}
+
+ion-item {
+    --background: var(--ion-background-color);
+    --border-color: var(--ion-background-color);
 }
 
 ion-select {

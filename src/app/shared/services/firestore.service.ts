@@ -32,6 +32,13 @@ export class FirestoreService {
 		});
 	}
 
+	async getCurrentUser(userId: string): Promise<any> {
+		const membersRef = this.fireStore.collection('members').ref;
+		return membersRef.where('id', '==', userId).get().then((members) => {
+			return members.docs[0].data();
+		});
+	}
+
 	async getFieldTrips(): Promise<FieldTripInfo[]> {
 		const userId = this.authService.getUserId();
 

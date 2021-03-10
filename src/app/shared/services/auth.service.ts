@@ -4,7 +4,6 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { Plugins } from '@capacitor/core';
 import { cordovaInstance } from '@ionic-native/core';
 import { NavController } from '@ionic/angular';
-import * as firebase from 'firebase/app';
 
 @Injectable({
 	providedIn: 'root'

@@ -87,7 +87,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 		this.descriptionValue = this.fieldTripInfo.description;
 
-		if (this.fieldTripInfo.registrations) {
+		if (this.fieldTripInfo.registrations.length > 0) {
 			this.getTotalSheep();
 			this.getInjuredSheep();
 			this.getDeadSheep();
