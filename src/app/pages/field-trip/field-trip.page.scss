@@ -11,10 +11,11 @@
 	justify-content: space-between;
 	font-size: 24px;
 	font-weight: 200;
+	padding-top: calc(env(safe-area-inset-top) + 20px);
 }
 
 .map-container {
-	height: 30vh;
+	height: calc(30vh - (env(safe-area-inset-top) + 20px));
 }
 
 #field-trip-map {
