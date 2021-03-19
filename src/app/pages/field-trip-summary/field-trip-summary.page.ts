@@ -213,8 +213,6 @@ export class FieldTripSummaryPage {
 		this.setOnlineTileLayer();
 		this.setOfflineTileLayer();
 
-		console.log('CONNECTED TO NETOWRK: ' + this.connectedToNetwork);
-
 		if (this.connectedToNetwork) {
 			this.map.addLayer(this.onlineTileLayer);
 		} else {

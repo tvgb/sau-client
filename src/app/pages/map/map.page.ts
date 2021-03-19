@@ -148,8 +148,6 @@ export class MapPage {
 					lastRegistration.registrationType
 				);
 				pin.addTo(this.map);
-				console.log('POLYLINE: ');
-				console.log(JSON.stringify(polyline));
 				polyline.addTo(this.map);
 
 				this.gpsService.addToTrackedRoute(lastRegistration.gpsPos);
