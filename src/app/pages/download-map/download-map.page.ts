@@ -60,7 +60,7 @@ export class DownloadMapPage implements AfterViewInit {
 	initMap(): void {
 		this.gpsService.getCurrentPosition().then((res) => {
 			this.map = L.map('map', {
-				center: [ res.coords.latitude, res.coords.longitude ],
+				center: [ res.lat, res.lng ],
 				zoom: 11,
 				zoomControl: false,
 				attributionControl: false
