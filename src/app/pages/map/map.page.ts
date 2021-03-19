@@ -173,10 +173,10 @@ export class MapPage {
 		}, 100);
 	}
 
-	navigateToRegistration(type: RegistrationType) {
-		this.regService.registrationPosition = this.map.getCenter();
-		this.regService.gpsPosition = this.posistionMarker.getLatLng();
+	async navigateToRegistration(type: RegistrationType) {
 		this.regService.registrationType = type;
+		this.regService.registrationPosition = this.map.getCenter();
+		this.regService.gpsPosition = await this.gpsService.getCurrentPosition();
 		switch (type) {
 			case RegistrationType.Sheep:
 				this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);

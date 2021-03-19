@@ -76,6 +76,9 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		private alertService: AlertService,
 		private platform: Platform,
 		private firestoreService: FirestoreService) { }
+	ngAfterViewInit(): void {
+		throw new Error('Method not implemented.');
+	}
 
 	ionViewWillEnter() {
 		this.statusBarService.changeStatusBar(false, true);
@@ -127,6 +130,14 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		});
 	}
 
+	ionViewDidEnter() {
+		setTimeout(() => {
+			if (!this.map) {
+				this.initMap();
+			}
+		}, 100);
+	}
+
 	getDateAndDuration(): void {
 		this.date = this.fieldTripInfo.dateTimeStarted;
 		let delta = Math.abs(this.fieldTripInfo.dateTimeEnded - this.fieldTripInfo.dateTimeStarted) / 1000;
@@ -171,12 +182,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		const predatorsRegistrations = this.fieldTripInfo.registrations
 		.filter(reg => reg.registrationType === RegistrationType.Predator) as PredatorRegistration[];
 		this.predators = predatorsRegistrations.length;
-	}
-
-	ngAfterViewInit(): void {
-		setTimeout(_ => {
-			this.initMap();
-		});
 	}
 
 	async initMap(): Promise<void> {
