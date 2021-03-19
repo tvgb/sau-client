@@ -90,21 +90,18 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 		this.descriptionValue = this.fieldTripInfo.description;
 
-		if (this.fieldTripInfo.registrations.length > 0) {
+		if (this.fieldTripInfo.registrations) {
 			this.getTotalSheep();
 			this.getInjuredSheep();
 			this.getDeadSheep();
 			this.getPredators();
 		}
 
-		Network.getStatus().then((status) => {
-			this.connectedToNetwork = status.connected;
-		});
-
 		this.getDateAndDuration();
 
 		Network.getStatus().then((status) => {
 			this.connectedToNetwork = status.connected;
+			this.cdr.detectChanges();
 		});
 
 		this.networkHandler = Network.addListener('networkStatusChange', (status) => {

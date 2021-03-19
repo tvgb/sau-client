@@ -58,7 +58,6 @@
                     Du må være koblet til internett for å fullføre en oppsynstur.
                 </div>
             </div>
-			
 			<ion-button [disabled]="!connectedToNetwork" (click)="onCompleteSummary()" shape="round" color="primary" id="complete-button" expand="block">FULLFØR</ion-button>
 		</ion-col>
 		<ion-col *ngIf="completeButtonPressed">
