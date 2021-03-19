@@ -39,12 +39,21 @@ export class MapService {
 			}
 		});
 
-		gpsService.getLastTrackedPosition().subscribe(pos => {
-			if (pos) {
-				this.lastTrackedPosition = pos;
-				this.setOfflineMapId(this.lastTrackedPosition);
-			}
-		});
+		// gpsService.getLastTrackedPosition().subscribe(pos => {
+		// 	if (pos) {
+		// 		this.lastTrackedPosition = pos;
+		// 		this.setOfflineMapId(this.lastTrackedPosition);
+		// 	}
+		// });
+
+		gpsService.getLastTrackedPosition().pipe(
+			map((pos) => {
+				if (pos) {
+					this.lastTrackedPosition = pos;
+					this.setOfflineMapId(this.lastTrackedPosition);
+				}
+			})
+		);
 
 		this.finishDownloadingAndDeleting();
 	}
@@ -64,7 +73,7 @@ export class MapService {
 	async getTile(z: number, x: number, y: number): Promise<string> {
 		if (!this.mapId) {
 			await this.gpsService.getCurrentPosition().then(async (pos) => {
-				await this.setOfflineMapId({lat: pos.coords.latitude, lng: pos.coords.longitude});
+				await this.setOfflineMapId({lat: pos.lat, lng: pos.lng});
 			});
 		}
 		const img = this.fsService.readFile(`maps/${this.mapId}/mapTiles/${z}/${x}/${y}/${this.MAP_TILE_NAME}`);

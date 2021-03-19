@@ -67,6 +67,8 @@ export class MapUIService {
 		}
 
 		const pin = L.marker([registrationPos.lat, registrationPos.lng], {icon: newPin});
+		console.log('GPS POS:');
+		console.log(JSON.stringify(registrationPos));
 		const polyline = L.polyline([registrationPos, gpsPos], {color, dashArray: '10, 5'});
 
 		return {pin, polyline};

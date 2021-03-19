@@ -23,7 +23,7 @@ import { AlertService } from 'src/app/shared/services/alert.service';
 	styleUrls: ['./field-trip-summary.page.scss'],
 })
 
-export class FieldTripSummaryPage implements AfterViewInit {
+export class FieldTripSummaryPage {
 
 	fieldTripInfo: FieldTripInfo;
 	date: number;
@@ -76,15 +76,12 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		private alertService: AlertService,
 		private platform: Platform,
 		private firestoreService: FirestoreService) { }
-	ngAfterViewInit(): void {
-		throw new Error('Method not implemented.');
-	}
 
 	ionViewWillEnter() {
 		this.statusBarService.changeStatusBar(false, true);
 		this.fieldTripInfoSub = this.fieldTripInfo$.pipe(
 			takeUntil(this.unsubscribe$)
-		) .subscribe((res) => {
+		).subscribe((res) => {
 			this.fieldTripInfo = res;
 		});
 
@@ -215,6 +212,8 @@ export class FieldTripSummaryPage implements AfterViewInit {
 
 		this.setOnlineTileLayer();
 		this.setOfflineTileLayer();
+
+		console.log('CONNECTED TO NETOWRK: ' + this.connectedToNetwork);
 
 		if (this.connectedToNetwork) {
 			this.map.addLayer(this.onlineTileLayer);
