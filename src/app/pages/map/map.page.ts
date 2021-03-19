@@ -165,12 +165,12 @@ export class MapPage {
 	}
 
 	ionViewDidEnter(): void {
-		setTimeout(_ => {
+		setTimeout(() => {
 			this.gpsService.setTracking(true);
 			if (!this.map) {
 				this.initMap();
 			}
-		});
+		}, 100);
 	}
 
 	navigateToRegistration(type: RegistrationType) {
