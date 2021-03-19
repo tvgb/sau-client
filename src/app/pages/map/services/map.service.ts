@@ -39,21 +39,12 @@ export class MapService {
 			}
 		});
 
-		// gpsService.getLastTrackedPosition().subscribe(pos => {
-		// 	if (pos) {
-		// 		this.lastTrackedPosition = pos;
-		// 		this.setOfflineMapId(this.lastTrackedPosition);
-		// 	}
-		// });
-
-		gpsService.getLastTrackedPosition().pipe(
-			map((pos) => {
-				if (pos) {
-					this.lastTrackedPosition = pos;
-					this.setOfflineMapId(this.lastTrackedPosition);
-				}
-			})
-		);
+		gpsService.getLastTrackedPosition().subscribe(pos => {
+			if (pos) {
+				this.lastTrackedPosition = pos;
+				this.setOfflineMapId(this.lastTrackedPosition);
+			}
+		});
 
 		this.finishDownloadingAndDeleting();
 	}
