@@ -1,0 +1,109 @@
+<ion-content>
+	<app-page-header
+		navUrl="/main-menu"
+		pageHeaderText="Oppsynsturer">
+	</app-page-header>
+	<div *ngIf="fieldTrips.length > 0" class="field-trips-container">
+		<div class="field-trip-card" *ngFor="let fieldTrip of fieldTrips">
+			<div class="top-row">
+				<div class="field">
+					<div class="bold-text">Registrert av</div>
+					<div class="text">{{ fieldTrip.overseerName }}</div>
+				</div>
+				<div (click)="navigateToFieldTrip(fieldTrip)" class="field">
+					<ion-icon size="large" name="arrow-forward-outline"></ion-icon>
+				</div>
+			</div>
+
+			<div class="middle-row">
+				<div class="field">
+					<div class="bold-text">Dato</div>
+					<div class="text">  {{ fieldTrip.dateTimeStarted | date:'dd.MM.yyyy HH:mm' }}</div>
+				</div>
+				<div class="field">
+					<div class="bold-text">Tid brukt</div>
+					<div class="text">{{ getDateAndDuration(fieldTrip.dateTimeStarted, fieldTrip.dateTimeEnded) }}</div>
+				</div>
+			</div>
+
+			<div class="bottom-row">
+				<div class="field icon-field">
+					<ion-img [src]="sheepIconPath"></ion-img>
+					<div class="icon-text" style="color: #719AAB;"> {{ fieldTripsService.getRegisteredSheepCount(fieldTrip) }} </div>
+				</div>
+				<div class="field icon-field">
+					<ion-img [src]="injuredSheepIconPath"></ion-img>
+					<div class="icon-text" style="color: #FFAE69;"> {{ fieldTripsService.getInjuredSheepCount(fieldTrip) }} </div>
+				</div>
+				<div class="field icon-field">
+					<ion-img [src]="deadSheepIconPath"></ion-img>
+					<div class="icon-text" style="color: #5A5A5A;"> {{ fieldTripsService.getDeadSheepCount(fieldTrip) }} </div>
+				</div>
+				<div class="field icon-field">
+					<ion-img [src]="predatorIconPath"></ion-img>
+					<div class="icon-text" style="color: #C26B69;"> {{ fieldTripsService.getPredatorCount(fieldTrip) }} </div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div *ngIf="loading" class="field-trips-container" >
+		<div class="field-trip-card" *ngFor="let item of [1, 2, 3, 4, 5]">
+			<div class="top-row">
+				<div class="field">
+					<div class="bold-text">    
+						<ion-skeleton-text class="bold-text-skeleton" animated></ion-skeleton-text>
+					</div>
+					<div class="text">
+						<ion-skeleton-text class="text-skeleton" animated></ion-skeleton-text>
+					</div>
+				</div>
+				<div class="field">
+					<ion-skeleton-text class="icon-skeleton" animated></ion-skeleton-text>
+				</div>
+			</div>
+
+			<div class="middle-row">
+				<div class="field">
+					<div class="bold-text">
+						<ion-skeleton-text class="bold-text-skeleton" animated></ion-skeleton-text>
+					</div>
+					<div class="text">
+						<ion-skeleton-text class="text-skeleton" animated></ion-skeleton-text>
+					</div>
+				</div>
+				<div class="field">
+					<div class="bold-text">
+						<ion-skeleton-text class="bold-text-skeleton" animated></ion-skeleton-text>
+					</div>
+					<div class="text">
+						<ion-skeleton-text class="text-skeleton" animated></ion-skeleton-text>
+					</div>
+				</div>
+			</div>
+
+			<div class="bottom-row">
+				<div class="field icon-field">
+					<ion-skeleton-text class="icon-skeleton" animated></ion-skeleton-text>
+				</div>
+				<div class="field icon-field">
+					<ion-skeleton-text class="icon-skeleton" animated></ion-skeleton-text>
+				</div>
+				<div class="field icon-field">
+					<ion-skeleton-text class="icon-skeleton" animated></ion-skeleton-text>
+				</div>
+				<div class="field icon-field">
+					<ion-skeleton-text class="icon-skeleton" animated></ion-skeleton-text>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="info-box" *ngIf="fieldTrips.length < 1 && !noInternet && !loading && !error">
+		Det finnes ingen tilgjengelige oppsynsturer for ditt beitelag.
+	</div>
+	<div class="info-box" *ngIf="noInternet">
+		Du må være koblet til internett for å se lagrede oppsynsturer.
+	</div>
+	<div class="info-box" *ngIf="error">
+		Noe gikk galt under hentingen av oppsynsturer. Sørg for at du er koblet til internett og logget inn.
+	</div>
+</ion-content>

@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { AlertController, NavController } from '@ionic/angular';
-import { Select, Store } from '@ngxs/store';
-import { StateResetAll } from 'ngxs-reset-plugin';
-import { Observable, Subscription } from 'rxjs';
+import { NavController } from '@ionic/angular';
+import { Select } from '@ngxs/store';
+import { Observable, Subject, Subscription } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { MainCategory } from 'src/app/shared/classes/Category';
 import { MainCategoryId } from 'src/app/shared/enums/MainCategoryId';
 import { SheepInfoModel } from 'src/app/shared/interfaces/SheepInfoModel';
+import { AlertService } from 'src/app/shared/services/alert.service';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { RegistrationService } from '../services/registration.service';
 import { TextToSpeechService } from '../services/text-to-speech.service';
@@ -21,8 +21,12 @@ export class SummaryPage {
 	currentSheepInfo: SheepInfoModel;
 	currentMainCategory: MainCategory;
 	mainCategoryIds = MainCategoryId;
-	private totalSheep = 0;
 	missingLambText = '';
+	inconsistencies: string[] = [];
+
+	alertHeader = 'Fullfør registrering';
+	alertMessage = 'Ønsker du å fullføre registrering av sau?';
+	mapLink = '/map';
 
 	@Select(SheepInfoState.getSheepInfo) sheepInfo$: Observable<SheepInfoModel>;
 	@Select(SheepInfoState.getCurrentMainCategory) currentMainCategory$: Observable<MainCategory>;
@@ -30,23 +34,26 @@ export class SummaryPage {
 	sheepInfoSub: Subscription;
 	currentMainCategorySub: Subscription;
 
+	private unsubscribe$: Subject<void> = new Subject();
+
   	constructor(
+		private alertService: AlertService,
 		private navController: NavController,
 		private tts: TextToSpeechService,
-		private store: Store,
-		private alertController: AlertController,
-		private router: Router,
 		private registrationService: RegistrationService) { }
 
 	ionViewWillEnter(): void {
 		this.tts.speak('Oppsummering');
-
-
-		this.sheepInfoSub = this.sheepInfo$.subscribe(res => {
+		this.sheepInfoSub = this.sheepInfo$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(res => {
 			this.currentSheepInfo = res;
+			this.checkForInconsistencies();
 		});
 
-		this.currentMainCategorySub = this.currentMainCategory$.subscribe(res => {
+		this.currentMainCategorySub = this.currentMainCategory$.pipe(
+			takeUntil(this.unsubscribe$)
+		).subscribe(res => {
 			if (res) {
 				this.currentMainCategory = res;
 			}
@@ -58,18 +65,17 @@ export class SummaryPage {
 		this.navController.back();
 	}
 
-	checkTotalSheep(): boolean {
-		this.totalSheep = this.currentSheepInfo.sheepType.ewe.count + this.currentSheepInfo.sheepType.lamb.count;
-		if (this.totalSheep === this.currentSheepInfo.totalSheep.totalSheep.count) {
-			return true;
-		}
-		return false;
-	}
+	checkForInconsistencies(): void {
+		this.inconsistencies = [];
 
-	checkCollarNumber(): boolean {
-		const totalLambs = this.currentSheepInfo.collarColour.greenCollar.count +
-		this.currentSheepInfo.collarColour.yellowCollar.count * 2 + this.currentSheepInfo.collarColour.redCollar.count * 3;
-		const missingLambs = totalLambs - this.currentSheepInfo.sheepType.lamb.count;
+		const totalLambsFromCollars =
+			this.currentSheepInfo.collarColour.greenCollar.count +
+			this.currentSheepInfo.collarColour.yellowCollar.count * 2 +
+			this.currentSheepInfo.collarColour.redCollar.count * 3;
+
+		const missingLambs = totalLambsFromCollars - this.currentSheepInfo.sheepType.lamb.count;
+		const totalEwes = this.currentSheepInfo.sheepType.ewe.count;
+		const totalLambs = this.currentSheepInfo.sheepType.lamb.count;
 
 		const registeredCollars =
 			this.currentSheepInfo.collarColour.blueCollar.count +
@@ -78,53 +84,42 @@ export class SummaryPage {
 			this.currentSheepInfo.collarColour.redCollar.count +
 			this.currentSheepInfo.collarColour.missingCollar.count;
 
-		if (registeredCollars === 0) {
-			return true;
-		}
-		if (missingLambs > 0) {
-			this.missingLambText = `Registrerte slips tilsier at det mangler ${missingLambs} lam.`;
-			return false;
-		}
-		else if (missingLambs < 0) {
-			this.missingLambText =  `Registrerte slips tilsier at det er ${missingLambs * -1} lam for mye.`;
-			return false;
+		const registeredColours =
+			this.currentSheepInfo.sheepColour.blackSheep.count +
+			this.currentSheepInfo.sheepColour.brownSheep.count +
+			this.currentSheepInfo.sheepColour.whiteSheep.count;
+
+		const totalSheep = this.currentSheepInfo.totalSheep.totalSheep.count;
+
+		if (registeredColours !== 0 && totalSheep !== registeredColours) {
+			this.inconsistencies.push(`Antall registrerte farger (${registeredColours}) samsvarer ikke med totalt antall registrerte sau (${totalSheep}).`);
 		}
 
-		return true;
+		if (totalLambs + totalEwes !== 0 && totalSheep !== totalLambs + totalEwes) {
+			this.inconsistencies.push(`Antall registrerte søyer og lam (${totalLambs + totalEwes}) samsvarer ikke med totalt antall registrerte sau (${totalSheep}).`);
+		}
+
+		if (registeredCollars !== 0 && registeredCollars !== totalEwes) {
+			this.inconsistencies.push(`Registrerte slips (${registeredCollars}) samsvarer ikke med antall søyer (${totalEwes}).`);
+		}
+
+		if (registeredCollars !== 0 && missingLambs > 0) {
+			this.inconsistencies.push(`Registrerte slips tilsier at det mangler ${missingLambs} lam.`);
+		} else if (registeredCollars !== 0 && missingLambs < 0) {
+			this.inconsistencies.push(`Registrerte slips tilsier at det er ${missingLambs * -1} lam for mye.`);
+		}
 	}
 
-	completeRegistration() {
-		this.presentConfirmAlert();
+	onCompleteRegistration() {
+		this.alertService.confirmAlert(this.alertHeader, this.alertMessage, this, this.confirmHandler);
 	}
 
-	async presentConfirmAlert() {
-		const alert = await this.alertController.create({
-			cssClass: 'alertConfirm',
-			header: 'Fullfør registrering',
-			backdropDismiss: true,
-			message: 'Ønsker du å fullføre registrering av sau?',
-			buttons: [
-				{
-					text: 'Nei',
-					role: 'cancel',
-					handler: () => {}
-				}, {
-					text: 'Ja',
-					handler: () => {
-						this.store.dispatch(new StateResetAll());
-						this.registrationService.complete();
-
-
-						this.router.navigate(['/map']);
-					}
-				}
-			]
-		});
-		await alert.present();
+	confirmHandler() {
+		this.registrationService.completeRegistration(this.currentSheepInfo, undefined, undefined);
+		this.navController.navigateBack(this.mapLink);
 	}
 
 	ionViewWillLeave(): void {
-		this.sheepInfoSub.unsubscribe();
-		this.currentMainCategorySub.unsubscribe();
+		this.unsubscribe$.next();
 	}
 }

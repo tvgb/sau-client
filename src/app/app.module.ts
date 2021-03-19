@@ -5,28 +5,43 @@ import { RouteReuseStrategy } from '@angular/router';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxsModule } from '@ngxs/store';
 
-import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { SheepInfoState } from './shared/store/sheepInfo.state';
 import { IonicGestureConfig } from './shared/classes/hammer-config';
 import { AppInfoState } from './shared/store/appInfo.state';
 import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
+import { SharedModule} from './shared/shared.module';
+import { FieldTripInfoState } from './shared/store/fieldTripInfo.state';
+import { AngularFireAuth, AngularFireAuthModule } from '@angular/fire/auth';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { environment } from '../environments/environment';
 
 @NgModule({
-	declarations: [AppComponent],
+	declarations: [
+		AppComponent
+	],
 	imports: [
+		SharedModule,
 		BrowserModule,
 		IonicModule.forRoot(),
 		AppRoutingModule,
 		HttpClientModule,
+		ReactiveFormsModule,
+		FormsModule,
+		AngularFireModule.initializeApp(environment.firebaseConfig), // imports firebase/app needed for everything
+		AngularFireAuthModule,
+		AngularFirestoreModule,
 		NgxsModule.forRoot([
 			SheepInfoState,
-			AppInfoState
+			AppInfoState,
+			FieldTripInfoState,
 		], { developmentMode: true }),
 		HammerModule,
 		NgxsResetPluginModule.forRoot()
@@ -34,10 +49,12 @@ import { NgxsResetPluginModule } from 'ngxs-reset-plugin';
 	providers: [
 		StatusBar,
 		SplashScreen,
-		Geolocation,
+		AngularFireAuth,
 		{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
 		{ provide: HAMMER_GESTURE_CONFIG, useClass: IonicGestureConfig }
 	],
-	bootstrap: [AppComponent]
+	bootstrap: [AppComponent],
+
+	exports: [SharedModule]
 })
 export class AppModule {}

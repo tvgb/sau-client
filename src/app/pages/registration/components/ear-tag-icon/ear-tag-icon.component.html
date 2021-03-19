@@ -1,0 +1,12 @@
+<div class="new-ear-tag" [ngClass]="{'small-version': smallVersion}">
+	<div class="ear-tag-row">
+		<div class="top-left triangle" [ngStyle]="{'border-color': 'transparent transparent '+ getColour('left')+' transparent'}"></div>
+		<div class="top-part" [ngStyle]="{'background-color': getColour('left')}"></div>
+		<div class="top-part" [ngStyle]="{'background-color': getColour('right')}"></div>
+		<div class="top-right triangle" [ngStyle]="{'border-color': 'transparent transparent transparent ' + getColour('right')}"></div>
+	</div>
+	<div class="ear-tag-row">
+		<div class="bottom-part" [ngStyle]="{'background-color': getColour('left')}"></div>
+		<div class="bottom-part" [ngStyle]="{'background-color': getColour('right')}"></div>
+	</div>
+</div>

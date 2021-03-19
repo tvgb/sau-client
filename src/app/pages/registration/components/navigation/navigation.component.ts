@@ -1,9 +1,12 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { StateResetAll } from 'ngxs-reset-plugin';
-import { AlertController } from '@ionic/angular';
+import { StateReset } from 'ngxs-reset-plugin';
+import { NavController } from '@ionic/angular';
 import { Store } from '@ngxs/store';
 import { VibrationService } from '../../services/vibration.service';
+import { AlertService } from 'src/app/shared/services/alert.service';
+import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
+import { AppInfoState } from 'src/app/shared/store/appInfo.state';
 
 @Component({
 	selector: 'app-navigation',
@@ -17,14 +20,17 @@ export class NavigationComponent implements OnInit {
 	@Output() cancelRegistration = new EventEmitter();
 	@Output() completeRegistration = new EventEmitter();
 
-	completeRoute = '/registration/summary';
-	cancelRoute = '/map';
+	completeNavLink = '/registration/summary';
+	cancelNavLink = '/map';
+	alertHeader = 'Avbryt';
+	alertMessage = 'Ønsker du å avbryte registrering av sau?';
 
 	constructor(
 		private vibration: VibrationService,
 		private router: Router,
-		private store: Store,
-		private alertController: AlertController) { }
+		private alertService: AlertService,
+		private navController: NavController,
+		private store: Store) { }
 
 	ngOnInit(): void {}
 
@@ -39,39 +45,17 @@ export class NavigationComponent implements OnInit {
 	}
 
 	cancel(): void {
-		this.presentConfirmAlert();
+		this.alertService.confirmAlert(this.alertHeader, this.alertMessage, this, this.confirmHandler);
 	}
 
 	complete(): void {
-		this.router.navigate([this.completeRoute]);
+		this.router.navigate([this.completeNavLink]);
 		this.completeRegistration.emit();
 	}
 
-	async presentConfirmAlert() {
-		const alert = await this.alertController.create({
-			cssClass: 'alertConfirm',
-			header: 'Avbryt',
-			backdropDismiss: true,
-			message: 'Ønsker du å avbryte registrering av sau?',
-			buttons: [
-				{
-					text: 'Nei',
-					role: 'cancel',
-					handler: () => {
-						console.log('alert confirm:  nei');
-					}
-				}, {
-					text: 'Ja',
-					handler: () => {
-						console.log('Bekreft ja!');
-						this.router.navigate([this.cancelRoute]);
-						console.log('Returning to map page, clearing state');
-						this.store.dispatch(new StateResetAll());
-						this.cancelRegistration.emit();
-					}
-				}
-			]
-		});
-		await alert.present();
+	confirmHandler() {
+		this.navController.navigateBack(this.cancelNavLink);
+		this.store.dispatch(new StateReset(SheepInfoState, AppInfoState));
+		this.cancelRegistration.emit();
 	}
 }

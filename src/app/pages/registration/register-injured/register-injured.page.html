@@ -1,0 +1,30 @@
+<ion-content>
+    <div class="register-injured-container">
+        <app-page-header [navUrl]= "['/map']" [pageHeaderText] = "['Registrer skadde dyr']"></app-page-header>
+        <ion-list class="register-injured-info-list">
+            <form [formGroup]="registerInjuredForm">
+                <ion-label>Antall skadde dyr:</ion-label>
+                <ion-item lines="full">
+                    <ion-input formControlName="injuredCount" required="true" type="number"></ion-input>
+                </ion-item>
+                <div *ngIf="!registerInjuredForm.controls.injuredCount.valid && (registerInjuredForm.controls.injuredCount.dirty || submitAttempt)">
+                    <p class="invalid">
+                        {{invalidText}}
+                    </p>
+                </div>
+                <ion-label>Kommentar</ion-label>
+                <ion-textarea formControlName="comment" placeholder="Skriv inn observasjon her..."></ion-textarea>
+            </form>
+        </ion-list>
+    </div>
+</ion-content>
+<ion-footer>
+	<ion-row>
+		<ion-col class="ion-no-padding">
+			<ion-button (click)="navigateBack()" id="back-button" color="tertiary" class="ion-no-margin" expand="full" size="large">TILBAKE</ion-button>
+		</ion-col>
+		<ion-col class="ion-no-padding">
+			<ion-button (click)="onCompleteRegistration()" color="primary" id="complete-button" class="ion-no-margin" expand="full" size="large">FULLFØR</ion-button>
+		</ion-col>
+	</ion-row>
+</ion-footer>

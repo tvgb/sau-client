@@ -1,0 +1,14 @@
+<div id="page-header-container">
+    <div class="page-header-with-button" *ngIf="navUrl; else elseBlock">
+            <ion-icon (click)="backButtonClicked()" size="large" class="page-header-back-button" name="arrow-back-outline"></ion-icon>
+        <div class="page-header-text">
+            {{pageHeaderText}}
+        </div>
+        <ion-icon size="large" class="centering-div" name="arrow-back-outline"></ion-icon>
+    </div>
+    <ng-template #elseBlock>
+        <div class="page-header-without-button">
+            {{pageHeaderText}}
+        </div>
+    </ng-template>
+</div>

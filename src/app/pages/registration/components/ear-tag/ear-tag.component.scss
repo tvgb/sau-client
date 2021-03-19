@@ -1,0 +1,107 @@
+:host {
+	height: 100%;
+}
+
+.no-ear-tags-registered {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 200;
+	color: rgba(255, 255, 255, 0.5);
+	height: 70%;
+}
+
+.ear-tag-container {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.observed-ear-tags-container, .add-new-ear-tag-container {
+	width: 90%;
+	height: 100%;
+	font-size: larger;
+	font-weight: 400;
+	display: flex;
+	flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.ear-tags {
+	flex-grow: 2;
+}
+
+ion-checkbox {
+	--background: transparent;
+	--border-color: white;
+}
+
+ion-item {
+	margin-top: 10px;
+	--background: rgba(255, 255, 255, 0.05);
+	--border-color: rgba(255, 255, 255, 1);
+}
+
+ion-label {
+	font-size: 18px;
+}
+
+.add-new-ear-tag-form {
+	margin-top: 10px;
+}
+
+.label-text {
+	margin-right: 25px;
+}
+
+.colour-picker-container {
+	margin: 15px 0 10px 0;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	font-size: 18px;
+}
+
+.colours-picked-container {
+	display: flex;
+	align-items: center;
+	flex-grow: 2;
+}
+
+.colour {
+	height: 30px;
+	width: 30px;
+	margin: 0px 7px;
+}
+
+.add-new-colour-button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid white;
+}
+
+.save-new-ear-tag-button {
+	align-self: flex-end;
+	--border-color: white;
+	--color: white;
+	--border-style: solid;
+	--border-witdh: 1px;
+	--background: transparent;
+	--background-activated: transparent;
+}
+
+.ear-tag-selector-container {
+	display: flex;
+	align-items: center;
+	margin-top: 10px;
+	font-weight: 300;
+}
+
+.ear-tag-selector-text {
+	flex-grow: 2;
+	margin-left: 20px;
+	font-size: 18px;	
+}

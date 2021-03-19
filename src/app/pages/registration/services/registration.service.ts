@@ -1,22 +1,37 @@
 import { Injectable } from '@angular/core';
 import { Store } from '@ngxs/store';
+import { StateReset } from 'ngxs-reset-plugin';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { SubCategory } from 'src/app/shared/classes/Category';
+import { Coordinate } from 'src/app/shared/classes/Coordinate';
+import { DeadSheepRegistration, InjuredSheepRegistration, PredatorRegistration, Registration, SheepRegistration } from 'src/app/shared/classes/Registration';
+import { SheepInfo } from 'src/app/shared/classes/SheepInfo';
 import { MainCategoryId } from 'src/app/shared/enums/MainCategoryId';
+import { PredatorType } from 'src/app/shared/enums/PredatorType';
+import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 import { SubCategoryId } from 'src/app/shared/enums/SubCategoryId';
 import { SetCurrentMainCategoryId, SetCurrentSubCategoryId } from 'src/app/shared/store/appInfo.actions';
+import { AppInfoState } from 'src/app/shared/store/appInfo.state';
+import { AddRegistration } from 'src/app/shared/store/fieldTripInfo.actions';
 import { DecrementSubCategoryCount, IncrementSubCategoryCount } from 'src/app/shared/store/sheepInfo.actions';
+import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 
 @Injectable({
   	providedIn: 'root'
 })
 export class RegistrationService {
 
+	gpsPosition: Coordinate;
+	registrationPosition: Coordinate;
+	registrationType;
+	count: number;
+	comment: string;
+
 	mainCategoryIds: MainCategoryId[] = [
 		MainCategoryId.TotalSheep,
 		MainCategoryId.SheepColour,
 		MainCategoryId.SheepType,
-		MainCategoryId.CollarColour
+		MainCategoryId.CollarColour,
+		MainCategoryId.EarTag
 	];
 
 	subCategoryIds: SubCategoryId[][] = [
@@ -38,6 +53,9 @@ export class RegistrationService {
 			SubCategoryId.YellowCollar,
 			SubCategoryId.RedCollar,
 			SubCategoryId.MissingCollar
+		],
+		[
+			SubCategoryId.EarTag
 		]
 	];
 
@@ -65,6 +83,7 @@ export class RegistrationService {
 	}
 
 	nextMainCategory(): boolean {
+
 		if (this.currentMainCategoryIndex + 1 >= this.mainCategoryIds.length) {
 			return false;
 		} else {
@@ -122,6 +141,49 @@ export class RegistrationService {
 
 	getSubCategoryCountInCurrentMainCategory(): Observable<number> {
 		return this.subCategoryCountInCurrentMainCategory.asObservable();
+	}
+
+	completeRegistration(sheepInfo?: SheepInfo, count?: number, comment?: string, predatorType?: PredatorType, images?: string[]): void {
+		const reg = this.createRegistration(
+			this.registrationType,
+			this.gpsPosition,
+			this.registrationPosition,
+			sheepInfo,
+			count,
+			comment,
+			predatorType,
+			images);
+		this.registrationPosition = undefined;
+		this.gpsPosition = undefined;
+		this.registrationType = undefined;
+		this.store.dispatch(new AddRegistration(reg));
+		this.store.dispatch(new StateReset(SheepInfoState, AppInfoState));
+		this.complete();
+	}
+
+	createRegistration(
+		registrationType: RegistrationType,
+		gpsPos: Coordinate,
+		registrationPos: Coordinate,
+		sheepInfo: SheepInfo = null,
+		count?: number,
+		comment?: string,
+		predatorType?: PredatorType,
+		images?: string[]): Registration
+	{
+		switch (registrationType) {
+			case RegistrationType.Sheep:
+				return {dateTime: Date.now(), gpsPos, registrationPos, registrationType, sheepInfo} as SheepRegistration;
+
+			case RegistrationType.Predator:
+				return {dateTime: Date.now(), gpsPos, registrationPos, registrationType, predatorType, comment} as PredatorRegistration;
+
+			case RegistrationType.Injured:
+				return {dateTime: Date.now(), gpsPos, registrationPos, registrationType, count, comment} as InjuredSheepRegistration;
+
+			case RegistrationType.Dead:
+				return {dateTime: Date.now(), gpsPos, registrationPos, registrationType, count, comment, images} as DeadSheepRegistration;
+		}
 	}
 
 	complete(): void {

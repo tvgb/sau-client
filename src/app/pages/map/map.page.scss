@@ -14,12 +14,49 @@
 	height: 100%;
 }
 
-#add-registration-fab {
-	margin-bottom: 10px;
-	margin-right: 10px;
+ion-fab {
+    margin-bottom: 10px;
+	margin: 10px;
 }
 
-#add-registration-btn {
-	--background: #1C262F;
+ion-fab-button {
+    --background: #1C262F;
 	--background-activated: #1C262F;
+}
+
+.add-registration-button {
+	--background: transparent;
+}
+
+.dark-overlay {
+	height: 100%;
+	width: 100%;
+	z-index: 99999;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: #000000;
+
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	font-weight: 300;
+}
+
+.low-lower-mode-help-message {
+	opacity: 1;
+	color: #e4e4e4;
+}
+
+.center-fab {
+	left: calc(50% - 38px); //50% minus (width + margin) / 2 av fab for å sentrere
+}
+
+.right-fab {
+	right: 20px;
+}
+
+.left-fab {
+	left: 20px;
 }

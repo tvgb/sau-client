@@ -7,12 +7,16 @@ import { IonicModule } from '@ionic/angular';
 import { MapPageRoutingModule } from './map-routing.module';
 
 import { MapPage } from './map.page';
+import { SharedModule } from 'src/app/shared/shared.module';
+
+
 
 @NgModule({
 	imports: [
 		CommonModule,
 		FormsModule,
 		IonicModule,
+		SharedModule,
 		MapPageRoutingModule
   	],
   	declarations: [MapPage]

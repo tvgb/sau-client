@@ -1,0 +1,26 @@
+<ion-content>
+    <div class="new-field-trip-container">
+        <app-page-header [navUrl] = "['/main-menu']" [pageHeaderText] = "['Ny oppsynstur']" ></app-page-header>
+        <ion-list class="field-trip-info-list">
+            <ion-label>Legg til deltaker:</ion-label>
+                <div class="add-participant-container">
+                    <ion-input type="text" [(ngModel)]="participantName" class="add-participant-name" placeholder="Fornavn Etternavn"></ion-input>
+                    <div class="add-participant-box" (click)="addParticipant()">
+                        <div class="plus-icon">+</div>
+                    </div>
+                </div>
+                <ion-list *ngIf="participants.length > 0" class="participants-list">
+                    <ion-label> Deltakere: </ion-label>
+                    <ion-item *ngFor="let participant of participants; index as i" class="participant-element">
+                        {{participant}}
+                        <ion-icon size="small" color="white" name="trash" slot="end" (click)="deleteParticipant(i)"></ion-icon>
+                    </ion-item>
+                </ion-list>
+            <ion-label>Beskrivelse:</ion-label>
+            <ion-textarea placeholder=" Skriv her..."></ion-textarea>
+            <div class="field-trip-button-container">
+                <ion-button (click)="createNewFieldTrip()" class="field-trip-button" color="primary" fill="solid">START OPPSYNSTUR</ion-button>
+            </div>
+        </ion-list>
+    </div>
+</ion-content>

@@ -43,23 +43,27 @@
     margin-bottom: 5px;
 }
 
+.warnings-container {
+	margin-top: 10px;
+	margin-bottom: 20px;
+}
+
 .warning-container {
-    margin-top: 40px;
+    margin-top: 10px;
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 }
 
 .warning-icon {
     fill: #B02525;
-    font-size: 30px;
-    margin-left: 10px;
-    
+    font-size: 20px;
 }
 
 .warning-text {
-    width: 80%;
+	font-size: 14px;
+	width: 90%;
 }
 
 #back-button {
@@ -71,3 +75,47 @@
     height: 80px;
 }
 
+.ear-tag-selector {
+	margin-right: 5px;
+	height: 100%;
+	flex-grow: 2;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.add-ear-tag-button {
+	width: 45px;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ear-tag-container {
+	display: flex;
+	align-items: center;
+	margin-top: 10px;
+	font-weight: 300;
+	width: 100%;
+}
+
+.ear-tags-container {
+	display: flex;
+	flex-direction: column;
+	width: 90%;
+}
+
+.ear-tag-selector-text {
+	flex-grow: 2;
+	margin-left: 20px;
+	font-size: 18px;	
+}
+
+.no-ear-tags-selected {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: 200;
+	color: rgba(255, 255, 255, 0.5);
+	height: 70%;
+}

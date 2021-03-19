@@ -1,0 +1,40 @@
+#page-header-container {
+	padding-top: calc(env(safe-area-inset-top) + 20px);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.page-header-without-button {
+	width: 100%;
+	font-size: 22px;
+	text-align: center;
+    font-weight: 200;
+    margin-bottom: 20px;
+}
+
+.page-header-with-button {
+	padding: 0 35px;
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.page-header-text {
+    align-self: center;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 200;
+    width: 100%;
+}
+
+.page-header-back-button {
+    width: wrap;
+}
+
+.centering-div {
+    width: wrap;
+    color: #1C262F;
+}
