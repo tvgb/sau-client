@@ -17,7 +17,7 @@
                     </ion-item>
                 </ion-list>
             <ion-label>Beskrivelse:</ion-label>
-            <ion-textarea placeholder=" Skriv her..."></ion-textarea>
+            <ion-textarea [(ngModel)]="description" placeholder=" Skriv her..."></ion-textarea>
             <div class="field-trip-button-container">
                 <ion-button (click)="createNewFieldTrip()" class="field-trip-button" color="primary" fill="solid">START OPPSYNSTUR</ion-button>
             </div>

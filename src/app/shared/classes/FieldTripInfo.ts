@@ -24,6 +24,7 @@ export class FieldTripInfo {
 export class UpdateFieldTripInfoObject {
 	dateTimeEnded?: number;
 	trackedRoute?: [];
+	description?: string;
 }
 
 
