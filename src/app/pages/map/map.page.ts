@@ -113,6 +113,9 @@ export class MapPage {
 				}
 			} else {
 				this.map.removeLayer(this.onlineTileLayer);
+				this.map.setMinZoom(this.mapService.getMinZoom());
+				this.map.setMaxZoom(this.mapService.getMaxZoom());
+				this.map.setZoom(this.map.getMaxZoom());
 				this.map.addLayer(this.offlineTileLayer);
 
 				if (this.platform.is('mobileweb')) {
@@ -233,8 +236,6 @@ export class MapPage {
 			this.map = L.map('map', {
 				center: [gpsPosition.coords.latitude, gpsPosition.coords.longitude],
 				zoom: 12,
-				minZoom: this.mapService.getMinZoom(),
-				maxZoom: this.mapService.getMaxZoom(),
 				zoomControl: false,
 				attributionControl: false
 			});
@@ -268,6 +269,9 @@ export class MapPage {
 			if ((await Network.getStatus()).connected) {
 				this.map.addLayer(this.onlineTileLayer);
 			} else {
+				this.map.setMinZoom(this.mapService.getMinZoom());
+				this.map.setMaxZoom(this.mapService.getMaxZoom());
+				this.map.setZoom(this.map.getMaxZoom());
 				this.map.addLayer(this.offlineTileLayer);
 			}
 		});

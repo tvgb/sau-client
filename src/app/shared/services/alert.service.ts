@@ -8,7 +8,7 @@ import { AlertController, ToastController } from '@ionic/angular';
 export class AlertService {
 
 
-	private toastNoNetworkMessage =  'kke tilkoblet internett. Bruker nå offline kartutsnitt.';
+	private toastNoNetworkMessage =  'Ikke tilkoblet internett. Bruker nå offline kartutsnitt.';
 	private toastNetworkMessage =  'Tilkoblet internett. Bruker online kart.';
 	private TOAST_DURATION = 2000;
 
