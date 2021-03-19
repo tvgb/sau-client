@@ -23,7 +23,7 @@ import { AlertService } from 'src/app/shared/services/alert.service';
 	styleUrls: ['./field-trip-summary.page.scss'],
 })
 
-export class FieldTripSummaryPage implements AfterViewInit {
+export class FieldTripSummaryPage {
 
 	fieldTripInfo: FieldTripInfo;
 	date: number;
@@ -81,7 +81,7 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		this.statusBarService.changeStatusBar(false, true);
 		this.fieldTripInfoSub = this.fieldTripInfo$.pipe(
 			takeUntil(this.unsubscribe$)
-		) .subscribe((res) => {
+		).subscribe((res) => {
 			this.fieldTripInfo = res;
 		});
 
@@ -122,6 +122,14 @@ export class FieldTripSummaryPage implements AfterViewInit {
 				}
 			}
 		});
+	}
+
+	ionViewDidEnter() {
+		setTimeout(() => {
+			if (!this.map) {
+				this.initMap();
+			}
+		}, 100);
 	}
 
 	getDateAndDuration(): void {
@@ -168,12 +176,6 @@ export class FieldTripSummaryPage implements AfterViewInit {
 		const predatorsRegistrations = this.fieldTripInfo.registrations
 		.filter(reg => reg.registrationType === RegistrationType.Predator) as PredatorRegistration[];
 		this.predators = predatorsRegistrations.length;
-	}
-
-	ngAfterViewInit(): void {
-		setTimeout(_ => {
-			this.initMap();
-		});
 	}
 
 	async initMap(): Promise<void> {

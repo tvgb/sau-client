@@ -152,6 +152,8 @@ export class MapPage {
 				);
 				pin.addTo(this.map);
 				polyline.addTo(this.map);
+
+				this.gpsService.addToTrackedRoute(lastRegistration.gpsPos);
 			}
 		});
 
@@ -176,10 +178,10 @@ export class MapPage {
 		}, 100);
 	}
 
-	navigateToRegistration(type: RegistrationType) {
-		this.regService.registrationPosition = this.map.getCenter();
-		this.regService.gpsPosition = this.posistionMarker.getLatLng();
+	async navigateToRegistration(type: RegistrationType) {
 		this.regService.registrationType = type;
+		this.regService.registrationPosition = this.map.getCenter();
+		this.regService.gpsPosition = await this.gpsService.getCurrentPosition();
 		switch (type) {
 			case RegistrationType.Sheep:
 				this.ttsService.speak(`Registrer ${this.currentMainCategory.name}`);
@@ -234,7 +236,7 @@ export class MapPage {
 	initMap(): void {
 		this.gpsService.getCurrentPosition().then(async gpsPosition => {
 			this.map = L.map('map', {
-				center: [gpsPosition.coords.latitude, gpsPosition.coords.longitude],
+				center: [gpsPosition.lat, gpsPosition.lng],
 				zoom: 12,
 				zoomControl: false,
 				attributionControl: false
@@ -247,9 +249,9 @@ export class MapPage {
 				this.crosshairMarker.setLatLng([this.map.getCenter().lat, this.map.getCenter().lng]);
 			});
 
-			this.positionMarkerCoordinates = { lat: gpsPosition.coords.latitude, lng: gpsPosition.coords.longitude };
+			this.positionMarkerCoordinates = gpsPosition;
 
-			this.posistionMarker = L.marker([gpsPosition.coords.latitude, gpsPosition.coords.longitude],
+			this.posistionMarker = L.marker([gpsPosition.lat, gpsPosition.lng],
 				{icon: this.posistionIcon}).addTo(this.map);
 
 			this.gpsService.startTrackingInterval();

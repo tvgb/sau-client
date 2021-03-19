@@ -88,6 +88,10 @@ export class GpsService {
 		}
 	}
 
+	addToTrackedRoute(gpsPos: Coordinate): void {
+		this.trackedRoute$.next([...this.trackedRoute$.getValue(), gpsPos]);
+	}
+
 	getLastTrackedPosition(): Observable<Coordinate> {
 		return this.lastTrackedPos.asObservable();
 	}
@@ -96,7 +100,8 @@ export class GpsService {
 		return this.trackedRoute$.asObservable();
 	}
 
-	getCurrentPosition(): Promise<any> {
-		return Geolocation.getCurrentPosition({enableHighAccuracy: true});
+	async getCurrentPosition(): Promise<Coordinate> {
+		const coord = await Geolocation.getCurrentPosition({enableHighAccuracy: true});
+		return { lat: coord.coords.latitude, lng: coord.coords.longitude } as Coordinate;
 	}
 }
