@@ -43,7 +43,7 @@ export class RegisterDeadPage {
 
 	async addPhoto() {
 		const image = await Camera.getPhoto({
-			quality: 40,
+			quality: 20,
 			allowEditing: false,
 			resultType: CameraResultType.Base64
 		});

@@ -78,7 +78,7 @@ export class FieldTripPage {
 		});
 
 		if (fieldTrip.trackedRoute.length > 0) {
-			const trackedRoutePolyline = L.polyline(fieldTrip.trackedRoute, {smoothFactor: 10});
+			const trackedRoutePolyline = L.polyline(fieldTrip.trackedRoute);
 			const fitBoundsCoords: Coordinate[] = [...fieldTrip.trackedRoute];
 			trackedRoutePolyline.addTo(this.map);
 

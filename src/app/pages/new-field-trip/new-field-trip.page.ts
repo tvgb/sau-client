@@ -49,14 +49,19 @@ export class NewFieldTripPage {
 
 	ionViewWillEnter() {
 		this.statusBarService.changeStatusBar(false, true);
+		this.getOverseerName().then(() => {
+			this.participants.push(this.overseerName);
+		});
 	}
 
-	async createNewFieldTrip() {
-		this.fieldTripId = uuidv4();
+	async getOverseerName()  {
 		await this.firestoreService.getCurrentUser(this.authService.getUserId()).then((res) => {
 			this.overseerName = res['name'];
 		});
+	}
 
+	createNewFieldTrip() {
+		this.fieldTripId = uuidv4();
 		this.currentFieldTripInfo = new FieldTripInfo(
 			{
 				fieldtripId: this.fieldTripId,
