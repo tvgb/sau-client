@@ -16,6 +16,10 @@ import { MapService } from '../map/services/map.service';
 import { takeUntil } from 'rxjs/operators';
 import { FirestoreService } from 'src/app/shared/services/firestore.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
+import { StateReset, StateResetAll } from 'ngxs-reset-plugin';
+import { AppInfoState } from 'src/app/shared/store/appInfo.state';
+import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
+import { GpsService } from '../map/services/gps.service';
 
 @Component({
 	selector: 'app-field-trip-summary',
@@ -69,6 +73,7 @@ export class FieldTripSummaryPage {
 		private navController: NavController,
 		private statusBarService: StatusbarService,
 		private mapUiService: MapUIService,
+		private gpsService: GpsService,
 		private mapService: MapService,
 		private alertController: AlertController,
 		private store: Store,
@@ -295,6 +300,8 @@ export class FieldTripSummaryPage {
 				this.cdr.detectChanges();
 				this.tickProgressBar();
 			} else {
+				this.store.dispatch(new StateResetAll());
+				this.gpsService.resetTrackedRoute();
 				this.navController.navigateBack(this.mainMenuUrl);
 			}
 		}, this.waitBeforeNavTime / 120);

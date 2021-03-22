@@ -100,6 +100,10 @@ export class GpsService {
 		return this.trackedRoute$.asObservable();
 	}
 
+	resetTrackedRoute() {
+		this.trackedRoute$.next([]);
+	}
+
 	async getCurrentPosition(): Promise<Coordinate> {
 		const coord = await Geolocation.getCurrentPosition({enableHighAccuracy: true});
 		return { lat: coord.coords.latitude, lng: coord.coords.longitude } as Coordinate;
