@@ -259,7 +259,7 @@ export class MapPage {
 			App.addListener('appStateChange', ({ isActive }) => {
 				if (isActive) {
 					this.gpsService.setTracking(true);
-					this.gpsService.recalibratePosition();
+					// this.gpsService.recalibratePosition();
 				} else {
 					this.gpsService.setTracking(false);
 				}
