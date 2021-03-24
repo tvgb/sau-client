@@ -11,6 +11,7 @@ import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel';
 import { FirestoreService } from 'src/app/shared/services/firestore.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { StateResetAll } from 'ngxs-reset-plugin';
 
 const { Keyboard } = Plugins;
 
@@ -61,6 +62,7 @@ export class NewFieldTripPage {
 	}
 
 	createNewFieldTrip() {
+		this.store.dispatch(new StateResetAll());
 		this.fieldTripId = uuidv4();
 		this.currentFieldTripInfo = new FieldTripInfo(
 			{

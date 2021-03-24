@@ -92,10 +92,7 @@ export class GpsService {
 					const secondsBetweenUpdates = (Date.now() - this.lastTrackedDateTime) / 1000;
 					const walkingSpeed = this.haversine(new Coordinate(lat, lng), lastTrackedCoord) / secondsBetweenUpdates;
 
-					// console.log('WALKING SPEED:');
-					// console.log(walkingSpeed);
-
-					if (this.positionsRejected >= 10 || walkingSpeed < 3) {
+					if (this.positionsRejected >= 5 || (walkingSpeed < 3 && walkingSpeed > 0.5)) {
 						this.positionsRejected = 0;
 						this.lastTrackedDateTime = Date.now();
 						this.trackedRoute$.next([...this.trackedRoute$.getValue(), new Coordinate(data.coords.latitude, data.coords.longitude)]);
