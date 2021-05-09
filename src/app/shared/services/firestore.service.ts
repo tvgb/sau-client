@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { FieldTripInfo } from '../classes/FieldTripInfo';
-import { Beitelag } from '../interfaces/beitelag';
+import { Beitelag } from '../interfaces/Beitelag';
 import { AuthService } from './auth.service';
 
 @Injectable({
