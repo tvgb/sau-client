@@ -20,6 +20,7 @@ export class GpsService {
 	private tracking = true;
 	private getInitialPosistion = true;
 	private lastTrackedPos: Subject<Coordinate> = new Subject();
+	private lastPos$: Subject<any> = new Subject();
 	private gpsWatchId: string;
 	private prevStoredPos: any;
 	private skippedGpsPosCount = 0;
@@ -38,7 +39,6 @@ export class GpsService {
 
 	startWatchPosition(): void {
 		this.gpsWatchId = Geolocation.watchPosition({enableHighAccuracy: true}, (position, err) => {
-
 			if (err) {
 				console.log(`Error occured while getting GPS position: ${err.message}`);
 				return;
@@ -53,6 +53,7 @@ export class GpsService {
 					);
 
 					console.log(`Sekunder mellom: ${timeDiff} s | Meter mellom: ${distance} m`);
+					this.lastPos$.next(position);
 				}
 				this.lastPos = position;
 				this.lastTrackedPos.next(new Coordinate(position.coords.latitude, position.coords.longitude));
@@ -124,6 +125,10 @@ export class GpsService {
 		});
 	}
 
+	getPos(): Observable<any> {
+		return this.lastPos$.asObservable();
+	}
+
 	/**
 	 * Updates position on map with marker and line for tracked route
 	 */
@@ -180,7 +185,7 @@ export class GpsService {
 		return false;
 	}
 
-	private getDistanceBetweenCoords(coord1: Coordinate, coord2: Coordinate): number {
+	getDistanceBetweenCoords(coord1: Coordinate, coord2: Coordinate): number {
 		const lat1 = coord1.lat;
 		const lon1 = coord1.lng;
 		const lat2 = coord2.lat;

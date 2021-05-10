@@ -70,8 +70,11 @@ const routes: Routes = [
 	{
 		path: 'field-trip',
 		loadChildren: () => import('./pages/field-trip/field-trip.module').then( m => m.FieldTripPageModule)
+	},
+	{
+		path: 'test-page',
+		loadChildren: () => import('./pages/test-page/test-page.module').then( m => m.TestPagePageModule)
 	}
-
 ];
 
 @NgModule({

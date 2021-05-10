@@ -1,0 +1,12 @@
+<ion-header>
+	<ion-toolbar>
+		<ion-title>test-page</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content>
+	<div *ngFor="let pos of trackedPos">
+		<span *ngIf="pos.timeDiff && pos.distance" [ngClass]="{'inactive': pos.inactive}">Sekunder mellom: {{ pos.timeDiff }} | Meter mellom: {{ pos.distance }}</span>
+		<span *ngIf="pos.msg" [ngClass]="{'inactive': pos.inactive}">  {{ pos.msg }} </span>
+	</div>
+</ion-content>
