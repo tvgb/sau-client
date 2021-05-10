@@ -39,6 +39,11 @@ export class GpsService {
 	startWatchPosition(): void {
 		this.gpsWatchId = Geolocation.watchPosition({enableHighAccuracy: true}, (position, err) => {
 
+			if (err) {
+				console.log(`Error occured while getting GPS position: ${err.message}`);
+				return;
+			}
+
 			if (position) {
 				if (this.lastPos) {
 					const timeDiff = (position.timestamp - this.lastPos.timestamp) / 1000;
@@ -47,14 +52,10 @@ export class GpsService {
 						new Coordinate(this.lastPos.coords.latitude, this.lastPos.coords.longitude)
 					);
 
-					console.log(``)
+					console.log(`Sekunder mellom: ${timeDiff} s | Meter mellom: ${distance} m`);
 				}
 				this.lastPos = position;
 				this.lastTrackedPos.next(new Coordinate(position.coords.latitude, position.coords.longitude));
-			}
-
-			if (err) {
-				console.log(`Error occured while getting GPS position: ${err.message}`);
 			}
 
 			if (this.skippedGpsPosCount >= 100) {
@@ -65,7 +66,6 @@ export class GpsService {
 			if (this.newPositionIsInvalid(position, this.prevStoredPos)) {
 				this.skippedGpsPosCount++;
 			} else if (position) {
-				console.log(`lat: ${position.coords.latitude}, lng: ${position.coords.longitude}`);
 				this.prevStoredPos = position;
 				this.trackedRoute$.next([...this.trackedRoute$.getValue(), new Coordinate(position.coords.latitude, position.coords.longitude)]);
 			}
@@ -74,6 +74,7 @@ export class GpsService {
 
 	stopWatchPosition(): void {
 		if (this.gpsWatchId) {
+			this.lastPos = null;
 			Geolocation.clearWatch({ id: this.gpsWatchId });
 		}
 	}

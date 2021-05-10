@@ -163,12 +163,11 @@ export class MapPage {
 			this.currentMainCategory = res;
 		});
 
-		console.log('WE ARE DOING SHIT RIGHT HERE!!!!!!')
 		this.gpsService.getLastTrackedPosition().pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe((pos) => {
 			if (pos) {
-				this.positionMarkerCoordinates = pos
+				this.positionMarkerCoordinates = pos;
 				this.posistionMarker.setLatLng(this.positionMarkerCoordinates);
 			}
 		});
@@ -267,14 +266,14 @@ export class MapPage {
 
 			// this.gpsService.startTrackingInterval();
 
-			App.addListener('appStateChange', ({ isActive }) => {
-				if (isActive) {
-					this.gpsService.setTracking(true);
-					// this.gpsService.recalibratePosition();
-				} else {
-					this.gpsService.setTracking(false);
-				}
-			});
+			// App.addListener('appStateChange', ({ isActive }) => {
+			// 	if (isActive) {
+			// 		this.gpsService.setTracking(true);
+			// 		// this.gpsService.recalibratePosition();
+			// 	} else {
+			// 		this.gpsService.setTracking(false);
+			// 	}
+			// });
 
 			this.setOnlineTileLayer();
 			this.setOfflineTileLayer();
@@ -333,6 +332,6 @@ export class MapPage {
 		this.gpsService.stopWatchPosition();
 		this.networkHandler.remove();
 		this.unsubscribe$.next();
-		this.gpsService.setTracking(false);
+		// this.gpsService.setTracking(false);
 	}
 }
