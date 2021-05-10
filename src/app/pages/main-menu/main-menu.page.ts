@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { IonRouterOutlet, NavController } from '@ionic/angular';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 
 @Component({
@@ -14,7 +14,9 @@ export class MainMenuPage {
 	private settingsUrl = '/settings';
 	private fieldTripsUrl = '/field-trips';
 
-	constructor(private navController: NavController, private statusBarService: StatusbarService) { }
+	constructor(private navController: NavController, private statusBarService: StatusbarService, private routerOutlet: IonRouterOutlet) {
+		this.routerOutlet.swipeGesture = false;
+	}
 
 	ionViewWillEnter() {
 		this.statusBarService.changeStatusBar(false, true);

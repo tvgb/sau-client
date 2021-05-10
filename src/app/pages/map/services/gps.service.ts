@@ -15,9 +15,14 @@ export class GpsService {
 	private CALIBRATION_THRESHOLD = 0.0001;
 	private TRACKING_INTERVAL = 10000;
 	private RECALIBRATION_INTERVAL = 4000;
+	private MIN_DISTANCE_BETWEEN_COORDS = 30; // In meters
+	private MAX_WALKING_SPEED = 4; // In m/s
 	private tracking = true;
 	private getInitialPosistion = true;
 	private lastTrackedPos: Subject<Coordinate> = new Subject();
+	private gpsWatchId: string;
+	private prevStoredPos: any;
+	private skippedGpsPosCount = 0;
 
 
 	constructor() { }
@@ -28,6 +33,38 @@ export class GpsService {
 
 	setTracking(trackingStatus: boolean) {
 		this.tracking = trackingStatus;
+	}
+
+	startWatchPosition(): void {
+		this.gpsWatchId = Geolocation.watchPosition({enableHighAccuracy: true}, (position, err) => {
+
+			if (position) {
+				this.lastTrackedPos.next(new Coordinate(position.coords.latitude, position.coords.longitude));
+			}
+
+			if (err) {
+				console.log(`Error occured while getting GPS position: ${err.message}`)
+			}
+
+			if (this.skippedGpsPosCount >= 100) {
+				this.skippedGpsPosCount = 0;
+				this.prevStoredPos = null;
+			}
+
+			if (this.newPositionIsInvalid(position, this.prevStoredPos)) {
+				this.skippedGpsPosCount++;
+			} else if (position) {
+				console.log(`lat: ${position.coords.latitude}, lng: ${position.coords.longitude}`);
+				this.prevStoredPos = position;
+				this.trackedRoute$.next([...this.trackedRoute$.getValue(), new Coordinate(position.coords.latitude, position.coords.longitude)]);
+			}
+		});
+	}
+
+	stopWatchPosition(): void {
+		if (this.gpsWatchId) {
+			Geolocation.clearWatch({ id: this.gpsWatchId })
+		}
 	}
 
 	startTrackingInterval() {
@@ -104,8 +141,57 @@ export class GpsService {
 		this.trackedRoute$.next([]);
 	}
 
+	private newPositionIsInvalid(currentPos: any, prevPos: any): boolean {
+		if (!currentPos) {
+			return true;
+		}
+
+		if (!prevPos) {
+			return false;
+		}
+
+		const coord1 = new Coordinate(currentPos.coords.latitude, currentPos.coords.longitude);
+		const coord2 = new Coordinate(prevPos.coords.latitude, prevPos.coords.longitude);
+		const distanceBetweenCoords = this.getDistanceBetweenCoords(coord1, coord2); // In meters
+		const timeBetweenCords = (currentPos.timestamp - prevPos.timestamp) / 1000; // In seconds
+
+		if (distanceBetweenCoords < this.MIN_DISTANCE_BETWEEN_COORDS) {
+			return true;
+		}
+
+		const walkingSpeed = distanceBetweenCoords / timeBetweenCords; // In m/s
+
+		if (walkingSpeed > this.MAX_WALKING_SPEED) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private getDistanceBetweenCoords(coord1: Coordinate, coord2: Coordinate): number {
+		const lat1 = coord1.lat;
+		const lon1 = coord1.lng;
+		const lat2 = coord2.lat;
+		const lon2 = coord2.lng;
+
+		const R = 6371e3; // metres
+		const φ1 = lat1 * Math.PI/180; // φ, λ in radians
+		const φ2 = lat2 * Math.PI/180;
+		const Δφ = (lat2-lat1) * Math.PI/180;
+		const Δλ = (lon2-lon1) * Math.PI/180;
+
+		const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+				Math.cos(φ1) * Math.cos(φ2) *
+				Math.sin(Δλ/2) * Math.sin(Δλ/2);
+		const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+		
+		const d = R * c; // in metres
+		
+		return d;
+	}
+
 	async getCurrentPosition(): Promise<Coordinate> {
-		const coord = await Geolocation.getCurrentPosition({enableHighAccuracy: true});
+		const coord = await Geolocation.getCurrentPosition({enableHighAccuracy: false});
 		return { lat: coord.coords.latitude, lng: coord.coords.longitude } as Coordinate;
 	}
 }

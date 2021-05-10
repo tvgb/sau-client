@@ -23,6 +23,7 @@ export class MapService {
 	private mapsUpdated$: Subject<any> = new Subject();
 	private mapId: string;
 	private lastTrackedPosition: Coordinate;
+	private usingOfflineMap = false;
 
 	private readonly BASE_URLS = [
 		'https://opencache.statkart.no/gatekeeper/gk/gk.open_gmaps',
@@ -42,7 +43,9 @@ export class MapService {
 		gpsService.getLastTrackedPosition().subscribe(pos => {
 			if (pos) {
 				this.lastTrackedPosition = pos;
-				this.setOfflineMapId(this.lastTrackedPosition);
+				if (this.usingOfflineMap) {
+					this.setOfflineMapId(this.lastTrackedPosition);
+				}
 			}
 		});
 
@@ -59,6 +62,10 @@ export class MapService {
 
 	getZoomLevels(): number[] {
 		return this.ZOOM_LEVELS;
+	}
+
+	setIsUsingOfflineMap(isUsingOfflineMap: boolean): void {
+		this.usingOfflineMap = isUsingOfflineMap
 	}
 
 	async getTile(z: number, x: number, y: number): Promise<string> {
