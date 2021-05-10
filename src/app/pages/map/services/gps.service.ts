@@ -23,6 +23,7 @@ export class GpsService {
 	private gpsWatchId: string;
 	private prevStoredPos: any;
 	private skippedGpsPosCount = 0;
+	private lastPos: any;
 
 
 	constructor() { }
@@ -39,6 +40,16 @@ export class GpsService {
 		this.gpsWatchId = Geolocation.watchPosition({enableHighAccuracy: true}, (position, err) => {
 
 			if (position) {
+				if (this.lastPos) {
+					const timeDiff = (position.timestamp - this.lastPos.timestamp) / 1000;
+					const distance = this.getDistanceBetweenCoords(
+						new Coordinate(position.coords.latitude, position.coords.longitude),
+						new Coordinate(this.lastPos.coords.latitude, this.lastPos.coords.longitude)
+					);
+
+					console.log(``)
+				}
+				this.lastPos = position;
 				this.lastTrackedPos.next(new Coordinate(position.coords.latitude, position.coords.longitude));
 			}
 
