@@ -35,7 +35,6 @@ export class MapPage {
 	private registrationPredatorUrl = '/registration/register-predator';
 	private map;
 	private currentMainCategory: MainCategory;
-	private trackedRouteSub: Subscription;
 	private onlineTileLayer: any;
 	private offlineTileLayer: any;
 	private trackedRoute = [];
@@ -132,7 +131,7 @@ export class MapPage {
 
 	ionViewWillEnter(): void {
 		this.statusBarService.changeStatusBar(true, false);
-		this.trackedRouteSub = this.gpsService.getTrackedRoute().pipe(
+		this.gpsService.getTrackedRoute().pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe((res) => {
 			this.trackedRoute = res;
@@ -271,7 +270,7 @@ export class MapPage {
 			App.addListener('appStateChange', ({ isActive }) => {
 				if (isActive) {
 					this.gpsService.setTracking(true);
-					this.gpsService.recalibratePosition();
+					// this.gpsService.recalibratePosition();
 				} else {
 					this.gpsService.setTracking(false);
 				}

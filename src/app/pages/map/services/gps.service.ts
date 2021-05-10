@@ -43,7 +43,7 @@ export class GpsService {
 			}
 
 			if (err) {
-				console.log(`Error occured while getting GPS position: ${err.message}`)
+				console.log(`Error occured while getting GPS position: ${err.message}`);
 			}
 
 			if (this.skippedGpsPosCount >= 100) {
@@ -63,7 +63,7 @@ export class GpsService {
 
 	stopWatchPosition(): void {
 		if (this.gpsWatchId) {
-			Geolocation.clearWatch({ id: this.gpsWatchId })
+			Geolocation.clearWatch({ id: this.gpsWatchId });
 		}
 	}
 
@@ -120,7 +120,7 @@ export class GpsService {
 			Geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
 				this.trackedRoute$.next([...this.trackedRoute$.getValue(), new Coordinate(data.coords.latitude, data.coords.longitude)]);
 			}).catch((error) => {
-					console.log('Error getting location', error);
+				console.log('Error getting location', error);
 			});
 		}
 	}
@@ -175,18 +175,18 @@ export class GpsService {
 		const lon2 = coord2.lng;
 
 		const R = 6371e3; // metres
-		const φ1 = lat1 * Math.PI/180; // φ, λ in radians
-		const φ2 = lat2 * Math.PI/180;
-		const Δφ = (lat2-lat1) * Math.PI/180;
-		const Δλ = (lon2-lon1) * Math.PI/180;
+		const φ1 = lat1 * Math.PI / 180; // φ, λ in radians
+		const φ2 = lat2 * Math.PI / 180;
+		const Δφ = (lat2 - lat1) * Math.PI / 180;
+		const Δλ = (lon2 - lon1) * Math.PI / 180;
 
-		const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+		const a = Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
 				Math.cos(φ1) * Math.cos(φ2) *
-				Math.sin(Δλ/2) * Math.sin(Δλ/2);
-		const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-		
+				Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+		const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
 		const d = R * c; // in metres
-		
+
 		return d;
 	}
 
