@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HapticsImpactStyle, Plugins } from '@capacitor/core';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { Platform } from '@ionic/angular';
-
-const { Haptics } = Plugins;
 
 @Injectable({
 	providedIn: 'root'
 })
 export class VibrationService {
 
-	private options = { style: HapticsImpactStyle.Heavy };
+	private options = { style: ImpactStyle.Heavy };
 
 	constructor(private platform: Platform) { }
 

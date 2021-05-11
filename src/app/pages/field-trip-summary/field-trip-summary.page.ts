@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component} from '@angular/core';
+import { ChangeDetectorRef, Component} from '@angular/core';
 import { AlertController, NavController, Platform } from '@ionic/angular';
 import { Observable, Subject, Subscription } from 'rxjs';
 import * as L from 'leaflet';
@@ -11,14 +11,12 @@ import { Coordinate } from 'src/app/shared/classes/Coordinate';
 import { DeadSheepRegistration, InjuredSheepRegistration, PredatorRegistration, SheepRegistration } from 'src/app/shared/classes/Registration';
 import { MapUIService } from 'src/app/shared/services/map-ui.service';
 import { UpdateFieldTripInfo } from 'src/app/shared/store/fieldTripInfo.actions';
-import { Network } from '@capacitor/core';
+import { Network } from '@capacitor/network';
 import { MapService } from '../map/services/map.service';
 import { takeUntil } from 'rxjs/operators';
 import { FirestoreService } from 'src/app/shared/services/firestore.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
-import { StateReset, StateResetAll } from 'ngxs-reset-plugin';
-import { AppInfoState } from 'src/app/shared/store/appInfo.state';
-import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
+import { StateResetAll } from 'ngxs-reset-plugin';
 import { GpsService } from '../map/services/gps.service';
 
 @Component({

@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Plugins, StatusBarStyle } from '@capacitor/core';
 import { Platform } from '@ionic/angular';
-
-const { StatusBar} = Plugins;
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 @Injectable({
   	providedIn: 'root'
@@ -21,9 +19,9 @@ export class StatusbarService {
 			});
 
 			if (styleDark) {
-				this.style = StatusBarStyle.Dark;
+				this.style = Style.Dark;
 				StatusBar.setBackgroundColor({color: '#1C262F'});
-			} else {this.style = StatusBarStyle.Light; }
+			} else {this.style = Style.Light; }
 
 			StatusBar.setStyle({
 				style: this.style

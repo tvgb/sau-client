@@ -1,16 +1,14 @@
 import { Injectable } from '@angular/core';
-import { FilesystemDirectory, FilesystemEncoding, Plugins, StatResult } from '@capacitor/core';
+import { Filesystem, Directory, Encoding, StatResult } from '@capacitor/filesystem';
 import { OfflineMapMetaData } from '../classes/OfflineMapMetaData';
-
-const { Filesystem } = Plugins;
 
 @Injectable({
 	providedIn: 'root'
 })
 export class FileSystemService {
 
-	private readonly FILESYSTEM_DIRECTORY = FilesystemDirectory.External;
-	private readonly FILESYSTEM_ENCODING = FilesystemEncoding.UTF8;
+	private readonly FILESYSTEM_DIRECTORY = Directory.External;
+	private readonly FILESYSTEM_ENCODING = Encoding.UTF8;
 
 	constructor() { }
 

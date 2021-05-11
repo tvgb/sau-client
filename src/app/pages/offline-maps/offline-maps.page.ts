@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
-import { Network } from '@capacitor/core';
+import { Network } from '@capacitor/network';
 import { AnimationController, Animation, NavController, Platform } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

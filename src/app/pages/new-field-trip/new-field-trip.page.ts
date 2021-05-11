@@ -6,14 +6,11 @@ import { FieldTripInfo } from 'src/app/shared/classes/FieldTripInfo';
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { SetCurrentFieldTrip } from 'src/app/shared/store/fieldTripInfo.actions';
 import { NavController } from '@ionic/angular';
-import { Plugins } from '@capacitor/core';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { FieldTripInfoModel } from 'src/app/shared/interfaces/FieldTripInfoModel';
 import { FirestoreService } from 'src/app/shared/services/firestore.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { StateResetAll } from 'ngxs-reset-plugin';
-
-const { Keyboard } = Plugins;
 
 @Component({
 	selector: 'app-new-field-trip',

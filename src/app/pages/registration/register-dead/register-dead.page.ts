@@ -3,9 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertController, NavController } from '@ionic/angular';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { RegistrationService } from '../services/registration.service';
-import { Plugins, CameraResultType} from '@capacitor/core';
-
-const { Camera} = Plugins;
+import { Camera, CameraResultType } from '@capacitor/camera';
 
 @Component({
 	selector: 'app-register-dead',

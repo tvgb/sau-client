@@ -7,7 +7,6 @@ import { Observable, Subject, Subscription } from 'rxjs';
 import { TextToSpeechService } from '../registration/services/text-to-speech.service';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
-import { Plugins } from '@capacitor/core';
 import { Animation, NavController, Platform } from '@ionic/angular';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
@@ -16,11 +15,11 @@ import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 import { FieldTripInfoState } from 'src/app/shared/store/fieldTripInfo.state';
 import { UpdateFieldTripInfo } from 'src/app/shared/store/fieldTripInfo.actions';
 import { FieldTripInfo, UpdateFieldTripInfoObject } from 'src/app/shared/classes/FieldTripInfo';
-import { filter, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { MapUIService } from 'src/app/shared/services/map-ui.service';
 import { Coordinate } from 'src/app/shared/classes/Coordinate';
-
-const { App, Network } = Plugins;
+import { Network } from '@capacitor/network';
+import { App } from '@capacitor/app';
 
 @Component({
 	selector: 'app-map',
@@ -166,26 +165,22 @@ export class MapPage {
 		this.gpsService.getLastTrackedPosition().pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe((pos) => {
-			if (pos) {
+			if (pos && this.posistionMarker) {
 				this.positionMarkerCoordinates = pos;
 				this.posistionMarker.setLatLng(this.positionMarkerCoordinates);
 			}
 		});
-
-		// if (!this.gpsService.getTracking()) {
-		// 	this.gpsService.setTracking(true);
-		// 	this.gpsService.startTrackingInterval();
-		// }
 	}
 
 	ionViewDidEnter(): void {
-		setTimeout(() => {
-			// this.gpsService.setTracking(true);
-			this.gpsService.startWatchPosition();
-			if (!this.map) {
-				this.initMap();
-			}
-		}, 100);
+		if (!this.map) {
+			console.log('INIT MAP');
+			this.initMap().then(() => {
+				this.gpsService.startGpsTracking();
+			});
+		} else {
+			this.gpsService.startGpsTracking();
+		}
 	}
 
 	async navigateToRegistration(type: RegistrationType) {
@@ -243,8 +238,8 @@ export class MapPage {
 		this.navController.navigateForward('/field-trip-summary');
 	}
 
-	initMap(): void {
-		this.gpsService.getCurrentPosition().then(async gpsPosition => {
+	async initMap(): Promise<void> {
+		return this.gpsService.getCurrentPosition().then(async gpsPosition => {
 			this.map = L.map('map', {
 				center: [gpsPosition.lat, gpsPosition.lng],
 				zoom: 12,
@@ -261,19 +256,7 @@ export class MapPage {
 
 			this.positionMarkerCoordinates = gpsPosition;
 
-			this.posistionMarker = L.marker([gpsPosition.lat, gpsPosition.lng],
-				{icon: this.posistionIcon}).addTo(this.map);
-
-			// this.gpsService.startTrackingInterval();
-
-			// App.addListener('appStateChange', ({ isActive }) => {
-			// 	if (isActive) {
-			// 		this.gpsService.setTracking(true);
-			// 		// this.gpsService.recalibratePosition();
-			// 	} else {
-			// 		this.gpsService.setTracking(false);
-			// 	}
-			// });
+			this.posistionMarker = L.marker([gpsPosition.lat, gpsPosition.lng], {icon: this.posistionIcon}).addTo(this.map);
 
 			this.setOnlineTileLayer();
 			this.setOfflineTileLayer();
@@ -329,9 +312,9 @@ export class MapPage {
 	}
 
 	ionViewWillLeave(): void {
-		this.gpsService.stopWatchPosition();
+		console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY');
+		this.gpsService.stopGpsTracking();
 		this.networkHandler.remove();
 		this.unsubscribe$.next();
-		// this.gpsService.setTracking(false);
 	}
 }

@@ -2,144 +2,52 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Coordinate } from 'src/app/shared/classes/Coordinate';
-import { Plugins } from '@capacitor/core';
-
-const { Geolocation } = Plugins;
+import { registerPlugin } from '@capacitor/core';
+import { BackgroundGeolocationPlugin, Location, CallbackError, WatcherOptions} from '@capacitor-community/background-geolocation';
+const BackgroundGeolocation = registerPlugin<BackgroundGeolocationPlugin>('BackgroundGeolocation');
+import { Geolocation, Position, PositionOptions } from '@capacitor/geolocation';
+import { App } from '@capacitor/app';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GpsService {
-	private trackedRoute$: BehaviorSubject<Coordinate[]> = new BehaviorSubject<Coordinate[]>([]);
-	private calibrationCoords = [];
-	private CALIBRATION_THRESHOLD = 0.0001;
-	private TRACKING_INTERVAL = 10000;
-	private RECALIBRATION_INTERVAL = 4000;
-	private MIN_DISTANCE_BETWEEN_COORDS = 30; // In meters
-	private MAX_WALKING_SPEED = 4; // In m/s
-	private tracking = true;
-	private getInitialPosistion = true;
-	private lastTrackedPos: Subject<Coordinate> = new Subject();
-	private lastPos$: Subject<any> = new Subject();
-	private gpsWatchId: string;
-	private prevStoredPos: any;
-	private skippedGpsPosCount = 0;
-	private lastPos: any;
+	private MIN_DISTANCE_BETWEEN_COORDS = 25; // In meters
+	private MAX_WALKING_SPEED = 20; // In m/s
 
+	private trackedRoute$: BehaviorSubject<Coordinate[]> = new BehaviorSubject<Coordinate[]>([]);
+	private lastTrackedPos: Subject<Coordinate> = new Subject();
+
+	private prevStoredCoordinateTime: number;
+	private prevStoredCoordinate: Coordinate;
+
+	private watcherId: string;
+	private backgroundWatcherId: string;
+	private appHandler: any;
+
+
+	private backgroundPositions: Coordinate[] = [];
 
 	constructor() { }
 
-	getTracking(): boolean {
-		return this.tracking;
-	}
-
-	setTracking(trackingStatus: boolean) {
-		this.tracking = trackingStatus;
-	}
-
-	startWatchPosition(): void {
-		this.gpsWatchId = Geolocation.watchPosition({enableHighAccuracy: true}, (position, err) => {
-			if (err) {
-				console.log(`Error occured while getting GPS position: ${err.message}`);
-				return;
-			}
-
-			if (position) {
-				if (this.lastPos) {
-					const timeDiff = (position.timestamp - this.lastPos.timestamp) / 1000;
-					const distance = this.getDistanceBetweenCoords(
-						new Coordinate(position.coords.latitude, position.coords.longitude),
-						new Coordinate(this.lastPos.coords.latitude, this.lastPos.coords.longitude)
-					);
-
-					console.log(`Sekunder mellom: ${timeDiff} s | Meter mellom: ${distance} m`);
-					this.lastPos$.next(position);
-				}
-				this.lastPos = position;
-				this.lastTrackedPos.next(new Coordinate(position.coords.latitude, position.coords.longitude));
-			}
-
-			if (this.skippedGpsPosCount >= 100) {
-				this.skippedGpsPosCount = 0;
-				this.prevStoredPos = null;
-			}
-
-			if (this.newPositionIsInvalid(position, this.prevStoredPos)) {
-				this.skippedGpsPosCount++;
-			} else if (position) {
-				this.prevStoredPos = position;
-				this.trackedRoute$.next([...this.trackedRoute$.getValue(), new Coordinate(position.coords.latitude, position.coords.longitude)]);
-			}
-		});
-	}
-
-	stopWatchPosition(): void {
-		if (this.gpsWatchId) {
-			this.lastPos = null;
-			Geolocation.clearWatch({ id: this.gpsWatchId });
-		}
-	}
-
-	startTrackingInterval() {
-		// Gets position immediately first time app opens
-		if (this.getInitialPosistion) {
-			this.updateTrackAndPosition();
-			this.getInitialPosistion = false;
-			this.startTrackingInterval();
-			return;
-		} else if (this.tracking) {
-			setTimeout(() => {
-				this.updateTrackAndPosition();
-				this.startTrackingInterval();
-			}, this.TRACKING_INTERVAL);
-		} else {
-			return;
-		}
-	}
-
-	/**
-	 * Recalibrates position when app has been inactive, waits until stable position
-	 */
-	recalibratePosition() {
-		Geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
-			this.calibrationCoords.push({lat: data.coords.latitude, lng: data.coords.longitude});
-			if (this.calibrationCoords.length < 2) {
-				setTimeout(() => {
-					this.recalibratePosition();
-				}, this.RECALIBRATION_INTERVAL);
-			} else {
-				const latDiff = Math.abs(this.calibrationCoords[0].lat - this.calibrationCoords[1].lat);
-				const lngDiff = Math.abs(this.calibrationCoords[0].lng - this.calibrationCoords[1].lng);
-
-				if (latDiff < this.CALIBRATION_THRESHOLD && lngDiff < this.CALIBRATION_THRESHOLD) {
-					this.updateTrackAndPosition();
-					this.startTrackingInterval();
-					this.calibrationCoords = [];
+	async startGpsTracking(): Promise<void> {
+		this.startGpsWatcher();
+		this.appHandler = await App.addListener('appStateChange', status => {
+			if (this.watcherId || this.backgroundWatcherId) {
+				if (status.isActive) {
+					this.stopBackgroundGpsWatcher();
+					this.startGpsWatcher();
 				} else {
-					this.calibrationCoords = [];
-					setTimeout(() => {
-						this.recalibratePosition();
-					}, this.RECALIBRATION_INTERVAL);
+					this.stopGpsWatcher();
+					this.startBackgroundGpsWatcher();
 				}
 			}
 		});
 	}
 
-	getPos(): Observable<any> {
-		return this.lastPos$.asObservable();
-	}
-
-	/**
-	 * Updates position on map with marker and line for tracked route
-	 */
-	updateTrackAndPosition(): void {
-		if (this.tracking) {
-			Geolocation.getCurrentPosition({enableHighAccuracy: true}).then((data) => {
-				this.trackedRoute$.next([...this.trackedRoute$.getValue(), new Coordinate(data.coords.latitude, data.coords.longitude)]);
-			}).catch((error) => {
-				console.log('Error getting location', error);
-			});
-		}
+	stopGpsTracking(): void {
+		this.stopGpsWatcher();
+		this.appHandler.remove();
 	}
 
 	addToTrackedRoute(gpsPos: Coordinate): void {
@@ -158,34 +66,127 @@ export class GpsService {
 		this.trackedRoute$.next([]);
 	}
 
-	private newPositionIsInvalid(currentPos: any, prevPos: any): boolean {
-		if (!currentPos) {
+	private startBackgroundGpsWatcher(): void {
+
+		const watcherOptions = {
+			backgroundMessage: 'Cancel to prevent battery drain.',
+			backgroundTitle: 'Tracking You.',
+			requestPermissions: true,
+			stale: false,
+			distanceFilter: 5
+		} as WatcherOptions;
+
+		BackgroundGeolocation.addWatcher(watcherOptions, (position: Location, error: CallbackError) => {
+			if (error) {
+				if (error.code === 'NOT_AUTHORIZED') {
+					if (window.confirm('This app needs your location, but does not have permission \n\n Open settings now?')) {
+						BackgroundGeolocation.openSettings();
+					}
+				}
+				return console.error(error);
+			}
+
+			if (position) {
+				const newCoordinate = new Coordinate(position.latitude, position.longitude);
+				this.backgroundPositions.push(newCoordinate);
+				this.lastTrackedPos.next(newCoordinate);
+
+				if (this.newPositionValid(newCoordinate, position.time, this.prevStoredCoordinate)) {
+					this.prevStoredCoordinate = newCoordinate;
+					this.prevStoredCoordinateTime = position.time;
+					this.trackedRoute$.next([...this.trackedRoute$.getValue(), newCoordinate]);
+				}
+			}
+
+		}).then((watcherId) => {
+			console.log(`STARTED BACKGROUNDWATCHER: ${watcherId}`);
+			this.backgroundWatcherId = watcherId;
+		});
+	}
+
+	private stopBackgroundGpsWatcher(): void {
+		if (this.backgroundWatcherId) {
+			BackgroundGeolocation.removeWatcher({ id: this.backgroundWatcherId }).then(() => {
+				console.log(`BACKGROUNDWATCHER STOPPED: ${this.backgroundWatcherId}`);
+				this.backgroundWatcherId = null;
+				console.log(JSON.stringify(this.backgroundPositions));
+			});
+		}
+	}
+
+
+	private startGpsWatcher(): void {
+		const positionOptions = {
+			enableHighAccuracy: true,
+			timeout: 10000,
+			maximumAge: 0
+		} as PositionOptions;
+
+		Geolocation.watchPosition(positionOptions, (position: Position, err?: any) => {
+
+			if (err) {
+				if (err.code === 'NOT_AUTHORIZED') {
+					if (window.confirm('This app needs your location, but does not have permission \n\n Open settings now?')) {
+						BackgroundGeolocation.openSettings();
+					}
+				}
+				return console.error(err);
+			}
+
+			console.log('GETTING POS');
+
+			if (position) {
+				const newCoordinate = new Coordinate(position.coords.latitude, position.coords.longitude);
+				console.log(JSON.stringify(newCoordinate));
+
+				this.lastTrackedPos.next(newCoordinate);
+
+				if (this.newPositionValid(newCoordinate, position.timestamp, this.prevStoredCoordinate)) {
+					this.prevStoredCoordinate = newCoordinate;
+					this.prevStoredCoordinateTime = position.timestamp;
+					this.trackedRoute$.next([...this.trackedRoute$.getValue(), newCoordinate]);
+				}
+			}
+
+		}).then((watcherId) => {
+			if (watcherId) {
+				console.log(`WATCHER STARTED: ${watcherId}`);
+				this.watcherId = watcherId;
+			}
+		});
+	}
+
+	private stopGpsWatcher(): void {
+		if (this.watcherId) {
+			Geolocation.clearWatch({ id: this.watcherId }).then(() => {
+				console.log(`STOPPED WATCHER: ${this.watcherId}`);
+				this.watcherId = null;
+			});
+		}
+	}
+
+	private newPositionValid(currentPos: Coordinate, currentPosTime: number, prevPos: Coordinate): boolean {
+		if (!prevPos) {
 			return true;
 		}
 
-		if (!prevPos) {
-			return false;
-		}
-
-		const coord1 = new Coordinate(currentPos.coords.latitude, currentPos.coords.longitude);
-		const coord2 = new Coordinate(prevPos.coords.latitude, prevPos.coords.longitude);
-		const distanceBetweenCoords = this.getDistanceBetweenCoords(coord1, coord2); // In meters
-		const timeBetweenCords = (currentPos.timestamp - prevPos.timestamp) / 1000; // In seconds
+		const distanceBetweenCoords = this.getDistanceBetweenCoords(currentPos, prevPos); // In meters
+		const timeBetweenCords = (currentPosTime - this.prevStoredCoordinateTime) / 1000; // In seconds
 
 		if (distanceBetweenCoords < this.MIN_DISTANCE_BETWEEN_COORDS) {
-			return true;
+			return false;
 		}
 
 		const walkingSpeed = distanceBetweenCoords / timeBetweenCords; // In m/s
 
 		if (walkingSpeed > this.MAX_WALKING_SPEED) {
-			return true;
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
-	getDistanceBetweenCoords(coord1: Coordinate, coord2: Coordinate): number {
+	private getDistanceBetweenCoords(coord1: Coordinate, coord2: Coordinate): number {
 		const lat1 = coord1.lat;
 		const lon1 = coord1.lng;
 		const lat2 = coord2.lat;
@@ -208,7 +209,7 @@ export class GpsService {
 	}
 
 	async getCurrentPosition(): Promise<Coordinate> {
-		const coord = await Geolocation.getCurrentPosition({enableHighAccuracy: false});
+		const coord = await Geolocation.getCurrentPosition({ enableHighAccuracy: true });
 		return { lat: coord.coords.latitude, lng: coord.coords.longitude } as Coordinate;
 	}
 }

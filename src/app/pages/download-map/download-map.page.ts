@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { Network } from '@capacitor/core';
+import { Network } from '@capacitor/network';
 import { NavController, Platform } from '@ionic/angular';
 import * as L from 'leaflet';
 import { OfflineMapMetaData } from 'src/app/shared/classes/OfflineMapMetaData';

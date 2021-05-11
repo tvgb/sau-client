@@ -37,8 +37,4 @@ export class MainMenuPage {
 	settingsButtonClicked(): void {
 		this.navController.navigateForward(this.settingsUrl);
 	}
-
-	testPageButtonClicked(): void {
-		this.navController.navigateForward('/test-page')
-	}
 }

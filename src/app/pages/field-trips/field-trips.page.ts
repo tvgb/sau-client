@@ -1,14 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras } from '@angular/router';
-import { Plugins } from '@capacitor/core';
 import { NavController } from '@ionic/angular';
 import { FieldTripInfo } from 'src/app/shared/classes/FieldTripInfo';
 import { DeadSheepRegistration, InjuredSheepRegistration, SheepRegistration } from 'src/app/shared/classes/Registration';
 import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 import { FirestoreService } from 'src/app/shared/services/firestore.service';
 import { FieldTripsService } from './field-trips.service';
-
-const { Network } = Plugins;
+import { Network } from '@capacitor/network';
 
 @Component({
 	selector: 'app-field-trips',

@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Filesystem, FilesystemDirectory, FilesystemEncoding, KeyboardResize } from '@capacitor/core';
 import { Platform } from '@ionic/angular';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
@@ -8,9 +7,8 @@ import { CheckableEarTag, EarTagInfo } from 'src/app/shared/classes/EarTagInfo';
 import { SetEarTagInfos } from 'src/app/shared/store/sheepInfo.actions';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { v4 as uuidv4 } from 'uuid';
-import { Plugins} from '@capacitor/core';
-
-const {Keyboard} = Plugins;
+import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
+import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
 
 @Component({
 	selector: 'app-ear-tag',
@@ -42,7 +40,7 @@ export class EarTagComponent implements OnInit {
 	ngOnInit() {
 		Filesystem.readFile({
 			path: this.earTagsPath,
-			directory: FilesystemDirectory.External,
+			directory: Directory.External,
 		}).then(res => {
 			this.earTagsInfos = res.data as unknown as EarTagInfo[];
 			this.checkableEartags = this.earTagsInfos.map(earTagInfo => {
@@ -99,8 +97,8 @@ export class EarTagComponent implements OnInit {
 		Filesystem.writeFile({
 			data: earTagInfo as any,
 			path: this.earTagsPath,
-			directory: FilesystemDirectory.External,
-			encoding: FilesystemEncoding.UTF8,
+			directory: Directory.External,
+			encoding: Encoding.UTF8,
 			recursive: true
 		});
 	}

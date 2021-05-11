@@ -7,10 +7,11 @@ import { DownloadProgressionData } from 'src/app/shared/classes/DownloadProgress
 import { v4 as uuidv4 } from 'uuid';
 import { Coordinate } from 'src/app/shared/classes/Coordinate';
 import { GpsService } from './gps.service';
-import { FileWriteResult, Plugins, RmdirResult } from '@capacitor/core';
+import { WriteFileResult } from '@capacitor/filesystem';
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
+import { App } from '@capacitor/app';
+import { LocalNotifications } from '@capacitor/local-notifications';
 
-const { LocalNotifications, BackgroundTask, App} = Plugins;
 
 @Injectable({
 	providedIn: 'root'
@@ -65,7 +66,7 @@ export class MapService {
 	}
 
 	setIsUsingOfflineMap(isUsingOfflineMap: boolean): void {
-		this.usingOfflineMap = isUsingOfflineMap
+		this.usingOfflineMap = isUsingOfflineMap;
 	}
 
 	async getTile(z: number, x: number, y: number): Promise<string> {
@@ -82,14 +83,14 @@ export class MapService {
 	async startMapTileAreaDownload(offlineMapMetaData: OfflineMapMetaData) {
 		offlineMapMetaData = await this.downloadMapTileArea(offlineMapMetaData);
 
-		if (!offlineMapMetaData.downloadFinished) {
-			const taskId = BackgroundTask.beforeExit(async () => {
-				await this.downloadMapTileArea(offlineMapMetaData, true);
-				BackgroundTask.finish({
-					taskId
-				});
-			});
-		}
+		// if (!offlineMapMetaData.downloadFinished) {
+		// 	const taskId = BackgroundTask.beforeExit(async () => {
+		// 		await this.downloadMapTileArea(offlineMapMetaData, true);
+		// 		BackgroundTask.finish({
+		// 			taskId
+		// 		});
+		// 	});
+		// }
 	}
 
 	/**
@@ -182,7 +183,7 @@ export class MapService {
 		return offlineMapMetaData;
 	}
 
-	async changeMapName(mapId: string, newMapName: string): Promise<FileWriteResult> {
+	async changeMapName(mapId: string, newMapName: string): Promise<WriteFileResult> {
 		const offlineMapMetaData = await this.getOfflineMapMetaData(mapId);
 		offlineMapMetaData.name = newMapName;
 		return this.updateOfflineMapMetaData(mapId, offlineMapMetaData);
@@ -228,7 +229,7 @@ export class MapService {
 		});
 	}
 
-	async deleteOfflineMap(mapId: string): Promise<RmdirResult> {
+	async deleteOfflineMap(mapId: string): Promise<void> {
 		const offlineMapMetaData = await this.getOfflineMapMetaData(mapId);
 		offlineMapMetaData.deleted = true;
 		await this.updateOfflineMapMetaData(mapId, offlineMapMetaData);
@@ -358,7 +359,7 @@ export class MapService {
 		return [xTile, yTile];
 	}
 
-	private updateOfflineMapMetaData(mapId: string, offlineMapMetaData: OfflineMapMetaData): Promise<FileWriteResult> {
+	private updateOfflineMapMetaData(mapId: string, offlineMapMetaData: OfflineMapMetaData): Promise<WriteFileResult> {
 		const data: any = offlineMapMetaData;
 		return this.fsService.writeFile(`maps/${mapId}/metaData/`, data, true);
 	}

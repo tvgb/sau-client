@@ -1,9 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Plugins } from '@capacitor/core';
-import 'capacitor-tts-plugin';
-import { Options } from 'capacitor-tts-plugin';
-
-const { CapacitorTtsPlugin } = Plugins;
+import { Options, CapacitorTts } from 'capacitor-tts-plugin';
 
 @Injectable({
   	providedIn: 'root'
@@ -22,7 +18,7 @@ export class TextToSpeechService {
 			locale: this.LANGUAGE
 		};
 
-		CapacitorTtsPlugin.speak(options).catch(error => {
+		CapacitorTts.speak(options).catch(error => {
 			console.log(`Error when speaking: ${error}`);
 		});
 	}
