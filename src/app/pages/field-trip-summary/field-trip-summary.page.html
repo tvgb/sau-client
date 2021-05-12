@@ -4,7 +4,7 @@
 		pageHeaderText="Oppsummering">
 	</app-page-header>
 	<div class="summary-column">
-        <div class="summary-column-heading">
+        <div id="first-summary-column-heading">
             <h2>TID BRUKT</h2>
         </div>
         <ng-container class="summary-element" *ngIf="hours && min || hours && !min then caseA; else caseB"></ng-container>

@@ -3,14 +3,16 @@
         <app-page-header [navUrl]= "['/map']" [pageHeaderText] = "['Registrer døde dyr']"></app-page-header>
         <ion-list class="register-dead-info-list">
             <form [formGroup]="registerDeadForm">
-                <ion-label>Antall døde dyr:</ion-label>
-                <ion-item lines="full">
-                    <ion-input formControlName="deadCount" required="true" type="number"></ion-input>
-                </ion-item>
-                <div *ngIf="!registerDeadForm.controls.deadCount.valid && (registerDeadForm.controls.deadCount.dirty || submitAttempt)">
-                    <p class="invalid">
-                        {{invalidText}}
-                    </p>
+                <div class="register-dead-item"> 
+                    <ion-label>Antall døde dyr:</ion-label>
+                    <ion-item lines="full">
+                        <ion-input formControlName="deadCount" required="true" type="number"></ion-input>
+                    </ion-item>
+                    <div *ngIf="!registerDeadForm.controls.deadCount.valid && (registerDeadForm.controls.deadCount.dirty || submitAttempt)">
+                        <p class="invalid">
+                            {{invalidText}}
+                        </p>
+                    </div>
                 </div>
                 <ion-label>Kommentar:</ion-label>
                 <ion-textarea formControlName="comment" placeholder="Skriv inn observasjon her..."></ion-textarea>

@@ -9,6 +9,10 @@
     margin-right: 35px;
 }
 
+.register-dead-item {
+    margin-bottom: 35px;
+}
+
 .invalid {
     color: red;
     margin-bottom: 30px;
@@ -82,4 +86,8 @@ ion-textarea {
     margin-top: 5px;
     --background: rgba(255, 255, 255, 0.05);
     margin-bottom: 25px;
+}
+
+ion-label{
+    font-weight: 500;
 }

@@ -5,7 +5,7 @@
 
 .summary-heading {
 	text-align: center;
-	margin-top: 20px;
+	// margin-top: 40px;
 	font-size: xx-large;
 }
 
@@ -17,9 +17,12 @@
 }
 
 .summary-column-heading {
-	margin: 5px 10px 5px 15px;
+	margin: 20px 10px 5px 15px;
 }
 
+#first-summary-column-heading {
+    margin: 5px 10px 5px 15px;
+}
 .summary-element {
     display: flex;
     flex-direction: row;

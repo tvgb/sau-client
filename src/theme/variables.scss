@@ -3,16 +3,19 @@
 
 /** Ionic CSS Variables **/
 :root {
+    --ion-background-color: #1C262F;
+    //--ion-font-weight: 700;
     .alertConfirm {
         --background: #1C262F;
 
     }
     .alertConfirm .alert-message {
-            --color: #ffffff;
+            --light-text: #ffffff;
+            color: var(--light-text)
+    
     }
-    // Font familiy for the entire project
-    --ion-background-color: #1C262F;
-  	--ion-font-family: 'Montserrat';	
+
+  	--ion-font-family: 'Montserrat';
     --ion-text-color: #ffffff;
     --ion-text-color-rgb: #ffffff;
     --ion-color-primary: #7BB662;
