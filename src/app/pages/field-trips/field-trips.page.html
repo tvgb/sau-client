@@ -4,13 +4,13 @@
 		pageHeaderText="Oppsynsturer">
 	</app-page-header>
 	<div *ngIf="fieldTrips.length > 0" class="field-trips-container">
-		<div class="field-trip-card" *ngFor="let fieldTrip of fieldTrips">
+		<div class="field-trip-card" *ngFor="let fieldTrip of fieldTrips" (click)="navigateToFieldTrip(fieldTrip)">
 			<div class="top-row">
 				<div class="field">
 					<div class="bold-text">Registrert av</div>
 					<div class="text">{{ fieldTrip.overseerName }}</div>
 				</div>
-				<div (click)="navigateToFieldTrip(fieldTrip)" class="field">
+				<div class="field">
 					<ion-icon size="large" name="arrow-forward-outline"></ion-icon>
 				</div>
 			</div>
