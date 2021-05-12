@@ -16,7 +16,7 @@
                 <ion-textarea formControlName="comment" placeholder="Skriv inn observasjon her..."></ion-textarea>
                 <div class="add-photo-container">
                     <div class="add-photo-header">
-                        <ion-icon class="camera-icon" size="large" name="camera"></ion-icon>
+                        <!-- <ion-icon class="camera-icon" size="large" name="camera"></ion-icon> -->
                         <ion-label class="add-photo-header-text">Bilde</ion-label> 
                     </div>
                     <div *ngIf="images.length > 0, else removeImages" class="add-photo-text">Legg ved et bilde. Klikk på bildet for å fjerne det.</div>
@@ -30,12 +30,14 @@
                             <ion-img class="photo" *ngIf="capturedImage" [src]="images[i]"></ion-img>
                         </div>
                         <div class="add-photo-box">
-                            <div class="plus-icon" (click)="addPhoto()">+</div>
+                            <!-- <div class="plus-icon" (click)="addPhoto()">+</div> -->
+                            <ion-icon class="camera-icon" size="large" name="camera" (click)="addPhoto()"></ion-icon>
                         </div>
                     </div>
                     <ng-template #elseblock >
                         <div class="add-photo-box">
-                            <div class="plus-icon" (click)="addPhoto()">+</div>
+                            <ion-icon class="camera-icon" size="large" name="camera" (click)="addPhoto()"></ion-icon>
+                            <!-- <div class="plus-icon" (click)="addPhoto()">+</div> -->
                         </div>
                     </ng-template>
                     
