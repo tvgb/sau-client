@@ -1,9 +1,8 @@
 <ion-content class="content" [scrollX]="false" [scrollY]="false">
-	<div class="nav" (click)="navBack()" >
-		<ion-icon size="medium" name="arrow-back-outline"></ion-icon>
-		Oversikt
-		<ion-icon size="medium" style="opacity: 0;" name="arrow-back-outline"></ion-icon>
-	</div>
+	<app-page-header
+		navUrl="/field-trips"
+		pageHeaderText="Oversikt">
+	</app-page-header>
 	<div class="field-trip-container">
 		<div class="map-container">
 			<div id="field-trip-map"></div>
