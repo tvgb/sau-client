@@ -45,10 +45,12 @@
 }
 
 #complete-button {
-	width: 90%;
 	margin: 10px auto;
-	font-weight: 400;
-	font-size: 15px;
+	font-weight: 500;
+	font-size: larger;
+    height: 50px;
+	width: 90%;
+	--border-radius: 25px;
 }
 
 #summary-map {
