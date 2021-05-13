@@ -1,8 +1,13 @@
 <ion-content id="summary-content">
-	<app-page-header
-		navUrl="/map"
-		pageHeaderText="Oppsummering">
-	</app-page-header>
+    <app-page-header *ngIf="!completeButtonPressed || (completeButtonPressed && uploadFailed); else elseHeader"
+        navUrl="/map"
+        pageHeaderText="Oppsummering">
+    </app-page-header>
+    <ng-template #elseHeader>
+        <app-page-header *ngIf="completeButtonPressed"
+		    pageHeaderText="Oppsummering">
+	    </app-page-header>
+    </ng-template>
 	<div class="summary-column">
         <div id="first-summary-column-heading">
             <h2>TID BRUKT</h2>
@@ -58,9 +63,9 @@
                     Du må være koblet til internett for å fullføre en oppsynstur.
                 </div>
             </div>
-			<ion-button [disabled]="!connectedToNetwork" (click)="onCompleteSummary()" shape="round" color="primary" id="complete-button" expand="block">FULLFØR</ion-button>
+			<ion-button [disabled]="!connectedToNetwork" (click)="onCompleteSummary()" shape="round" color="primary" class="complete-button" expand="block">FULLFØR</ion-button>
 		</ion-col>
-		<ion-col *ngIf="completeButtonPressed">
+        <ion-col *ngIf="completeButtonPressed || uploadFailed">
 			<div class="uploading-container">
 				<div class="icon-wrapper">
 					<ion-spinner style="color: var(--ion-text-color);" *ngIf="completeButtonPressed && !uploadCompleted" name="circles"></ion-spinner>
@@ -71,7 +76,10 @@
 					{{ uploadStatusText }}
                 </ion-text>
 			</div>
-			<ion-progress-bar class="progress-bar" color="primary" [value]="progressBarValue"></ion-progress-bar>
+            <div class="complete-container" *ngIf="uploadCompleted" >
+                <ion-button *ngIf="uploadFailed" (click)="onCompleteSummary()" shape="round" color="primary" class="complete-button" expand="block">PRØV IGJEN</ion-button>
+                <ion-button *ngIf="!uploadFailed" (click)="finishFieldTrip()" shape="round" color="primary" class="complete-button" expand="block">AVSLUTT</ion-button>
+            </div>
 		</ion-col>
 	</ion-row>
 </ion-footer>
