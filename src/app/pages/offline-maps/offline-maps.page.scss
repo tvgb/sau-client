@@ -42,7 +42,7 @@
 	color: black;
 	display: flex;
 	align-items: center;
-	padding-left: 12px;
+    justify-content: center;
 	cursor: pointer;
 }
 
@@ -100,7 +100,7 @@
 	align-items: flex-end;
 	grid-area: name;
 	font-size: large;
-	font-weight: 300;	
+	font-weight: 500;	
 }
 
 .map-info-container {
@@ -109,7 +109,7 @@
 }
 
 .map-info {
-	font-weight: 200;
+	font-weight: 300;
 	font-size: smaller;
 	margin-right: 5px;
 }
