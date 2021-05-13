@@ -128,6 +128,7 @@ export class MapPage {
 
 	ionViewWillEnter(): void {
 		this.statusBarService.changeStatusBar(true, false);
+		this.gpsService.setTracking(true);
 		this.gpsService.getTrackedRoute().pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe((res) => {
@@ -169,8 +170,8 @@ export class MapPage {
 	}
 
 	ionViewDidEnter(): void {
+		// trenger vi timeout her Trym?
 		setTimeout(() => {
-			this.gpsService.setTracking(true);
 			if (!this.map) {
 				this.initMap();
 			}
