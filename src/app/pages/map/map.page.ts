@@ -199,15 +199,10 @@ export class MapPage {
 		if (!this.map) {
 			this.initMap().then(() => {
 				this.gpsService.startGpsTracking();
-
-				setTimeout(() => {
-					this.gpsService.startBackgroundServiceAndAskForPremissions();
-				}, 2000);
 			});
 		} else {
 			this.gpsService.startGpsTracking();
 		}
-
 	}
 
 	async navigateToRegistration(type: RegistrationType) {
