@@ -4,17 +4,22 @@
 			<div id="map"></div>
 		</div>
 	</div>
-	<ion-fab vertical="bottom" class="left-fab" slot="fixed">
+	<ion-fab horizontal="start" vertical="bottom" slot="fixed">
 		<ion-fab-button (click)="showConfirmAlert()"> 
 			<ion-icon name="checkmark-outline"></ion-icon>
 		</ion-fab-button>
 	</ion-fab>
-	<ion-fab class="center-fab" vertical="bottom" slot="fixed">
+	<ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!registrationSelectorFabIsActive">
+		<ion-fab-button class="center-fab-btn" (tap)="toggleCenterMapMode($event)"> 
+			<ion-icon [ngClass]="{'active': centerMapOnPositionUpdate}" name="navigate"></ion-icon>		
+		</ion-fab-button>
+	</ion-fab>
+	<!-- <ion-fab class="center-fab" vertical="bottom" slot="fixed">
 		<ion-fab-button (tap)="toggleLowPowerMode($event)"> 
 			<ion-icon name="walk"></ion-icon>
 		</ion-fab-button>
-	</ion-fab>
-	<ion-fab vertical="bottom" class="right-fab" slot="fixed">
+	</ion-fab> -->
+	<ion-fab #registrationSelectorFab horizontal="end" vertical="bottom" slot="fixed" (tap)="onRegistrationSelectorClick()">
 		<ion-fab-button>
 			<ion-icon name="add"></ion-icon>
 		</ion-fab-button>
@@ -25,6 +30,7 @@
 			<ion-fab-button (click)="navigateToRegistration(registrationType.Dead)" class="add-registration-button"><ion-img [src]="addDeadSheepBtnPath"></ion-img></ion-fab-button>
 		</ion-fab-list>
 	</ion-fab>
+
 </ion-content>
 
 <div #lowPowerModeOverlay [hidden]="!lowPowerModeOn" class="dark-overlay" (tap)="toggleLowPowerMode($event)">

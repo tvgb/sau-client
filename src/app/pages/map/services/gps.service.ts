@@ -7,6 +7,8 @@ import { BackgroundGeolocationPlugin, Location, CallbackError, WatcherOptions} f
 const BackgroundGeolocation = registerPlugin<BackgroundGeolocationPlugin>('BackgroundGeolocation');
 import { Geolocation, Position, PositionOptions } from '@capacitor/geolocation';
 import { App } from '@capacitor/app';
+import { Platform } from '@ionic/angular';
+
 
 @Injectable({
   providedIn: 'root'
@@ -28,18 +30,22 @@ export class GpsService {
 
 	private backgroundPositions: Coordinate[] = [];
 
-	constructor() { }
+	constructor(private platform: Platform) { }
 
 	async startGpsTracking(): Promise<void> {
 		this.startGpsWatcher();
 		this.appHandler = await App.addListener('appStateChange', status => {
 			if (this.watcherId || this.backgroundWatcherId) {
 				if (status.isActive) {
-					this.stopBackgroundGpsWatcher();
+					if (!this.platform.is('mobileweb')) {
+						this.stopBackgroundGpsWatcher();
+					}
 					this.startGpsWatcher();
 				} else {
 					this.stopGpsWatcher();
-					this.startBackgroundGpsWatcher();
+					if (!this.platform.is('mobileweb')) {
+						this.startBackgroundGpsWatcher();
+					}
 				}
 			}
 		});

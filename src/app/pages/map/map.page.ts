@@ -7,7 +7,7 @@ import { Observable, Subject, Subscription } from 'rxjs';
 import { TextToSpeechService } from '../registration/services/text-to-speech.service';
 import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { MainCategory } from 'src/app/shared/classes/Category';
-import { Animation, NavController, Platform } from '@ionic/angular';
+import { Animation, IonFab, NavController, Platform } from '@ionic/angular';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { StatusbarService } from 'src/app/shared/services/statusbar.service';
 import { RegistrationService } from '../registration/services/registration.service';
@@ -38,9 +38,16 @@ export class MapPage {
 	private offlineTileLayer: any;
 	private trackedRoute = [];
 	private networkHandler: PluginListenerHandle;
+	private mapMoveEnded = true;
+
+	centerMapOnPositionUpdate = true;
+	registrationSelectorFabIsActive = false;
 
 	@ViewChild('lowPowerModeOverlay') lowPowerModeOverlay: ElementRef;
 	@ViewChild('lowPowerModeHelpMessage') lowPowerModeHelpMessage: ElementRef;
+	@ViewChild('registrationSelectorFab') registrationSelectorFab: IonFab;
+
+
 	lowPowerModeOn = false;
 	showLowPowerModeHelpMessage = true;
 	lowPowerModeOnAnimation: Animation;
@@ -78,9 +85,6 @@ export class MapPage {
 	crosshairMarker: any;
 	addMarkerAgain: boolean;
 	lastTrackedPos: Coordinate;
-
-
-	private positionMarkerCoordinates: Coordinate;
 
 	private unsubscribe$: Subject<void> = new Subject<void>();
 
@@ -167,16 +171,24 @@ export class MapPage {
 		this.gpsService.getLastTrackedPosition().pipe(
 			takeUntil(this.unsubscribe$)
 		).subscribe((pos) => {
-			if (pos && this.posistionMarker) {
-				this.positionMarkerCoordinates = pos;
-				this.posistionMarker.setLatLng(this.positionMarkerCoordinates);
+			if (pos) {
+				this.lastTrackedPos = pos;
+
+				if (!this.posistionMarker) {
+					this.posistionMarker = L.marker([pos.lat, pos.lng], {icon: this.posistionIcon}).addTo(this.map);
+				} else {
+					this.posistionMarker.setLatLng(pos);
+				}
+
+				if (this.centerMapOnPositionUpdate && this.mapMoveEnded) {
+					this.map.panTo((pos), {animate: true, duration: 1.0, easeLinearity: 0, noMoveStart: true});
+				}
 			}
 		});
 	}
 
 	ionViewDidEnter(): void {
 		if (!this.map) {
-			console.log('INIT MAP');
 			this.initMap().then(() => {
 				this.gpsService.startGpsTracking();
 			});
@@ -235,43 +247,63 @@ export class MapPage {
 		}
 	}
 
+	toggleCenterMapMode(event: any) {
+		this.centerMapOnPositionUpdate = !this.centerMapOnPositionUpdate;
+
+		if (this.centerMapOnPositionUpdate && this.lastTrackedPos) {
+			this.map.panTo((this.lastTrackedPos), {animate: true, duration: 1.0, easeLinearity: 0, noMoveStart: true});
+		}
+	}
+
+	onRegistrationSelectorClick(): void {
+		this.registrationSelectorFabIsActive = !this.registrationSelectorFab.activated;
+	}
+
 	navigateToSummary(): void {
 		this.store.dispatch(new UpdateFieldTripInfo({dateTimeEnded: Date.now(), trackedRoute: this.trackedRoute} as UpdateFieldTripInfoObject));
 		this.navController.navigateForward('/field-trip-summary');
 	}
 
 	async initMap(): Promise<void> {
-		return this.gpsService.getCurrentPosition().then(async gpsPosition => {
-			this.map = L.map('map', {
-				center: [gpsPosition.lat, gpsPosition.lng],
-				zoom: 12,
-				zoomControl: false,
-				attributionControl: false
-			});
 
-			this.crosshairMarker = L.marker([this.map.getCenter().lat, this.map.getCenter().lng],
-			{icon: this.crosshairIcon,  interactive: false, zIndexOffset: 100}).addTo(this.map);
-
-			this.map.on('move', () => {
-				this.crosshairMarker.setLatLng([this.map.getCenter().lat, this.map.getCenter().lng]);
-			});
-
-			this.positionMarkerCoordinates = gpsPosition;
-
-			this.posistionMarker = L.marker([gpsPosition.lat, gpsPosition.lng], {icon: this.posistionIcon}).addTo(this.map);
-
-			this.setOnlineTileLayer();
-			this.setOfflineTileLayer();
-
-			if ((await Network.getStatus()).connected) {
-				this.map.addLayer(this.onlineTileLayer);
-			} else {
-				this.map.setMinZoom(this.mapService.getMinZoom());
-				this.map.setMaxZoom(this.mapService.getMaxZoom());
-				this.map.setZoom(this.map.getMaxZoom());
-				this.map.addLayer(this.offlineTileLayer);
-			}
+		this.map = L.map('map', {
+			center: [63.418669063607666, 10.402754156997933], // Center of Gløshaugen
+			zoom: 12,
+			zoomControl: false,
+			attributionControl: false
 		});
+
+		this.crosshairMarker = L.marker([this.map.getCenter().lat, this.map.getCenter().lng],
+		{icon: this.crosshairIcon,  interactive: false, zIndexOffset: 100}).addTo(this.map);
+
+		this.map.on('move', () => {
+			this.crosshairMarker.setLatLng([this.map.getCenter().lat, this.map.getCenter().lng]);
+		});
+
+		this.map.on('mousedown', () => {
+			this.mapMoveEnded = false;
+			this.centerMapOnPositionUpdate = false;
+		});
+
+		this.map.on('mouseup', () => {
+			this.mapMoveEnded = true;
+		});
+
+		this.map.on('zoomstart', () => {
+			this.centerMapOnPositionUpdate = false;
+		});
+
+		this.setOnlineTileLayer();
+		this.setOfflineTileLayer();
+
+		if ((await Network.getStatus()).connected) {
+			this.map.addLayer(this.onlineTileLayer);
+		} else {
+			this.map.setMinZoom(this.mapService.getMinZoom());
+			this.map.setMaxZoom(this.mapService.getMaxZoom());
+			this.map.setZoom(this.map.getMaxZoom());
+			this.map.addLayer(this.offlineTileLayer);
+		}
 	}
 
 	private setOnlineTileLayer(): void {

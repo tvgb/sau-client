@@ -53,6 +53,20 @@ ion-fab-button {
 	left: calc(50% - 38px); //50% minus (width + margin) / 2 av fab for å sentrere
 }
 
+.center-fab-btn {
+	margin-bottom: 80px;
+
+	ion-icon {
+		color: #ababab;
+		font-size: 25px;
+		margin: 2px 3px 0px 0px;
+	}
+
+	ion-icon.active {
+		color: #0A7FFF;
+	}
+}
+
 .right-fab {
 	right: 20px;
 }
