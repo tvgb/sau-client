@@ -27,6 +27,9 @@ export class LoginPage {
 	}
 
 	loginButtonPressed(): void {
+		this.loginForm.clearValidators();
+
+
 		if (this.loginForm.valid) {
 			this.authService.signIn(this.loginForm.controls.email.value.trim(), this.loginForm.controls.password.value)
 				.then((loginSucceeded) => {

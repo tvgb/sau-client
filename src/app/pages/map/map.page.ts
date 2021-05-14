@@ -39,6 +39,7 @@ export class MapPage {
 	private trackedRoute = [];
 	private networkHandler: PluginListenerHandle;
 	private mapMoveEnded = true;
+	private connectedToInternet = true;
 
 	centerMapOnPositionUpdate = true;
 	registrationSelectorFabIsActive = false;
@@ -105,7 +106,14 @@ export class MapPage {
 		});
 
 		Network.addListener('networkStatusChange', (status) => {
-			if (status.connected) {
+
+			if (status.connected === this.connectedToInternet) {
+				return;
+			}
+
+			this.connectedToInternet = status.connected
+
+			if (this.connectedToInternet) {
 				this.mapService.setIsUsingOfflineMap(false);
 				this.map.removeLayer(this.offlineTileLayer);
 				this.map.addLayer(this.onlineTileLayer);
@@ -191,10 +199,15 @@ export class MapPage {
 		if (!this.map) {
 			this.initMap().then(() => {
 				this.gpsService.startGpsTracking();
+
+				setTimeout(() => {
+					this.gpsService.startBackgroundServiceAndAskForPremissions();
+				}, 2000);
 			});
 		} else {
 			this.gpsService.startGpsTracking();
 		}
+
 	}
 
 	async navigateToRegistration(type: RegistrationType) {
@@ -296,7 +309,9 @@ export class MapPage {
 		this.setOnlineTileLayer();
 		this.setOfflineTileLayer();
 
-		if ((await Network.getStatus()).connected) {
+		this.connectedToInternet = (await Network.getStatus()).connected;
+
+		if (this.connectedToInternet) {
 			this.map.addLayer(this.onlineTileLayer);
 		} else {
 			this.map.setMinZoom(this.mapService.getMinZoom());

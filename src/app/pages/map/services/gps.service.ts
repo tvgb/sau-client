@@ -9,7 +9,6 @@ import { Geolocation, Position, PositionOptions } from '@capacitor/geolocation';
 import { App } from '@capacitor/app';
 import { Platform } from '@ionic/angular';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -32,28 +31,44 @@ export class GpsService {
 
 	constructor(private platform: Platform) { }
 
-	async startGpsTracking(): Promise<void> {
-		this.startGpsWatcher();
-		this.appHandler = await App.addListener('appStateChange', status => {
-			if (this.watcherId || this.backgroundWatcherId) {
-				if (status.isActive) {
-					if (!this.platform.is('mobileweb')) {
-						this.stopBackgroundGpsWatcher();
-					}
-					this.startGpsWatcher();
-				} else {
-					this.stopGpsWatcher();
-					if (!this.platform.is('mobileweb')) {
-						this.startBackgroundGpsWatcher();
+	startGpsTracking(): void {
+		this.startBackgroundGpsWatcher();
+	}
+
+	startBackgroundServiceAndAskForPremissions(): void {
+		const watcherOptions = {
+			backgroundMessage: "Cancel to prevent battery drain.",
+			backgroundTitle: "Tracking You.",
+			requestPermissions: true,
+			stale: false,
+			distanceFilter: 5
+		} as WatcherOptions;
+
+		console.log('Background watcher started!');
+
+		Geolocation.requestPermissions().then((res) => {
+			console.log(JSON.stringify(res));
+		});
+
+		BackgroundGeolocation.addWatcher(watcherOptions, (position: Location, error: CallbackError) => {
+
+			if (error) {
+				if (error.code === 'NOT_AUTHORIZED') {
+					if (window.confirm('This app needs your location, but does not have permission \n\n Open settings now?')) {
+						BackgroundGeolocation.openSettings();
 					}
 				}
+				return console.error(JSON.stringify(error));
 			}
+		}).then(watcherId => {
+			BackgroundGeolocation.removeWatcher({ id: watcherId });
 		});
 	}
 
 	stopGpsTracking(): void {
-		this.stopGpsWatcher();
-		this.appHandler.remove();
+		// this.stopGpsWatcher();
+		this.stopBackgroundGpsWatcher();
+		// this.appHandler.remove();
 	}
 
 	addToTrackedRoute(gpsPos: Coordinate): void {
@@ -75,14 +90,20 @@ export class GpsService {
 	private startBackgroundGpsWatcher(): void {
 
 		const watcherOptions = {
-			backgroundMessage: 'Cancel to prevent battery drain.',
-			backgroundTitle: 'Tracking You.',
+			backgroundMessage: "Cancel to prevent battery drain.",
+			backgroundTitle: "Tracking You.",
 			requestPermissions: true,
 			stale: false,
 			distanceFilter: 5
 		} as WatcherOptions;
 
+		console.log('Background watcher started!');
+
 		BackgroundGeolocation.addWatcher(watcherOptions, (position: Location, error: CallbackError) => {
+
+			console.log(JSON.stringify(position));
+			console.log(JSON.stringify(error));
+
 			if (error) {
 				if (error.code === 'NOT_AUTHORIZED') {
 					if (window.confirm('This app needs your location, but does not have permission \n\n Open settings now?')) {
@@ -185,6 +206,8 @@ export class GpsService {
 	}
 
 	private getDistanceBetweenCoords(coord1: Coordinate, coord2: Coordinate): number {
+		console.log(JSON.stringify(coord1))
+		console.log(JSON.stringify(coord2))
 		const lat1 = coord1.lat;
 		const lon1 = coord1.lng;
 		const lat2 = coord2.lat;
