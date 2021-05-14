@@ -99,7 +99,6 @@ export class GpsService {
 			}
 
 		}).then((watcherId) => {
-			console.log(`STARTED BACKGROUNDWATCHER: ${watcherId}`);
 			this.backgroundWatcherId = watcherId;
 		});
 	}
@@ -107,9 +106,7 @@ export class GpsService {
 	private stopBackgroundGpsWatcher(): void {
 		if (this.backgroundWatcherId) {
 			BackgroundGeolocation.removeWatcher({ id: this.backgroundWatcherId }).then(() => {
-				console.log(`BACKGROUNDWATCHER STOPPED: ${this.backgroundWatcherId}`);
 				this.backgroundWatcherId = null;
-				console.log(JSON.stringify(this.backgroundPositions));
 			});
 		}
 	}
@@ -133,11 +130,8 @@ export class GpsService {
 				return console.error(err);
 			}
 
-			console.log('GETTING POS');
-
 			if (position) {
 				const newCoordinate = new Coordinate(position.coords.latitude, position.coords.longitude);
-				console.log(JSON.stringify(newCoordinate));
 
 				this.lastTrackedPos.next(newCoordinate);
 
@@ -150,7 +144,6 @@ export class GpsService {
 
 		}).then((watcherId) => {
 			if (watcherId) {
-				console.log(`WATCHER STARTED: ${watcherId}`);
 				this.watcherId = watcherId;
 			}
 		});
@@ -159,7 +152,6 @@ export class GpsService {
 	private stopGpsWatcher(): void {
 		if (this.watcherId) {
 			Geolocation.clearWatch({ id: this.watcherId }).then(() => {
-				console.log(`STOPPED WATCHER: ${this.watcherId}`);
 				this.watcherId = null;
 			});
 		}

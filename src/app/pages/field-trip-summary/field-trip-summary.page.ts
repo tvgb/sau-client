@@ -18,6 +18,7 @@ import { FirestoreService } from 'src/app/shared/services/firestore.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { StateResetAll } from 'ngxs-reset-plugin';
 import { GpsService } from '../map/services/gps.service';
+import { PluginListenerHandle } from '@capacitor/core';
 
 @Component({
 	selector: 'app-field-trip-summary',
@@ -55,7 +56,7 @@ export class FieldTripSummaryPage {
 	descriptionValue = '';
 
 	private unsubscribe$: Subject<void> = new Subject();
-	private networkHandler: any;
+	private networkHandler: PluginListenerHandle;
 
 	connectedToNetwork: boolean;
 	completeButtonPressed = false;
@@ -104,7 +105,7 @@ export class FieldTripSummaryPage {
 			this.cdr.detectChanges();
 		});
 
-		this.networkHandler = Network.addListener('networkStatusChange', (status) => {
+		Network.addListener('networkStatusChange', (status) => {
 			this.connectedToNetwork = status.connected;
 			this.cdr.detectChanges();
 			if (status.connected) {
@@ -124,6 +125,8 @@ export class FieldTripSummaryPage {
 					this.alertService.presentNetworkToast(false);
 				}
 			}
+		}).then((pluginListenerHandle) => {
+			this.networkHandler = pluginListenerHandle;
 		});
 	}
 

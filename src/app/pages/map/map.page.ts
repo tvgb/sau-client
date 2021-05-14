@@ -19,7 +19,7 @@ import { takeUntil } from 'rxjs/operators';
 import { MapUIService } from 'src/app/shared/services/map-ui.service';
 import { Coordinate } from 'src/app/shared/classes/Coordinate';
 import { Network } from '@capacitor/network';
-import { App } from '@capacitor/app';
+import { PluginListenerHandle } from '@capacitor/core';
 
 @Component({
 	selector: 'app-map',
@@ -37,7 +37,7 @@ export class MapPage {
 	private onlineTileLayer: any;
 	private offlineTileLayer: any;
 	private trackedRoute = [];
-	private networkHandler;
+	private networkHandler: PluginListenerHandle;
 
 	@ViewChild('lowPowerModeOverlay') lowPowerModeOverlay: ElementRef;
 	@ViewChild('lowPowerModeHelpMessage') lowPowerModeHelpMessage: ElementRef;
@@ -100,7 +100,7 @@ export class MapPage {
 			this.navController.navigateBack('/main-menu');
 		});
 
-		this.networkHandler = Network.addListener('networkStatusChange', (status) => {
+		Network.addListener('networkStatusChange', (status) => {
 			if (status.connected) {
 				this.mapService.setIsUsingOfflineMap(false);
 				this.map.removeLayer(this.offlineTileLayer);
@@ -125,6 +125,8 @@ export class MapPage {
 					this.alertService.presentNetworkToast(false);
 				}
 			}
+		}).then((pluginListenerHandle) => {
+			this.networkHandler = pluginListenerHandle;
 		});
 	}
 
@@ -312,7 +314,6 @@ export class MapPage {
 	}
 
 	ionViewWillLeave(): void {
-		console.log('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY');
 		this.gpsService.stopGpsTracking();
 		this.networkHandler.remove();
 		this.unsubscribe$.next();

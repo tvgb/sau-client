@@ -11,6 +11,8 @@ import { WriteFileResult } from '@capacitor/filesystem';
 import { FileSystemService } from 'src/app/shared/services/file-system.service';
 import { App } from '@capacitor/app';
 import { LocalNotifications } from '@capacitor/local-notifications';
+import { PluginHeaderMethod } from '@capacitor/core/types/definitions-internal';
+import { PluginListenerHandle } from '@capacitor/core';
 
 
 @Injectable({
@@ -101,9 +103,12 @@ export class MapService {
 		inBackground: boolean = false,
 		rewrite: boolean = false): Promise<OfflineMapMetaData> {
 
+		let appHandler: PluginListenerHandle;
 		let stopDownloading = false;
 		App.addListener('appStateChange', () => {
 			stopDownloading = true;
+		}).then((pluginListenerHandle) => {
+			appHandler = pluginListenerHandle;
 		});
 
 		const startPos = offlineMapMetaData.startPos;
@@ -148,6 +153,7 @@ export class MapService {
 			for (let x = startX; x <= endX; x++) {
 				for (let y = startY; y <= endY; y++) {
 					if (stopDownloading) {
+						appHandler.remove();
 						return offlineMapMetaData;
 					}
 
@@ -180,6 +186,8 @@ export class MapService {
 		if (inBackground) {
 			this.showDownloadFinishedNotification(offlineMapMetaData.name);
 		}
+
+		appHandler.remove();
 		return offlineMapMetaData;
 	}
 

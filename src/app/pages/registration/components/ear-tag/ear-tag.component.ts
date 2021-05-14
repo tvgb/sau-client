@@ -9,6 +9,7 @@ import { SheepInfoState } from 'src/app/shared/store/sheepInfo.state';
 import { v4 as uuidv4 } from 'uuid';
 import { Keyboard, KeyboardResize } from '@capacitor/keyboard';
 import { Directory, Encoding, Filesystem } from '@capacitor/filesystem';
+import { PluginListenerHandle } from '@capacitor/core';
 
 @Component({
 	selector: 'app-ear-tag',
@@ -35,6 +36,8 @@ export class EarTagComponent implements OnInit {
 	checkableEartags: CheckableEarTag[] = [];
 	earTagsInfos: EarTagInfo[] = [];
 
+	keyboardHandler: PluginListenerHandle;
+
 	@Select(SheepInfoState.getEarTagInfos) earTagInfos$: Observable<EarTagInfo[]>;
 
 	ngOnInit() {
@@ -58,6 +61,8 @@ export class EarTagComponent implements OnInit {
 	ionViewWillEnter() {
 		Keyboard.addListener('keyboardWillShow', () => {
 			Keyboard.setResizeMode({mode: KeyboardResize.None});
+		}).then((pluginListenerHandle) => {
+			this.keyboardHandler = pluginListenerHandle;
 		});
 	}
 
@@ -105,5 +110,9 @@ export class EarTagComponent implements OnInit {
 
 	pickedColourClicked(colour: string): void {
 		this.coloursPicked = this.coloursPicked.filter(c => c !== colour);
+	}
+
+	ionViewWillLeave(): void {
+		this.keyboardHandler.remove();
 	}
 }

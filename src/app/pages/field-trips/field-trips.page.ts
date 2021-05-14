@@ -7,6 +7,7 @@ import { RegistrationType } from 'src/app/shared/enums/RegistrationType';
 import { FirestoreService } from 'src/app/shared/services/firestore.service';
 import { FieldTripsService } from './field-trips.service';
 import { Network } from '@capacitor/network';
+import { PluginListenerHandle } from '@capacitor/core';
 
 @Component({
 	selector: 'app-field-trips',
@@ -26,6 +27,8 @@ export class FieldTripsPage {
 	noInternet = false;
 	fieldTrips: FieldTripInfo[] = [];
 
+	networkHandler: PluginListenerHandle;
+
 	constructor(private firestore: FirestoreService, private navController: NavController, public fieldTripsService: FieldTripsService) { }
 
 	ionViewWillEnter() {
@@ -35,6 +38,8 @@ export class FieldTripsPage {
 
 		Network.addListener('networkStatusChange', (status) => {
 			this.noInternet = !status.connected;
+		}).then((pluginListenerHandle) => {
+			this.networkHandler = pluginListenerHandle;
 		});
 
 		this.firestore.getFieldTrips().then((fieldTrips) => {
@@ -76,5 +81,9 @@ export class FieldTripsPage {
 		}
 
 		return 0;
+	}
+
+	ionViewWillLeave(): void {
+		this.networkHandler.remove();
 	}
 }
