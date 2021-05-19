@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
 import * as L from 'leaflet';
 import { MapService } from './services/map.service';
 import { GpsService } from './services/gps.service';
@@ -99,7 +99,8 @@ export class MapPage {
 		private ttsService: TextToSpeechService,
 		private alertService: AlertService,
 		private navController: NavController,
-		private mapUiService: MapUIService) {
+		private mapUiService: MapUIService,
+		private changeDetectorRef: ChangeDetectorRef) {
 
 		this.platform.backButton.subscribeWithPriority(5, () => {
 			this.navController.navigateBack('/main-menu');
@@ -274,12 +275,21 @@ export class MapPage {
 
 	async initMap(): Promise<void> {
 
-		this.map = L.map('map', {
-			center: [63.418669063607666, 10.402754156997933], // Center of Gløshaugen
-			zoom: 12,
-			zoomControl: false,
-			attributionControl: false
-		});
+		const zoom = 12;
+		const center = [63.418669063607666, 10.402754156997933];
+		const zoomControl = false;
+		const attributionControl = false;
+
+		this.map = L.map('map', { zoomControl, attributionControl }).on('load', e => setTimeout(() => {
+			this.map.invalidateSize(); }, 0)
+		).setView(center, zoom);
+
+		// this.map = L.map('map', {
+		// 	center: [63.418669063607666, 10.402754156997933], // Center of Gløshaugen
+		// 	zoom: 12,
+		// 	zoomControl: false,
+		// 	attributionControl: false
+		// });
 
 		this.crosshairMarker = L.marker([this.map.getCenter().lat, this.map.getCenter().lng],
 		{icon: this.crosshairIcon,  interactive: false, zIndexOffset: 100}).addTo(this.map);
@@ -288,17 +298,13 @@ export class MapPage {
 			this.crosshairMarker.setLatLng([this.map.getCenter().lat, this.map.getCenter().lng]);
 		});
 
-		this.map.on('mousedown', () => {
-			this.mapMoveEnded = false;
-			this.centerMapOnPositionUpdate = false;
-		});
-
-		this.map.on('mouseup', () => {
-			this.mapMoveEnded = true;
-		});
-
 		this.map.on('zoomstart', () => {
 			this.centerMapOnPositionUpdate = false;
+		});
+
+		this.map.on('movestart', () => {
+			this.centerMapOnPositionUpdate = false;
+			this.changeDetectorRef.detectChanges();
 		});
 
 		this.setOnlineTileLayer();

@@ -13,7 +13,7 @@ import { Platform } from '@ionic/angular';
   providedIn: 'root'
 })
 export class GpsService {
-	private MIN_DISTANCE_BETWEEN_COORDS = 5; // In meters
+	private MIN_DISTANCE_BETWEEN_COORDS = 10; // In meters
 	private MAX_WALKING_SPEED = 4; // In m/s
 
 	private trackedRoute$: BehaviorSubject<Coordinate[]> = new BehaviorSubject<Coordinate[]>([]);
