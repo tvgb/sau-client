@@ -1,9 +1,8 @@
 <ion-content class="content" [scrollX]="false" [scrollY]="false">
-	<div class="nav" (click)="navBack()" >
-		<ion-icon size="medium" name="arrow-back-outline"></ion-icon>
-		Oversikt
-		<ion-icon size="medium" style="opacity: 0;" name="arrow-back-outline"></ion-icon>
-	</div>
+	<app-page-header
+		navUrl="/field-trips"
+		pageHeaderText="Oversikt">
+	</app-page-header>
 	<div class="field-trip-container">
 		<div class="map-container">
 			<div id="field-trip-map"></div>
@@ -11,13 +10,13 @@
 		<div *ngIf="fieldTrip" class="info-container">
 
 			<!-- INFOBOX FOR REGISTRERTE SAU -->
-			<div class="info-box" style="border: 2px solid #719AAB;">
+			<div class="info-box" style="border: 2px solid #719AAB;" (click)="onOpenInfoBox(registrationType.Sheep)">
 				<div class="info-box-header">
 					<div class="field icon-field">
 						<ion-img [src]="sheepIconPath"></ion-img>
 						<div class="icon-text" style="color: #719AAB;"> {{ fieldTripsService.getRegisteredSheepCount(fieldTrip) }} </div>
 					</div>
-					<div class="field arrow-field" (click)="onOpenInfoBox(registrationType.Sheep)">
+					<div class="field arrow-field">
 						<ion-icon style="color: #719AAB;" name="caret-down-outline"></ion-icon>
 					</div>
 				</div>
@@ -110,13 +109,13 @@
 			</div>
 
 			<!-- INFOBOX FOR SKADD SAU -->
-			<div class="info-box" style="border: 2px solid #FFAE69;">
+			<div class="info-box" style="border: 2px solid #FFAE69;" (click)="onOpenInfoBox(registrationType.Injured)">
 				<div class="info-box-header">
 					<div class="field icon-field">
 						<ion-img [src]="injuredSheepIconPath"></ion-img>
 						<div class="icon-text" style="color: #FFAE69;"> {{ fieldTripsService.getInjuredSheepCount(fieldTrip) }} </div>
 					</div>
-					<div class="field arrow-field" (click)="onOpenInfoBox(registrationType.Injured)">
+					<div class="field arrow-field">
 						<ion-icon style="color: #FFAE69;" name="caret-down-outline"></ion-icon>
 					</div>
 				</div>
@@ -148,13 +147,13 @@
 			</div>
 
 			<!-- INFOBOX FOR DØDE SAU -->
-			<div class="info-box" style="border: 2px solid #595959;">
+			<div class="info-box" style="border: 2px solid #595959;" (click)="onOpenInfoBox(registrationType.Dead)">
 				<div class="info-box-header">
 					<div class="field icon-field">
 						<ion-img [src]="deadSheepIconPath"></ion-img>
 						<div class="icon-text" style="color: #595959;"> {{ fieldTripsService.getDeadSheepCount(fieldTrip) }} </div>
 					</div>
-					<div class="field arrow-field" (click)="onOpenInfoBox(registrationType.Dead)">
+					<div class="field arrow-field" >
 						<ion-icon style="color: #595959;" name="caret-down-outline"></ion-icon>
 					</div>
 				</div>
@@ -194,13 +193,13 @@
 			</div>
 
 			<!-- INFOBOX FOR ROVDYR -->
-			<div class="info-box" style="border: 2px solid #C26B69;">
+			<div class="info-box" style="border: 2px solid #C26B69;" (click)="onOpenInfoBox(registrationType.Predator)">
 				<div class="info-box-header">
 					<div class="field icon-field">
 						<ion-img [src]="predatorIconPath"></ion-img>
 						<div class="icon-text" style="color: #C26B69;"> {{ fieldTripsService.getPredatorCount(fieldTrip) }} </div>
 					</div>
-					<div class="field arrow-field" (click)="onOpenInfoBox(registrationType.Predator)">
+					<div class="field arrow-field" >
 						<ion-icon style="color: #C26B69;" name="caret-down-outline"></ion-icon>
 					</div>
 				</div>

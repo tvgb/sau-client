@@ -263,6 +263,7 @@ export class FieldTripSummaryPage {
 	}
 
 	onCompleteSummary(): void {
+		this.completeButtonPressed = false;
 		let alertConfirmMessage = 'Er du sikker på at du vil fullføre oppsynsturen?';
 		if (this.descriptionChanged) {
 			this.store.dispatch(new UpdateFieldTripInfo({description: this.descriptionValue} as UpdateFieldTripInfoObject));
@@ -278,34 +279,29 @@ export class FieldTripSummaryPage {
 
 	uploadToCloud(): void {
 		if (this.completeButtonPressed) {
+			this.uploadFailed = false;
+			this.uploadCompleted = false;
+			this.uploadStatusText = 'Laster opp oppsynsturrapporten i skyen.'
+			this.cdr.detectChanges();
 			this.firestoreService.saveNewFieldTrip(this.fieldTripInfo).then((saveComplete) => {
 				this.uploadCompleted = true;
 				if (saveComplete) {
-					this.uploadStatusText = 'Oppsynsturrapporten har blitt lagret i skyen. Du blir tatt tilbake til hovedmenyen.';
-					setTimeout(() => {
-						this.tickProgressBar();
+					this.uploadStatusText = 'Oppsynsturen er lastet opp i skyen!';
+					this.cdr.detectChanges();
 
-					}, this.waitBeforeNavTime);
 				} else {
 					this.uploadFailed = true;
-					this.uploadStatusText = 'Noe gikk galt under opplastingen...';
+					this.uploadStatusText = 'Noe gikk galt under opplastingen ...';
+					this.cdr.detectChanges()
 				}
 			});
 		}
 	}
 
-	private tickProgressBar() {
-		setTimeout(() => {
-			if (this.progressBarValue < 1) {
-				this.progressBarValue += 0.01;
-				this.cdr.detectChanges();
-				this.tickProgressBar();
-			} else {
-				this.store.dispatch(new StateResetAll());
-				this.gpsService.resetTrackedRoute();
-				this.navController.navigateBack(this.mainMenuUrl);
-			}
-		}, this.waitBeforeNavTime / 120);
+	finishFieldTrip(): void {
+		this.store.dispatch(new StateResetAll());
+		this.gpsService.resetTrackedRoute();
+		this.navController.navigateBack(this.mainMenuUrl);
 	}
 
 	async confirmAlert(alertConfirmMessage: string) {
