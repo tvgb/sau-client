@@ -202,7 +202,10 @@ export class MapPage {
 				this.gpsService.startGpsTracking();
 			});
 		} else {
-			this.gpsService.startGpsTracking();
+			setTimeout(() => {
+				this.map.invalidateSize();
+				this.gpsService.startGpsTracking();
+			});
 		}
 	}
 
@@ -280,16 +283,12 @@ export class MapPage {
 		const zoomControl = false;
 		const attributionControl = false;
 
-		this.map = L.map('map', { zoomControl, attributionControl }).on('load', e => setTimeout(() => {
-			this.map.invalidateSize(); }, 0)
-		).setView(center, zoom);
-
-		// this.map = L.map('map', {
-		// 	center: [63.418669063607666, 10.402754156997933], // Center of Gløshaugen
-		// 	zoom: 12,
-		// 	zoomControl: false,
-		// 	attributionControl: false
-		// });
+		this.map = L.map('map', {
+			center,
+			zoom,
+			zoomControl,
+			attributionControl
+		});
 
 		this.crosshairMarker = L.marker([this.map.getCenter().lat, this.map.getCenter().lng],
 		{icon: this.crosshairIcon,  interactive: false, zIndexOffset: 100}).addTo(this.map);
